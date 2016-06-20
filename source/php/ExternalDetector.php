@@ -6,8 +6,9 @@ class ExternalDetector
 {
     public function __construct()
     {
-        add_action('init', array($this, 'schedule'));
+        add_action('wp', array($this, 'schedule'));
         add_action('broken-links-detector-external', array($this, 'lookForBrokenLinks'));
+        //do_action('broken-links-detector-external');
     }
 
     public function schedule()
@@ -19,12 +20,16 @@ class ExternalDetector
         wp_schedule_event(time(), 'daily', 'broken-links-detector-external');
     }
 
+    /**
+     * Look for broken links in post_content
+     * @return void
+     */
     public function lookForBrokenLinks()
     {
         $foundUrls = array();
 
         global $wpdb;
-        $posts = $wpdb->get_results("SELECT ID, post_content FROM wp_posts WHERE post_content RLIKE ('href=*') LIMIT 10");
+        $posts = $wpdb->get_results("SELECT ID, post_content FROM $wpdb->posts WHERE post_content RLIKE ('href=*')");
 
         foreach ($posts as $post) {
             preg_match_all('/<a[^>]+href=([\'"])(http|https)(.+?)\1[^>]*>/i', $post->post_content, $m);
@@ -60,13 +65,15 @@ class ExternalDetector
         $inserted = array();
         $tableName = \BrokenLinkDetector\App::$dbTable;
 
+        $wpdb->query("TRUNCATE $tableName");
+
         foreach ($data as $item) {
             $exists = $wpdb->get_row("SELECT id FROM $tableName WHERE post_id = {$item['post_id']} AND url = '{$item['url']}'");
             if ($exists) {
                 continue;
             }
 
-            $inserted[] = $wpdb->insert(\BrokenLinkDetector\App::$dbTable, array(
+            $inserted[] = $wpdb->insert($tableName, array(
                 'post_id' => $item['post_id'],
                 'url' => $item['url']
             ), array('%d', '%s'));
