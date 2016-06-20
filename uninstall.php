@@ -6,3 +6,6 @@
 if (!defined('WP_UNINSTALL_PLUGIN')) {
     exit;
 }
+
+global $wpdb;
+$brokenLinkDetectorApp->uninstall();

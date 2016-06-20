@@ -35,4 +35,7 @@ $loader->addPrefix('BrokenLinkDetector', BROKENLINKDETECTOR_PATH . 'source/php/'
 $loader->register();
 
 // Start application
-new BrokenLinkDetector\App();
+$brokenLinkDetectorApp = new BrokenLinkDetector\App();
+
+register_activation_hook(__FILE__, array($brokenLinkDetectorApp, 'install'));
+register_deactivation_hook(__FILE__, array($brokenLinkDetectorApp, 'uninstall'));
