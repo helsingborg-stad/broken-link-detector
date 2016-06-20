@@ -24,6 +24,7 @@ define('BROKENLINKDETECTOR_TEMPLATE_PATH', BROKENLINKDETECTOR_PATH . 'templates/
 
 load_plugin_textdomain('broken-link-detector', false, plugin_basename(dirname(__FILE__)) . '/languages');
 
+require_once __DIR__ . '/source/php/Vendor/admin-notice-helper.php';
 require_once BROKENLINKDETECTOR_PATH . 'source/php/Vendor/Psr4ClassLoader.php';
 require_once BROKENLINKDETECTOR_PATH . 'Public.php';
 
