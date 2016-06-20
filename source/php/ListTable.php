@@ -12,7 +12,7 @@ class ListTable extends \WP_List_Table
 
         $data = $this->getBrokenLinks();
 
-        $perPage = 2;
+        $perPage = 30;
         $currentPage = $this->get_pagenum();
         $totalItems = count($data);
         $this->set_pagination_args(array(
