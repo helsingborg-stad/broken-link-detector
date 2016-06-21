@@ -9,6 +9,14 @@ class ExternalDetector
         add_action('wp', array($this, 'schedule'));
         add_action('broken-links-detector-external', array($this, 'lookForBrokenLinks'));
 
+        add_action('save_post', function ($postId) {
+            if (wp_is_post_revision($postId)) {
+                return;
+            }
+
+            wp_schedule_single_event(time() + 60, 'broken-links-detector-external', array($postId));
+        });
+
         if (isset($_GET['broken-links-detector']) && $_GET['broken-links-detector'] == 'scan') {
             do_action('broken-links-detector-external');
         }
@@ -25,20 +33,27 @@ class ExternalDetector
 
     /**
      * Look for broken links in post_content
+     * @param integer $post_id Optional post_id to update broken links for
      * @return void
      */
-    public function lookForBrokenLinks()
+    public function lookForBrokenLinks($postId = null)
     {
         $foundUrls = array();
 
         global $wpdb;
-        $posts = $wpdb->get_results("
+        $sql = "
             SELECT ID, post_content
             FROM $wpdb->posts
             WHERE
                 post_content RLIKE ('href=*')
                 AND post_status IN ('publish', 'private', 'password')
-        ");
+        ";
+
+        if (is_numeric($postId)) {
+            $sql .= " AND ID = $postId";
+        }
+
+        $posts = $wpdb->get_results($sql);
 
         foreach ($posts as $post) {
             preg_match_all('/<a[^>]+href=([\'"])(http|https)(.+?)\1[^>]*>/i', $post->post_content, $m);
@@ -59,7 +74,7 @@ class ExternalDetector
             }
         }
 
-        $this->saveBrokenLinks($foundUrls);
+        $this->saveBrokenLinks($foundUrls, $postId);
     }
 
     /**
@@ -67,14 +82,18 @@ class ExternalDetector
      * @param  array $data
      * @return void
      */
-    public function saveBrokenLinks($data)
+    public function saveBrokenLinks($data, $postId = null)
     {
         global $wpdb;
 
         $inserted = array();
         $tableName = \BrokenLinkDetector\App::$dbTable;
 
-        $wpdb->query("TRUNCATE $tableName");
+        if (is_numeric($postId)) {
+            $wpdb->delete($tableName, array('post_id' => $postId), array('%d'));
+        } else {
+            $wpdb->query("TRUNCATE $tableName");
+        }
 
         foreach ($data as $item) {
             $exists = $wpdb->get_row("SELECT id FROM $tableName WHERE post_id = {$item['post_id']} AND url = '{$item['url']}'");
