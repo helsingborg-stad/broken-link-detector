@@ -27,8 +27,13 @@ class ListTable extends \WP_List_Table
 
     public static function getBrokenLinks($postId = false)
     {
+        if (defined('DOING_AJAX') && DOING_AJAX) {
+            $postId = isset($_POST['post_id']) ? $_POST['post_id'] : false;
+        }
+
         global $wpdb;
         $tableName = \BrokenLinkDetector\App::$dbTable;
+
         $sql = "SELECT
                     links.*,
                     {$wpdb->posts}.*,
@@ -43,6 +48,11 @@ class ListTable extends \WP_List_Table
         $sql .= " ORDER BY {$wpdb->posts}.post_title";
 
         $result = $wpdb->get_results($sql);
+
+        if (defined('DOING_AJAX') && DOING_AJAX) {
+            echo json_encode($result);
+            wp_die();
+        }
 
         return $result;
     }

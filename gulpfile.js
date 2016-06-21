@@ -40,11 +40,20 @@ gulp.task('scripts-dist', function() {
         .pipe(rename('broken-link-detector.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('dist/js'));
+
+    gulp.src([
+            'source/mce/**/*.js',
+        ])
+        .pipe(concat('mce-broken-link-detector.dev.js'))
+        .pipe(gulp.dest('dist/js'))
+        .pipe(rename('mce-broken-link-detector.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('dist/js'));
 });
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-    gulp.watch('source/js/**/*.js', ['scripts-dist']);
+    gulp.watch(['source/js/**/*.js', 'source/mce/**/*.js'], ['scripts-dist']);
     gulp.watch('source/sass/**/*.scss', ['sass-dist', 'sass-dev']);
 });
 

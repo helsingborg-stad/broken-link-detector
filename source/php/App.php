@@ -20,11 +20,26 @@ class App
 
         add_action('wp', array($this, 'postTypeColumns'));
 
+        add_action('post_submitbox_misc_actions', array($this, 'rescanPost'), 100);
+
         $this->brokenLinksColumnSorting();
 
         new \BrokenLinkDetector\ExternalDetector();
+        new \BrokenLinkDetector\Editor();
     }
 
+    public function rescanPost()
+    {
+        echo '<div class="misc-pub-section">
+            <label style="display:block;margin-bottom:5px;"><input type="checkbox" name="broken-link-detector-rescan" value="true"> ' . __('Rescan broken links', 'broken-link-detector') . '</label>
+            <small>' . __('The rescan will be executed for this post only. The scan will execute direcly after the save is completed and may take a few minutes to complete.', 'broken-links-detector') . '</small>
+        </div>';
+    }
+
+    /**
+     * Sort post if sorting on broken-links column
+     * @return void
+     */
     public function brokenLinksColumnSorting()
     {
         add_filter('posts_fields', function ($fields, $query) {

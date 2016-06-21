@@ -10,7 +10,7 @@ class ExternalDetector
         add_action('broken-links-detector-external', array($this, 'lookForBrokenLinks'));
 
         add_action('save_post', function ($postId) {
-            if (wp_is_post_revision($postId)) {
+            if (wp_is_post_revision($postId) || !isset($_POST['broken-link-detector-rescan']) || $_POST['broken-link-detector-rescan'] !== 'true') {
                 return;
             }
 
