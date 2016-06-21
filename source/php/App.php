@@ -20,7 +20,37 @@ class App
 
         add_action('wp', array($this, 'postTypeColumns'));
 
+        $this->brokenLinksColumnSorting();
+
         new \BrokenLinkDetector\ExternalDetector();
+    }
+
+    public function brokenLinksColumnSorting()
+    {
+        add_filter('posts_fields', function ($fields, $query) {
+            if ($query->get('orderby') !== 'broken-links') {
+                return $fields;
+            }
+
+            global $wpdb;
+
+            $fields .= ", (
+                SELECT COUNT(*)
+                FROM " . self::$dbTable . "
+                WHERE post_id = {$wpdb->posts}.ID
+            ) AS broken_links_count";
+
+            return $fields;
+        }, 10, 2);
+
+        add_filter('posts_orderby', function ($orderby, $query) {
+            if ($query->get('orderby') !== 'broken-links') {
+                return $orderby;
+            }
+
+            $orderby = "broken_links_count {$query->get('order')}, " . $orderby;
+            return $orderby;
+        }, 10, 2);
     }
 
     /**
@@ -46,10 +76,10 @@ class App
             }, 50);
 
             add_action('manage_' . $postType . '_posts_custom_column', function ($column, $postId) {
-                $links = \BrokenLinkDetector\ListTable::getBrokenLinks($postId);
+                $links = \BrokenLinkDetector\ListTable::getBrokenLinksCount($postId);
 
-                if (count($links) > 0) {
-                    echo '<span style="display: inline-block; padding: 1px 5px; background-color: #ff0000; color: #fff;">' . count($links) . '</span>';
+                if ($links > 0) {
+                    echo '<span class="broken-link-detector-label">' . $links . '</span>';
                 } else {
                     echo '<span aria-hidden="true">—</span>';
                 }
@@ -149,7 +179,7 @@ class App
      */
     public function enqueueStyles()
     {
-
+        wp_enqueue_style('broken-links-detector', BROKENLINKDETECTOR_URL . '/dist/css/broken-link-detector.min.css', '', '1.0.0');
     }
 
     /**
@@ -158,6 +188,5 @@ class App
      */
     public function enqueueScripts()
     {
-
     }
 }

@@ -8,7 +8,10 @@ class ExternalDetector
     {
         add_action('wp', array($this, 'schedule'));
         add_action('broken-links-detector-external', array($this, 'lookForBrokenLinks'));
-        //do_action('broken-links-detector-external');
+
+        if (isset($_GET['broken-links-detector']) && $_GET['broken-links-detector'] == 'scan') {
+            do_action('broken-links-detector-external');
+        }
     }
 
     public function schedule()
@@ -69,6 +72,7 @@ class ExternalDetector
 
         foreach ($data as $item) {
             $exists = $wpdb->get_row("SELECT id FROM $tableName WHERE post_id = {$item['post_id']} AND url = '{$item['url']}'");
+
             if ($exists) {
                 continue;
             }
@@ -82,6 +86,11 @@ class ExternalDetector
         return true;
     }
 
+    /**
+     * Check if a link gives 404 header
+     * @param  string  $url Url to check
+     * @return boolean      "True" if 404 response header else "false"
+     */
     public function isBroken($url)
     {
         if (filter_var($url, FILTER_VALIDATE_URL) === false) {

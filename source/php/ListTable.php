@@ -10,7 +10,7 @@ class ListTable extends \WP_List_Table
         $hidden = $this->get_hidden_columns();
         $sortable = $this->get_sortable_columns();
 
-        $data = $this->getBrokenLinks();
+        $data = self::getBrokenLinks();
 
         $perPage = 30;
         $currentPage = $this->get_pagenum();
@@ -25,7 +25,7 @@ class ListTable extends \WP_List_Table
         $this->items = $data;
     }
 
-    public function getBrokenLinks()
+    public static function getBrokenLinks($postId = false)
     {
         global $wpdb;
         $tableName = \BrokenLinkDetector\App::$dbTable;
@@ -34,10 +34,35 @@ class ListTable extends \WP_List_Table
                     {$wpdb->posts}.*,
                     {$wpdb->posts}.ID AS post_id
                 FROM $tableName links
-                LEFT JOIN $wpdb->posts ON {$wpdb->posts}.ID = links.post_id
-                ORDER BY {$wpdb->posts}.post_title";
+                LEFT JOIN $wpdb->posts ON {$wpdb->posts}.ID = links.post_id";
+
+        if (is_numeric($postId)) {
+            $sql .= " WHERE {$wpdb->posts}.ID = $postId";
+        }
+
+        $sql .= " ORDER BY {$wpdb->posts}.post_title";
 
         $result = $wpdb->get_results($sql);
+
+        return $result;
+    }
+
+    public static function getBrokenLinksCount($postId = false)
+    {
+        global $wpdb;
+        $tableName = \BrokenLinkDetector\App::$dbTable;
+        $sql = "SELECT
+                    COUNT(*) AS length
+                FROM $tableName links
+                LEFT JOIN $wpdb->posts ON {$wpdb->posts}.ID = links.post_id";
+
+        if (is_numeric($postId)) {
+            $sql .= " WHERE {$wpdb->posts}.ID = $postId";
+        }
+
+        $sql .= " ORDER BY {$wpdb->posts}.post_title";
+
+        $result = $wpdb->get_var($sql);
 
         return $result;
     }
@@ -45,7 +70,7 @@ class ListTable extends \WP_List_Table
     public function get_columns()
     {
         return array(
-            'post' => __('Post'),
+            'post' => __('Post', 'broken-link-detector'),
             'url' => 'Url'
         );
     }
@@ -68,6 +93,9 @@ class ListTable extends \WP_List_Table
         switch ($column_name) {
             case 'post':
                 return '<a href="' . get_edit_post_link($item->post_id) . '"><strong>' . $item->post_title . '</strong></a>';
+
+            case 'url':
+                return '<a target="_blank" href="' . $item->url . '">' . $item->url . '</a>';
 
             default:
                 return $item->$column_name;
