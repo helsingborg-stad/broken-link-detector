@@ -18,9 +18,48 @@ class App
 
         add_filter('wp_insert_post_data', array($this, 'checkSavedPost'), 10, 2);
 
+        add_action('wp', array($this, 'postTypeColumns'));
+
         new \BrokenLinkDetector\ExternalDetector();
     }
 
+    /**
+     * Add broken links column to post type post list table
+     * @return void
+     */
+    public function postTypeColumns()
+    {
+        $postTypes = get_post_types();
+
+        foreach ($postTypes as $postType) {
+            add_filter('manage_' . $postType . '_posts_columns', function ($columns) {
+                broken_link_detector_array_splice_assoc($columns, -1, 0, array(
+                    'broken-links' => __('Broken links', 'broken-links-detector')
+                ));
+
+                return $columns;
+            }, 50);
+
+            add_filter('manage_edit-' . $postType . '_sortable_columns', function ($columns) {
+                $columns['broken-links'] = 'broken-links';
+                return $columns;
+            }, 50);
+
+            add_action('manage_' . $postType . '_posts_custom_column', function ($column, $postId) {
+                $links = \BrokenLinkDetector\ListTable::getBrokenLinks($postId);
+
+                if (count($links) > 0) {
+                    echo '<span style="display: inline-block; padding: 1px 5px; background-color: #ff0000; color: #fff;">' . count($links) . '</span>';
+                } else {
+                    echo '<span aria-hidden="true">—</span>';
+                }
+            }, 20, 2);
+        }
+    }
+
+    /**
+     * Adds the list table page of broken links
+     */
     public function addListTablePage()
     {
         add_menu_page(
