@@ -32,7 +32,13 @@ class ExternalDetector
         $foundUrls = array();
 
         global $wpdb;
-        $posts = $wpdb->get_results("SELECT ID, post_content FROM $wpdb->posts WHERE post_content RLIKE ('href=*')");
+        $posts = $wpdb->get_results("
+            SELECT ID, post_content
+            FROM $wpdb->posts
+            WHERE
+                post_content RLIKE ('href=*')
+                AND post_status IN ('publish', 'private', 'password')
+        ");
 
         foreach ($posts as $post) {
             preg_match_all('/<a[^>]+href=([\'"])(http|https)(.+?)\1[^>]*>/i', $post->post_content, $m);
