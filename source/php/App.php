@@ -91,6 +91,10 @@ class App
             }, 50);
 
             add_action('manage_' . $postType . '_posts_custom_column', function ($column, $postId) {
+                if ($column !== 'broken-links') {
+                    return;
+                }
+
                 $links = \BrokenLinkDetector\ListTable::getBrokenLinksCount($postId);
 
                 if ($links > 0) {
