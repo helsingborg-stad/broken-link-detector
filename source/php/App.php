@@ -11,6 +11,8 @@ class App
         global $wpdb;
         self::$dbTable = $wpdb->prefix . self::$dbTable;
 
+        add_action('admin_init', array($this, 'checkInstall'));
+
         add_action('admin_menu', array($this, 'addListTablePage'));
 
         add_action('admin_enqueue_scripts', array($this, 'enqueueStyles'));
@@ -26,6 +28,15 @@ class App
 
         new \BrokenLinkDetector\ExternalDetector();
         new \BrokenLinkDetector\Editor();
+    }
+
+    public function checkInstall()
+    {
+        if (get_option('broken-links-detector-db-version')) {
+            return;
+        }
+
+        $this->install();
     }
 
     public function rescanPost()
