@@ -5,10 +5,14 @@ namespace BrokenLinkDetector;
 class App
 {
     public static $dbTable = 'broken_links_detector';
+    public static $installChecked = false;
+    public static $wpdb = null;
 
     public function __construct()
     {
         global $wpdb;
+        self::$wpdb = $wpdb;
+
         self::$dbTable = $wpdb->prefix . self::$dbTable;
 
         add_action('admin_menu', array($this, 'addListTablePage'));
@@ -28,15 +32,19 @@ class App
         new \BrokenLinkDetector\Editor();
     }
 
-    public function checkInstall()
+    public static function checkInstall()
     {
-        $tableName = self::$dbTable;
-
-        if (!empty(get_site_option('broken-links-detector-db-version')) && $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName) {
+        if (self::$installChecked) {
             return;
         }
 
-        $this->install();
+        $tableName = self::$dbTable;
+
+        if (!empty(get_option('broken-links-detector-db-version')) && self::$wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName) {
+            return;
+        }
+
+        self::install();
     }
 
     public function rescanPost()
@@ -128,7 +136,7 @@ class App
             'edit_posts',
             'broken-links-detector',
             function () {
-                $brokenLinkDetectorApp->checkInstall();
+                \BrokenLinkDetector\App::checkInstall();
 
                 $listTable = new \BrokenLinkDetector\ListTable();
 
@@ -153,14 +161,12 @@ class App
      * Setsup the database table on plugin activation (hooked in App.php)
      * @return void
      */
-    public function install()
+    public static function install()
     {
-        global $wpdb;
-
-        $charsetCollation = $wpdb->get_charset_collate();
+        $charsetCollation = self::$wpdb->get_charset_collate();
         $tableName = self::$dbTable;
 
-        if (!empty(get_site_option('broken-links-detector-db-version')) && $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName) {
+        if (!empty(get_site_option('broken-links-detector-db-version')) && self::$wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName) {
             return;
         }
 
@@ -183,12 +189,10 @@ class App
      */
     public function uninstall()
     {
-        global $wpdb;
-
         $tableName = self::$dbTable;
         $sql = 'DROP TABLE ' . $tableName;
 
-        $wpdb->query($sql);
+        self::$wpdb->query($sql);
 
         delete_option('broken-links-detector-db-version');
     }

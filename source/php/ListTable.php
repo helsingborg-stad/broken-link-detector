@@ -31,8 +31,6 @@ class ListTable extends \WP_List_Table
             $postId = isset($_POST['post_id']) ? $_POST['post_id'] : false;
         }
 
-        $brokenLinkDetectorApp->checkInstall();
-
         global $wpdb;
         $tableName = \BrokenLinkDetector\App::$dbTable;
 

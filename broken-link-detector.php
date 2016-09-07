@@ -37,5 +37,5 @@ $loader->register();
 // Start application
 $brokenLinkDetectorApp = new BrokenLinkDetector\App();
 
-register_activation_hook(__FILE__, array($brokenLinkDetectorApp, 'install'));
-register_deactivation_hook(__FILE__, array($brokenLinkDetectorApp, 'uninstall'));
+register_activation_hook(__FILE__, '\BrokenLinkDetector\App::install');
+register_deactivation_hook(__FILE__, '\BrokenLinkDetector\App::uninstall');

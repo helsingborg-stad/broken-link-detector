@@ -38,7 +38,6 @@ class ExternalDetector
      */
     public function lookForBrokenLinks($postId = null)
     {
-        $brokenLinkDetectorApp->checkInstall();
         $foundUrls = array();
 
         global $wpdb;
