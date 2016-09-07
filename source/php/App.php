@@ -11,8 +11,6 @@ class App
         global $wpdb;
         self::$dbTable = $wpdb->prefix . self::$dbTable;
 
-        add_action('admin_init', array($this, 'checkInstall'));
-
         add_action('admin_menu', array($this, 'addListTablePage'));
 
         add_action('admin_enqueue_scripts', array($this, 'enqueueStyles'));
@@ -130,6 +128,8 @@ class App
             'edit_posts',
             'broken-links-detector',
             function () {
+                $brokenLinkDetectorApp->checkInstall();
+
                 $listTable = new \BrokenLinkDetector\ListTable();
 
                 $offset = get_option('gmt_offset');
