@@ -32,7 +32,9 @@ class App
 
     public function checkInstall()
     {
-        if (get_option('broken-links-detector-db-version')) {
+        $tableName = self::$dbTable;
+
+        if (!empty(get_site_option('broken-links-detector-db-version')) && $wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName) {
             return;
         }
 
