@@ -24,6 +24,7 @@ class Editor
             return;
         }
 
+        \BrokenLinkDetector\App::checkInstall();
         $urls = \BrokenLinkDetector\ListTable::getBrokenLinks($post->ID);
 
         echo '<script>
