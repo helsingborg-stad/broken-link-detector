@@ -12,7 +12,11 @@ class Editor
 
     public function registerMcePlugin()
     {
-        $plugins['brokenlinksdetector'] = BROKENLINKDETECTOR_URL . '/dist/js/mce-broken-link-detector.min.js';
+        global $post;
+        if (isset($post) || !empty($post->ID)) {
+            $plugins['brokenlinksdetector'] = BROKENLINKDETECTOR_URL . '/dist/js/mce-broken-link-detector.min.js';
+        }
+
         return $plugins;
     }
 
