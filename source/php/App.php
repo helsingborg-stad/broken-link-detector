@@ -187,7 +187,7 @@ class App
      * Drops the database table on plugin deactivation (hooked in App.php)
      * @return void
      */
-    public function uninstall()
+    public static function uninstall()
     {
         $tableName = self::$dbTable;
         $sql = 'DROP TABLE ' . $tableName;
