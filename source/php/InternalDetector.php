@@ -40,7 +40,9 @@ class InternalDetector
         $this->permalinkAfter = get_permalink($postId);
         remove_action('save_post', array($this, 'getPermalinkAfter'));
 
-        $this->detectChangedPermalink();
+        if ($this->permalinkBefore && !empty($this->permalinkBefore)) {
+            $this->detectChangedPermalink();
+        }
     }
 
     public function detectChangedPermalink()
