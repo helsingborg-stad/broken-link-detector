@@ -6,14 +6,14 @@ class InternalDetector
 {
     public $permalinkBefore;
     public $permalinkAfter;
+    public $trashed = false;
 
     public $permalinksUpdated = 0;
 
     public function __construct($data, $postarr)
     {
-        $this->getPermalinkBefore($postarr['ID']);
-
-        add_action('save_post', array($this, 'getPermalinkAfter'));
+        $this->getPermalinkBefore($postarr['ID'], $postarr);
+        add_action('save_post', array($this, 'getPermalinkAfter'), 10, 2);
     }
 
     /**
@@ -21,7 +21,7 @@ class InternalDetector
      * @param  integer $postId Post id
      * @return void
      */
-    public function getPermalinkBefore($postId)
+    public function getPermalinkBefore($postId, $postarr)
     {
         if (wp_is_post_revision($postId)) {
             return;
@@ -35,21 +35,34 @@ class InternalDetector
      * @param  integer $postId Post id
      * @return void
      */
-    public function getPermalinkAfter($postId)
+    public function getPermalinkAfter($postId, $post)
     {
         $this->permalinkAfter = get_permalink($postId);
-        remove_action('save_post', array($this, 'getPermalinkAfter'));
+        remove_action('save_post', array($this, 'getPermalinkAfter'), 10, 2);
+
+        if ($post->post_status === 'trash') {
+            $this->trashed = true;
+        }
 
         if ($this->permalinkBefore && !empty($this->permalinkBefore)) {
             $this->detectChangedPermalink();
         }
     }
 
+    /**
+     * Detect and repair
+     * @return void
+     */
     public function detectChangedPermalink()
     {
         // if permalink not changed, return, do nothing more
-        if ($this->permalinkBefore === $this->permalinkAfter) {
+        if ($this->permalinkBefore === $this->permalinkAfter && !$this->trashed) {
             return false;
+        }
+
+        if ($this->trashed) {
+            App::$externalDetector->lookForBrokenLinks('internal', str_replace('__trashed', '', $this->permalinkBefore));
+            return true;
         }
 
         // Replace occurances of the old permalink with the new permalink

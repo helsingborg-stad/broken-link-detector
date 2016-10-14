@@ -36,17 +36,23 @@ class ExternalDetector
      * @param integer $post_id Optional post_id to update broken links for
      * @return void
      */
-    public function lookForBrokenLinks($postId = null)
+    public function lookForBrokenLinks($postId = null, $url = null)
     {
         \BrokenLinkDetector\App::checkInstall();
         $foundUrls = array();
+
+        if ($url) {
+            $url = "REGEXP ('.*(href=\"{$url}\").*')";
+        } else {
+            $url = "RLIKE ('href=*')";
+        }
 
         global $wpdb;
         $sql = "
             SELECT ID, post_content
             FROM $wpdb->posts
             WHERE
-                post_content RLIKE ('href=*')
+                post_content {$url}
                 AND post_status IN ('publish', 'private', 'password')
         ";
 
@@ -63,7 +69,7 @@ class ExternalDetector
                 foreach ($m[3] as $key => $url) {
                     $url = $m[2][$key] . $url;
 
-                    if (!$this->isBroken($url)) {
+                    if ($postId !== 'internal' && !$this->isBroken($url)) {
                         continue;
                     }
 
@@ -92,7 +98,7 @@ class ExternalDetector
 
         if (is_numeric($postId)) {
             $wpdb->delete($tableName, array('post_id' => $postId), array('%d'));
-        } else {
+        } elseif (is_null($postId)) {
             $wpdb->query("TRUNCATE $tableName");
         }
 

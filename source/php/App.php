@@ -8,6 +8,8 @@ class App
     public static $installChecked = false;
     public static $wpdb = null;
 
+    public static $externalDetector = false;
+
     public function __construct()
     {
         global $wpdb;
@@ -28,7 +30,7 @@ class App
 
         $this->brokenLinksColumnSorting();
 
-        new \BrokenLinkDetector\ExternalDetector();
+        self::$externalDetector = new \BrokenLinkDetector\ExternalDetector();
         new \BrokenLinkDetector\Editor();
     }
 
@@ -205,6 +207,8 @@ class App
      */
     public function checkSavedPost($data, $postarr)
     {
+        remove_action('wp_insert_post_data', array($this, 'checkSavedPost'), 10, 2);
+
         $detector = new \BrokenLinkDetector\InternalDetector($data, $postarr);
         return $data;
     }
