@@ -53,6 +53,7 @@ class ExternalDetector
             FROM $wpdb->posts
             WHERE
                 post_content {$url}
+                AND post_type NOT IN ('attachment', 'revision', 'acf', 'acf-field', 'acf-field-group')
                 AND post_status IN ('publish', 'private', 'password')
         ";
 
