@@ -12,8 +12,10 @@ class InternalDetector
 
     public function __construct($data, $postarr)
     {
-        $this->getPermalinkBefore($postarr['ID'], $postarr);
-        add_action('save_post', array($this, 'getPermalinkAfter'), 10, 2);
+        if (!in_array($postarr['post_type'], array('revision', 'attachment'))) {
+            $this->getPermalinkBefore($postarr['ID'], $postarr);
+            add_action('save_post', array($this, 'getPermalinkAfter'), 10, 2);
+        }
     }
 
     /**
