@@ -13,7 +13,7 @@ class InternalDetector
     public function __construct($data, $postarr)
     {
         if (!in_array($postarr['post_type'], array('revision', 'attachment'))) {
-            $this->getPermalinkBefore($postarr['ID'], $postarr);
+            $this->getPermalinkBefore($postarr['ID']);
             add_action('save_post', array($this, 'getPermalinkAfter'), 10, 2);
         }
     }
@@ -23,7 +23,7 @@ class InternalDetector
      * @param  integer $postId Post id
      * @return void
      */
-    public function getPermalinkBefore($postId, $postarr)
+    public function getPermalinkBefore($postId)
     {
         if (wp_is_post_revision($postId)) {
             return;
