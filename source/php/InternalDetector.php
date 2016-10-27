@@ -4,6 +4,8 @@ namespace BrokenLinkDetector;
 
 class InternalDetector
 {
+    public $postId;
+
     public $permalinkBefore;
     public $permalinkAfter;
     public $trashed = false;
@@ -13,7 +15,8 @@ class InternalDetector
     public function __construct($data, $postarr)
     {
         if (!in_array($postarr['post_type'], array('revision', 'attachment'))) {
-            $this->getPermalinkBefore($postarr['ID']);
+            $this->postId = (int) $postarr['ID'];
+            $this->getPermalinkBefore($this->postId);
             add_action('save_post', array($this, 'getPermalinkAfter'), 10, 2);
         }
     }
@@ -39,12 +42,13 @@ class InternalDetector
      */
     public function getPermalinkAfter($postId, $post)
     {
-
         if (wp_is_post_revision($postId)) {
             return;
         }
 
-        $this->permalinkAfter = get_permalink($postId);
+        remove_action('save_post', array($this, 'getPermalinkAfter'), 10, 2);
+
+        $this->permalinkAfter = get_permalink($this->postId);
 
         if ($post->post_status === 'trash') {
             $this->trashed = true;
