@@ -39,8 +39,12 @@ class InternalDetector
      */
     public function getPermalinkAfter($postId, $post)
     {
+
+        if (wp_is_post_revision($postId)) {
+            return;
+        }
+
         $this->permalinkAfter = get_permalink($postId);
-        remove_action('save_post', array($this, 'getPermalinkAfter'), 10, 2);
 
         if ($post->post_status === 'trash') {
             $this->trashed = true;
@@ -69,16 +73,18 @@ class InternalDetector
 
         // Replace occurances of the old permalink with the new permalink
         global $wpdb;
-        $query = $wpdb->prepare(
-            "UPDATE $wpdb->posts
-                SET post_content = REPLACE(post_content, %s, %s)
-                WHERE post_content LIKE %s",
-            $this->permalinkBefore,
-            $this->permalinkAfter,
-            '%' . $wpdb->esc_like($this->permalinkBefore) . '%'
+
+        $wpdb->query(
+            $wpdb->prepare(
+                "UPDATE $wpdb->posts
+                    SET post_content = REPLACE(post_content, %s, %s)
+                    WHERE post_content LIKE %s",
+                $this->permalinkBefore,
+                $this->permalinkAfter,
+                '%' . $wpdb->esc_like($this->permalinkBefore) . '%'
+            )
         );
 
-        $wpdb->query($query);
         $this->permalinksUpdated += $wpdb->rows_affected;
 
         add_notice(sprintf('%d links to this post was updated to use the new permalink.', $this->permalinksUpdated));
