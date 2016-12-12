@@ -133,7 +133,7 @@ class App
     public function addListTablePage()
     {
         add_submenu_page(
-            'tools.php',
+            'options-general.php',
             'Broken links',
             'Broken links',
             'edit_posts',
