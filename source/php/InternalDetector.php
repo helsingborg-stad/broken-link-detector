@@ -91,7 +91,9 @@ class InternalDetector
 
         $this->permalinksUpdated += $wpdb->rows_affected;
 
-        add_notice(sprintf('%d links to this post was updated to use the new permalink.', $this->permalinksUpdated));
+        if ($this->permalinksUpdated > 0) {
+            add_notice(sprintf('%d links to this post was updated to use the new permalink.', $this->permalinksUpdated));
+        }
 
         return true;
     }
