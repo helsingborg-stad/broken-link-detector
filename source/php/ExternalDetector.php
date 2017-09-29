@@ -126,6 +126,15 @@ class ExternalDetector
      */
     public function isBroken($url)
     {
+        // Check if permalink is internal and post status is private
+        $postId = url_to_postid($url);
+        if ($postId > 0) {
+            $status = get_post_status($postId);
+            if ($status == 'private') {
+                return false;
+            }
+        }
+
         if (filter_var($url, FILTER_VALIDATE_URL) === false) {
             return true;
         }
@@ -134,7 +143,6 @@ class ExternalDetector
 
         // Check if no headers is missing or equals 404
         if (!$headers[0] || preg_match('/http\/\d+\.\d+ 404 not found/i', $headers[0], $matches)) {
-            var_dump("404 or missing header");
             return true;
         }
 
