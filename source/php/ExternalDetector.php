@@ -132,7 +132,9 @@ class ExternalDetector
 
         $headers = @get_headers($url);
 
-        if (strtolower($headers[0]) == 'http/1.1 404 not found') {
+        // Check if no headers is missing or equals 404
+        if (!$headers[0] || preg_match('/http\/\d+\.\d+ 404 not found/i', $headers[0], $matches)) {
+            var_dump("404 or missing header");
             return true;
         }
 
