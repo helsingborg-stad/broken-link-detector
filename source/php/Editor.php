@@ -10,7 +10,7 @@ class Editor
         add_action('admin_footer', array($this, 'getBrokenLinks'));
     }
 
-    public function registerMcePlugin()
+    public function registerMcePlugin($plugins)
     {
         global $post;
         if (is_admin() && isset($post) && !empty($post->ID)) {
@@ -24,7 +24,7 @@ class Editor
     {
         global $post;
 
-        if (!isset($post) || empty($post->ID)) {
+        if (!is_admin() ||!isset($post) ||empty($post->ID)) {
             return;
         }
 
