@@ -13,7 +13,7 @@ class Editor
     public function registerMcePlugin()
     {
         global $post;
-        if (isset($post) || !empty($post->ID)) {
+        if (is_admin() && isset($post) && !empty($post->ID)) {
             $plugins['brokenlinksdetector'] = BROKENLINKDETECTOR_URL . '/dist/js/mce-broken-link-detector.min.js';
         }
 
