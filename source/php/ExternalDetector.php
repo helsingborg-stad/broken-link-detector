@@ -14,7 +14,7 @@ class ExternalDetector
                 return;
             }
 
-            wp_schedule_single_event(time() + 60, 'broken-links-detector-external', array($postId));
+            $this->lookForBrokenLinks($postId);
         });
 
         if (isset($_GET['broken-links-detector']) && $_GET['broken-links-detector'] == 'scan') {
