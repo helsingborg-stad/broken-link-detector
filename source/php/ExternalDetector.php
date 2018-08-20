@@ -144,10 +144,17 @@ class ExternalDetector
      */
     public function isBroken($url)
     {
-        // Check if permalink is internal and post status is private
+        // Check if permalink is internal, only works with 'public' posts
         $postId = url_to_postid($url);
         if ($postId > 0) {
-            if (get_post_status($postId) == 'private') {
+            return false;
+        }
+
+        // Test with get_page_by_path() to get other post statuses
+        $parsedUrl = parse_url($url);
+        if (!empty($parsedUrl['path'])) {
+            $postTypes = get_post_types(array('public' => true));
+            if (!empty(get_page_by_path($parsedUrl['path'], ARRAY_A, $postTypes))) {
                 return false;
             }
         }
