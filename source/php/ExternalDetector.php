@@ -139,24 +139,14 @@ class ExternalDetector
 
     /**
      * Check if a link gives 404 header
-     * @param  string  $url Url to check
+     * @param  string $url Url to check
      * @return boolean      "True" if 404 response header else "false"
      */
     public function isBroken($url)
     {
-        // Check if permalink is internal, only works with 'public' posts
-        $postId = url_to_postid($url);
-        if ($postId > 0) {
+        // Test if URL is internal and valid
+        if ($this->isInternal($url)) {
             return false;
-        }
-
-        // Test with get_page_by_path() to get other post statuses
-        $parsedUrl = parse_url($url);
-        if (!empty($parsedUrl['path'])) {
-            $postTypes = get_post_types(array('public' => true));
-            if (!empty(get_page_by_path($parsedUrl['path'], ARRAY_A, $postTypes))) {
-                return false;
-            }
         }
 
         if (filter_var($url, FILTER_VALIDATE_URL) === false) {
@@ -172,4 +162,33 @@ class ExternalDetector
 
         return false;
     }
+
+    /**
+     * Test if URL is internal and valid
+     * @param string $url Url to check
+     * @return bool
+     */
+    public function isInternal($url)
+    {
+        // Check if post exist by url (only works with 'public' posts)
+        $postId = url_to_postid($url);
+        if ($postId > 0) {
+            return true;
+        }
+
+        // Check if the URL is internal or external
+        $siteUrlComponents = parse_url(get_site_url());
+        $urlComponents = parse_url($url);
+        if (!empty($siteUrlComponents['host']) && !empty($urlComponents['host']) && strcasecmp($urlComponents['host'], $siteUrlComponents['host']) === 0) {
+            // Test with get_page_by_path() to get other post statuses
+            $postTypes = get_post_types(array('public' => true));
+            if (!empty($urlComponents['path']) && !empty(get_page_by_path($urlComponents['path'], ARRAY_A, $postTypes))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
 }
