@@ -149,13 +149,26 @@ class ExternalDetector
             return false;
         }
 
-        // Validate URL
-        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+        // Validate domain name
+        $urlParts = parse_url($url);
+        if (!empty($urlParts['host']) && !$this->isValidDomainName($urlParts['host'])) {
             return true;
         }
 
         // Finally test if domain is available
         return !$this->isDomainAvailable($url);
+    }
+
+    /**
+     * Test if domain name is valid
+     * @param string $domainName Url to check
+     * @return bool
+     */
+    public function isValidDomainName($domainName)
+    {
+        return (preg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $domainName)
+            && preg_match("/^.{1,253}$/", $domainName)
+            && preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $domainName));
     }
 
     /**
@@ -171,16 +184,11 @@ class ExternalDetector
         curl_setopt($curlInit, CURLOPT_HEADER, true);
         curl_setopt($curlInit, CURLOPT_NOBODY, true);
         curl_setopt($curlInit, CURLOPT_RETURNTRANSFER, true);
-
         // Get the response
         $response = curl_exec($curlInit);
         curl_close($curlInit);
 
-        if ($response) {
-            return true;
-        }
-
-        return false;
+        return $response ? true : false;
     }
 
     /**
