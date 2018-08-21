@@ -138,25 +138,45 @@ class ExternalDetector
     }
 
     /**
-     * Check if a link gives 404 header
+     * Test if domain is valid with different methods
      * @param  string $url Url to check
-     * @return boolean      "True" if 404 response header else "false"
+     * @return boolean
      */
     public function isBroken($url)
     {
-        // Test if URL is internal and valid
+        // Test if URL is internal and page exist
         if ($this->isInternal($url)) {
             return false;
         }
 
+        // Validate URL
         if (filter_var($url, FILTER_VALIDATE_URL) === false) {
             return true;
         }
 
-        $headers = @get_headers($url);
+        // Finally test if domain is available
+        return !$this->isDomainAvailable($url);
+    }
 
-        // Check if no headers is missing or equals 404
-        if (!$headers[0] || preg_match('/http\/\d+\.\d+ 404 not found/i', $headers[0], $matches)) {
+    /**
+     * Test if domain is available with curl
+     * @param string $url Url to check
+     * @return bool
+     */
+    public function isDomainAvailable($url)
+    {
+        // Init curl
+        $curlInit = curl_init($url);
+        curl_setopt($curlInit, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($curlInit, CURLOPT_HEADER, true);
+        curl_setopt($curlInit, CURLOPT_NOBODY, true);
+        curl_setopt($curlInit, CURLOPT_RETURNTRANSFER, true);
+
+        // Get the response
+        $response = curl_exec($curlInit);
+        curl_close($curlInit);
+
+        if ($response) {
             return true;
         }
 
@@ -164,7 +184,7 @@ class ExternalDetector
     }
 
     /**
-     * Test if URL is internal and valid
+     * Test if URL is internal and page exist
      * @param string $url Url to check
      * @return bool
      */
@@ -189,6 +209,4 @@ class ExternalDetector
 
         return false;
     }
-
-
 }
