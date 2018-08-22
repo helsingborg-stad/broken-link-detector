@@ -27,6 +27,7 @@ load_plugin_textdomain('broken-link-detector', false, plugin_basename(dirname(__
 require_once __DIR__ . '/source/php/Vendor/admin-notice-helper.php';
 require_once BROKENLINKDETECTOR_PATH . 'source/php/Vendor/Psr4ClassLoader.php';
 require_once BROKENLINKDETECTOR_PATH . 'Public.php';
+require_once BROKENLINKDETECTOR_PATH . 'vendor/autoload.php';
 
 // Instantiate and register the autoloader
 $loader = new BrokenLinkDetector\Vendor\Psr4ClassLoader();
