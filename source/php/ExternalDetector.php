@@ -2,6 +2,8 @@
 
 namespace BrokenLinkDetector;
 
+use TrueBV\Punycode;
+
 class ExternalDetector
 {
     public function __construct()
@@ -149,7 +151,8 @@ class ExternalDetector
         }
 
         // Convert domain name to IDNA ASCII form
-        $domainAscii = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+        $punycode = new Punycode();
+        $domainAscii = $punycode->encode($domain);
         $url = str_ireplace($domain, $domainAscii, $url);
 
         // Test if URL is internal and page exist
