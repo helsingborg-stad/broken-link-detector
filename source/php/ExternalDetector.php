@@ -144,18 +144,25 @@ class ExternalDetector
      */
     public function isBroken($url)
     {
+        if (!$domain = parse_url($url, PHP_URL_HOST)) {
+            return true;
+        }
+
+        // Convert domain name to IDNA ASCII form
+        $domainAscii = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+        $url = str_ireplace($domain, $domainAscii, $url);
+
         // Test if URL is internal and page exist
         if ($this->isInternal($url)) {
             return false;
         }
 
         // Validate domain name
-        $urlParts = parse_url($url);
-        if (!empty($urlParts['host']) && !$this->isValidDomainName($urlParts['host'])) {
+        if (!$this->isValidDomainName($domainAscii)) {
             return true;
         }
 
-        // Finally test if domain is available
+        // Test if domain is available
         return !$this->isDomainAvailable($url);
     }
 
@@ -179,14 +186,14 @@ class ExternalDetector
     public function isDomainAvailable($url)
     {
         // Init curl
-        $curlInit = curl_init($url);
-        curl_setopt($curlInit, CURLOPT_CONNECTTIMEOUT, 10);
-        curl_setopt($curlInit, CURLOPT_HEADER, true);
-        curl_setopt($curlInit, CURLOPT_NOBODY, true);
-        curl_setopt($curlInit, CURLOPT_RETURNTRANSFER, true);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_NOBODY, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // Get the response
-        $response = curl_exec($curlInit);
-        curl_close($curlInit);
+        $response = curl_exec($ch);
+        curl_close($ch);
 
         return $response ? true : false;
     }
