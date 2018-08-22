@@ -193,9 +193,10 @@ class ExternalDetector
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // Get the response
         $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        return $response ? true : false;
+        return ($response && ($httpCode >= 200 && $httpCode < 400)) ? true : false;
     }
 
     /**
