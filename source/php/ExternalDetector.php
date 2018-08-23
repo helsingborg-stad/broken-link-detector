@@ -190,7 +190,7 @@ class ExternalDetector
     {
         // Init curl
         $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_USERAGENT,'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
         curl_setopt($ch, CURLOPT_HEADER, 1);
         curl_setopt($ch, CURLOPT_HTTPGET, 1);
@@ -225,7 +225,7 @@ class ExternalDetector
         if (!empty($siteUrlComponents['host']) && !empty($urlComponents['host']) && strcasecmp($urlComponents['host'], $siteUrlComponents['host']) === 0) {
             // Test with get_page_by_path() to get other post statuses
             $postTypes = get_post_types(array('public' => true));
-            if (!empty($urlComponents['path']) && !empty(get_page_by_path($urlComponents['path'], ARRAY_A, $postTypes))) {
+            if (!empty($urlComponents['path']) && !empty(get_page_by_path(basename(untrailingslashit($urlComponents['path'])), ARRAY_A, $postTypes))) {
                 return true;
             }
         }
