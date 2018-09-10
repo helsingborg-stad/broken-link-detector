@@ -203,7 +203,7 @@ class ExternalDetector
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        return ($response && ($httpCode >= 200 && $httpCode < 400)) ? true : false;
+        return ($response && (($httpCode >= 200 && $httpCode < 400) || $httpCode == 401)) ? true : false;
     }
 
     /**
