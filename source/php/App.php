@@ -25,7 +25,7 @@ class App
         add_filter('wp_insert_post_data', array($this, 'checkSavedPost'), 10, 2);
 
         add_action('wp', array($this, 'postTypeColumns'));
-
+        add_action('before_delete_post', array($this, 'deleteBrokenLinks'));
         add_action('post_submitbox_misc_actions', array($this, 'rescanPost'), 100);
 
         $this->brokenLinksColumnSorting();
@@ -210,6 +210,17 @@ class App
 
         $detector = new \BrokenLinkDetector\InternalDetector($data, $postarr);
         return $data;
+    }
+
+    /**
+     * Remove broken links when deleting a page
+     * @param int $postId The post id that is being deleted
+     */
+    public function deleteBrokenLinks($postId)
+    {
+        global $wpdb;
+        $tableName = self::$dbTable;
+        $wpdb->delete($tableName, array('post_id' => $postId), array('%d'));
     }
 
     /**
