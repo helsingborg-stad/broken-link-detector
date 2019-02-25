@@ -191,25 +191,34 @@ class ExternalDetector
      * @param string $url Url to check
      * @return bool
      */
-    public function isDomainAvailable($url)
+    public function isDomainAvailable($url, $timeOut = 3)
     {
         // Init curl
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeOut);
         curl_setopt($ch, CURLOPT_HEADER, 1);
         curl_setopt($ch, CURLOPT_HTTPGET, 1);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-
+        
         // Get the response
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $response   = curl_exec($ch);
+        $httpCode   = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError  = curl_error($ch);
         curl_close($ch);
 
-        return ($response && (($httpCode >= 200 && $httpCode < 400) || $httpCode == 401)) ? true : false;
+        //Handle curl errors 
+        if($curlError != "") {
+            error_log("Broken links: Could not validate url " . $url . " due to a malfunction of curl (" . $curlError . ")"); 
+            return true; //Malfunction in curl, url cannot be validated. 
+        }
+
+        //Validate
+        return ($response && (($httpCode >= 200 && $httpCode <= 401))) ? true : false;
     }
 
     /**
