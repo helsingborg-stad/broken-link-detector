@@ -124,19 +124,21 @@ class ExternalDetector
             $wpdb->query("TRUNCATE $tableName");
         }
 
-        foreach ($data as $item) {
-            $exists = $wpdb->get_row("SELECT id FROM $tableName WHERE post_id = {$item['post_id']} AND url = '{$item['url']}'");
-
-            if ($exists) {
-                continue;
+        if(!empty($data) && is_array($data)) {
+            foreach ($data as $item) {
+                $exists = $wpdb->get_row("SELECT id FROM $tableName WHERE post_id = {$item['post_id']} AND url = '{$item['url']}'");
+                
+                if ($exists) {
+                    continue;
+                }
+                
+                $inserted[] = $wpdb->insert($tableName, array(
+                    'post_id' => $item['post_id'],
+                    'url' => $item['url']
+                ), array('%d', '%s'));
             }
-
-            $inserted[] = $wpdb->insert($tableName, array(
-                'post_id' => $item['post_id'],
-                'url' => $item['url']
-            ), array('%d', '%s'));
         }
-
+        
         return true;
     }
 
