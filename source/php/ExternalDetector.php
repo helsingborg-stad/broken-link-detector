@@ -8,6 +8,10 @@ class ExternalDetector
 {
     public function __construct()
     {
+
+
+        die(var_dump($this->isDomainAvailable("https://helsingborg.se/uppleva-och-gora/fritidsgardar-och-motesplatser/ide-a-drottninghog/", 1))); 
+
         add_action('wp', array($this, 'schedule'));
         add_action('broken-links-detector-external', array($this, 'lookForBrokenLinks'));
 
@@ -210,17 +214,27 @@ class ExternalDetector
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         
         // Get the response
-        $response   = curl_exec($ch);
-        $httpCode   = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curlError  = curl_error($ch);
+        $response    = curl_exec($ch);
+        $httpCode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError   = curl_error($ch);
+        $curlErrorNo = curl_errno($ch); 
         curl_close($ch);
 
-        //Handle curl errors 
-        if($curlError != "") {
-            error_log("Broken links: Could not validate url " . $url . " due to a malfunction of curl (" . $curlError . ")"); 
-            return true; //Malfunction in curl, url cannot be validated. 
-        }
-
+        //Curl response error
+        if(!empty($curlErrorNo)) {
+            if(in_array($curlErrorNo, array(CURLE_TOO_MANY_REDIRECTS))) {
+                if(defined("BROKEN_LINKS_LOG") && BROKEN_LINKS_LOG) {
+                    error_log("Broken links: Could not probe url " . $url . " due to a malfunction of curl [" . $curlErrorNo. " - " . $curlError . "]"); 
+                }
+                return true; //Do not log
+            } else {
+                if(defined("BROKEN_LINKS_LOG") && BROKEN_LINKS_LOG) {
+                    error_log("Broken links: Could not probe url " . $url . ", link is considerd broken [" . $curlErrorNo. " - " . $curlError . "]"); 
+                }
+                return false; // Do log
+            }
+        } 
+        
         //Validate
         return ($response && (($httpCode >= 200 && $httpCode <= 401))) ? true : false;
     }
