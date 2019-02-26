@@ -208,7 +208,7 @@ class ExternalDetector
      * @param string $url Url to check
      * @return bool
      */
-    public function isDomainAvailable($url, $timeOut = 3)
+    public function isDomainAvailable($url, $timeOut = 7)
     {
         // Init curl
         $ch = curl_init($url);
