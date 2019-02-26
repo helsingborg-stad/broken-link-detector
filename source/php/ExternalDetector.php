@@ -160,7 +160,14 @@ class ExternalDetector
         }
 
         // Convert domain name to IDNA ASCII form
-        if(count(explode('.', $domain)) == count(array_filter(explode('.', $domain))))  {
+        if(count(explode('.', $domain)) == count(array_filter(explode('.', $domain),
+            function($var) {
+                if(strlen($var) < 1) {
+                    return false; 
+                }
+                return true; 
+            })))  
+        {
             try {
                 $punycode = new Punycode();
                 $domainAscii = $punycode->encode($domain);
