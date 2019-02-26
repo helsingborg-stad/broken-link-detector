@@ -66,39 +66,41 @@ class ExternalDetector
 
         $posts = $wpdb->get_results($sql);
 
-        foreach ($posts as $post) {
-            preg_match_all('/<a[^>]+href=([\'"])(http|https)(.+?)\1[^>]*>/i', $post->post_content, $m);
+        if(is_array($posts) && !empty($posts)) {
+            foreach ($posts as $post) {
+                preg_match_all('/<a[^>]+href=([\'"])(http|https)(.+?)\1[^>]*>/i', $post->post_content, $m);
 
-            if (!isset($m[3]) || count($m[3]) > 0) {
-                foreach ($m[3] as $key => $url) {
-                    $url = $m[2][$key] . $url;
+                if (!isset($m[3]) || count($m[3]) > 0) {
+                    foreach ($m[3] as $key => $url) {
+                        $url = $m[2][$key] . $url;
 
-                    // Replace whitespaces in url
-                    if (preg_match('/\s/', $url)) {
-                        $newUrl = preg_replace('/ /', '%20', $url);
-                        $wpdb->query(
-                            $wpdb->prepare(
-                                "UPDATE $wpdb->posts
-                                    SET post_content = REPLACE(post_content, %s, %s)
-                                    WHERE post_content LIKE %s
-                                    AND ID = %d",
-                                $url,
-                                $newUrl,
-                                '%' . $wpdb->esc_like($url) . '%',
-                                $post->ID
-                            )
+                        // Replace whitespaces in url
+                        if (preg_match('/\s/', $url)) {
+                            $newUrl = preg_replace('/ /', '%20', $url);
+                            $wpdb->query(
+                                $wpdb->prepare(
+                                    "UPDATE $wpdb->posts
+                                        SET post_content = REPLACE(post_content, %s, %s)
+                                        WHERE post_content LIKE %s
+                                        AND ID = %d",
+                                    $url,
+                                    $newUrl,
+                                    '%' . $wpdb->esc_like($url) . '%',
+                                    $post->ID
+                                )
+                            );
+                            $url = $newUrl;
+                        }
+
+                        if ($postId !== 'internal' && !$this->isBroken($url)) {
+                            continue;
+                        }
+
+                        $foundUrls[] = array(
+                            'post_id' => $post->ID,
+                            'url' => $url
                         );
-                        $url = $newUrl;
                     }
-
-                    if ($postId !== 'internal' && !$this->isBroken($url)) {
-                        continue;
-                    }
-
-                    $foundUrls[] = array(
-                        'post_id' => $post->ID,
-                        'url' => $url
-                    );
                 }
             }
         }
