@@ -156,12 +156,15 @@ class ExternalDetector
         }
 
         // Convert domain name to IDNA ASCII form
-        try {
-            $punycode = new Punycode();
-            $domainAscii = $punycode->encode($domain);
-            $url = str_ireplace($domain, $domainAscii, $url);
-        } catch (Exception $e) {
-            return false;
+        if(count(explode('.', $domain)) == count(array_filter(explode('.', $domain))))  {
+            echo "PUNY"; 
+            try {
+                $punycode = new Punycode();
+                $domainAscii = $punycode->encode($domain);
+                $url = str_ireplace($domain, $domainAscii, $url);
+            } catch (Exception $e) {
+                return false;
+            }
         }
 
         // Test if URL is internal and page exist
@@ -170,7 +173,7 @@ class ExternalDetector
         }
 
         // Validate domain name
-        if (!$this->isValidDomainName($domainAscii)) {
+        if (!$this->isValidDomainName(isset($domainAscii) ? $domainAscii : $domain)) {
             return true;
         }
 
