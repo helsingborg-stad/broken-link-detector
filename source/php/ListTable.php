@@ -83,7 +83,8 @@ class ListTable extends \WP_List_Table
     {
         return array(
             'post' => __('Post', 'broken-link-detector'),
-            'url' => 'Url'
+            'url' => __('Web adress', 'broken-link-detector'),
+            'time' => __('Last probed', 'broken-link-detector')
         );
     }
 
@@ -96,7 +97,8 @@ class ListTable extends \WP_List_Table
     {
         return array(
             'post' => array('post', false),
-            'url' => array('url', false)
+            'url' => array('url', false),
+            'time' => array('url', false),
         );
     }
 

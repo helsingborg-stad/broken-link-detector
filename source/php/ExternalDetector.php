@@ -8,10 +8,6 @@ class ExternalDetector
 {
     public function __construct()
     {
-
-
-        die(var_dump($this->isDomainAvailable("https://helsingborg.se/uppleva-och-gora/fritidsgardar-och-motesplatser/ide-a-drottninghog/", 1))); 
-
         add_action('wp', array($this, 'schedule'));
         add_action('broken-links-detector-external', array($this, 'lookForBrokenLinks'));
 
@@ -221,7 +217,7 @@ class ExternalDetector
         curl_close($ch);
 
         //Curl response error
-        if(!empty($curlErrorNo)) {
+        if($curlErrorNo) {
             if(in_array($curlErrorNo, array(CURLE_TOO_MANY_REDIRECTS))) {
                 if(defined("BROKEN_LINKS_LOG") && BROKEN_LINKS_LOG) {
                     error_log("Broken links: Could not probe url " . $url . " due to a malfunction of curl [" . $curlErrorNo. " - " . $curlError . "]"); 
@@ -233,10 +229,30 @@ class ExternalDetector
                 }
                 return false; // Do log
             }
-        } 
+        }
+
+        if(defined("BROKEN_LINKS_LOG") && BROKEN_LINKS_LOG) {
+            error_log("Broken links: Probe data " . $url . " [Curl error no: " . $curlErrorNo. "] [Curl error message:" . $curlError . "] [Http code: ".$httpCode."]"); 
+        }
         
         //Validate
-        return ($response && (($httpCode >= 200 && $httpCode <= 401))) ? true : false;
+        if($response) {
+            //Genereic codes 
+            if($httpCode >= 200 && $httpCode < 400) {
+                return true; 
+            }
+
+            //Specific out of scope codes 
+            //401: Unathorized
+            //406: Not acceptable
+            //413: Payload to large
+            //418: I'm a teapot
+            if(in_array($httpCode, array(401, 406, 413))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

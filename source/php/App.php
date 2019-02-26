@@ -175,6 +175,7 @@ class App
             id bigint(20) NOT NULL AUTO_INCREMENT,
             post_id bigint(20) DEFAULT NULL,
             url varchar(255) DEFAULT '' NOT NULL,
+            time timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
             UNIQUE KEY id (id)
         ) $charsetCollation;";
 
