@@ -155,6 +155,10 @@ class ExternalDetector
             return true;
         }
 
+        if(in_array($domain, (array) apply_filters('brokenLinks/External/ExceptedDomains', array()))) {
+            return false;
+        }
+
         // Convert domain name to IDNA ASCII form
         if(count(explode('.', $domain)) == count(array_filter(explode('.', $domain))))  {
             echo "PUNY"; 
