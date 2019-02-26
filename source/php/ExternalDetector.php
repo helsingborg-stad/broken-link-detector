@@ -161,7 +161,6 @@ class ExternalDetector
 
         // Convert domain name to IDNA ASCII form
         if(count(explode('.', $domain)) == count(array_filter(explode('.', $domain))))  {
-            echo "PUNY"; 
             try {
                 $punycode = new Punycode();
                 $domainAscii = $punycode->encode($domain);
