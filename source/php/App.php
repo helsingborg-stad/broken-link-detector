@@ -42,11 +42,29 @@ class App
 
         $tableName = self::$dbTable;
 
-        if (!empty(get_option('broken-links-detector-db-version')) && self::$wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName) {
-            return;
+        //Update to 1.0.1
+        if(get_site_option('broken-links-detector-db-version') == "1.0.0") {
+
+            $charsetCollation = self::$wpdb->get_charset_collate();
+            $tableName = self::$dbTable;
+
+            $sql = "ALTER TABLE $tableName
+                    ADD time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
+    
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+
+            update_option('broken-links-detector-db-version', '1.0.1');
         }
 
-        self::install();
+        if(get_site_option('broken-links-detector-db-version')) {
+            return true; 
+        }
+
+        //Install
+        if(!self::$wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName) {
+            self::install();
+        }
     }
 
     public function rescanPost()
@@ -182,7 +200,7 @@ class App
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
 
-        update_option('broken-links-detector-db-version', '1.0.0');
+        update_option('broken-links-detector-db-version', '1.0.1');
     }
 
     /**
