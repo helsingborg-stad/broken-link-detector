@@ -134,6 +134,17 @@ class ExternalDetector
                     }
                 }
             }
+            $mpost = get_post($mid);
+            preg_match_all('/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i', $mpost->post_content, $matches);
+            foreach($matches[0] as $url) {
+                if (!$this->isBroken($url)) {
+                    continue;
+                }
+                $foundUrls[] = array(
+                    'post_id' => $postId,
+                    'url' => $url
+                );
+            }
         }
         /* END MODULE SUPPORT */
 
