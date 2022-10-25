@@ -106,44 +106,46 @@ class ExternalDetector
         }
         
         /* START MODULE SUPPORT */
-        $modules = array();
-        $sql = "select meta_value from $wpdb->postmeta where meta_key='modularity-modules' and post_id = $postId";
-        $modularity = $wpdb->get_results($sql);
-        foreach($modularity as $module) {
+        if (is_numeric($postId)) {
+            $modules = array();
+            $sql = "select meta_value from $wpdb->postmeta where meta_key='modularity-modules' and post_id = $postId";
+            $modularity = $wpdb->get_results($sql);
+            foreach($modularity as $module) {
                 $data = unserialize($module->meta_value);
                 $keys = array_keys($data);
                 foreach($keys as $k) {
-                        $modules[] = array_column($data[$k], 'postid');
-                }
-        }
-        $modules = array_merge(...array_values($modules));
-        foreach($modules as $mid) {
-            $meta = get_post_meta($mid, $key = '', $single = false );
-            if(isset($meta['data']) && $meta['data'][0] > 0) {
-                for($i = 0; $i < $meta['data'][0]; $i++) {
-                    $metakey = "data_".$i."_post_content";
-                    preg_match_all('/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i', $meta[$metakey][0], $matches);
-                    foreach($matches[0] as $url) {
-                        if (!$this->isBroken($url)) {
-                            continue;
-                        }
-                        $foundUrls[] = array(
-                            'post_id' => $postId,
-                            'url' => $url
-                        );
-                    }
+                    $modules[] = array_column($data[$k], 'postid');
                 }
             }
-            $mpost = get_post($mid);
-            preg_match_all('/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i', $mpost->post_content, $matches);
-            foreach($matches[0] as $url) {
-                if (!$this->isBroken($url)) {
-                    continue;
+            $modules = array_merge(...array_values($modules));
+            foreach($modules as $mid) {
+                $meta = get_post_meta($mid, $key = '', $single = false );
+                if(isset($meta['data']) && $meta['data'][0] > 0) {
+                    for($i = 0; $i < $meta['data'][0]; $i++) {
+                        $metakey = "data_".$i."_post_content";
+                        preg_match_all('/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i', $meta[$metakey][0], $matches);
+                        foreach($matches[0] as $url) {
+                            if (!$this->isBroken($url)) {
+                                continue;
+                            }
+                            $foundUrls[] = array(
+                                'post_id' => $postId,
+                                'url' => $url
+                            );
+                        }
+                    }
                 }
-                $foundUrls[] = array(
-                    'post_id' => $postId,
-                    'url' => $url
-                );
+                $mpost = get_post($mid);
+                preg_match_all('/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i', $mpost->post_content, $matches);
+                foreach($matches[0] as $url) {
+                    if (!$this->isBroken($url)) {
+                        continue;
+                    }
+                    $foundUrls[] = array(
+                        'post_id' => $postId,
+                        'url' => $url
+                    );
+                }
             }
         }
         /* END MODULE SUPPORT */
