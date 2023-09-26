@@ -11,5 +11,6 @@
     ],
     "require": {
         "symfony/polyfill-intl-idn": "~1.2"
-    }
+    },
+    "version": "2.0.0"
 }
