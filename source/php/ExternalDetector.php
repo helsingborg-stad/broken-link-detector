@@ -2,8 +2,6 @@
 
 namespace BrokenLinkDetector;
 
-use TrueBV\Punycode;
-
 class ExternalDetector
 {
     public function __construct()
@@ -214,8 +212,7 @@ class ExternalDetector
             })))  
         {
             try {
-                $punycode = new Punycode();
-                $domainAscii = $punycode->encode($domain);
+                $domainAscii = idn_to_ascii($domain);
                 $url = str_ireplace($domain, $domainAscii, $url);
             } catch (Exception $e) {
                 return false;
