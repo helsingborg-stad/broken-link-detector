@@ -10,6 +10,6 @@
         }
     ],
     "require": {
-        "true/punycode": "~2.0"
+        "symfony/polyfill-intl-idn": "~1.2"
     }
 }
