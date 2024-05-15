@@ -1,6 +1,6 @@
 {
     "name": "broken-link-detector",
-    "version": "3.0.3",
+    "version": "3.0.4",
     "description": "Detects and fixes (if possible) broken links in post_content",
     "main": "",
     "scripts": {

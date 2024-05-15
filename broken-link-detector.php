@@ -4,7 +4,7 @@
  * Plugin Name:       Broken Link Detector
  * Plugin URI:        (#plugin_url#)
  * Description:       Detects and fixes (if possible) broken links in post_content
- * Version: 3.0.3
+ * Version: 3.0.4
  * Author:            Kristoffer Svanmark
  * Author URI:        (#plugin_author_url#)
  * License:           MIT
