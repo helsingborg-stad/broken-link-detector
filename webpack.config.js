@@ -8,6 +8,7 @@ const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const {getIfUtils, removeEmpty} = require('webpack-config-utils');
 const { ifProduction } = getIfUtils(process.env.NODE_ENV);
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     mode: ifProduction('production', 'development'),
@@ -17,7 +18,6 @@ module.exports = {
      */
     entry: {
         'css/broken-link-detector':              './source/sass/broken-link-detector.scss',
-        'js/broken-link-detector':               './source/js/broken-link-detector.js',
         'js/mce-broken-link-detector':           './source/mce/mce-broken-link-detector.js'
     },
     
@@ -25,7 +25,7 @@ module.exports = {
      * Output settings
      */
     output: {
-        filename: '[name].[contenthash].js',
+        filename: '[name].js',
         path: path.resolve(__dirname, 'dist'),
         publicPath: '',
     },
@@ -133,7 +133,13 @@ module.exports = {
                     },
                 ],
             },
-        }))
+        })),
+
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: './source/js/broken-link-detector.js', to: 'js/broken-link-detector.js' },
+            ],
+        }),
 
     ]).filter(Boolean),
     devtool: 'source-map',
