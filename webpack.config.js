@@ -37,11 +37,6 @@ module.exports = {
      */
     externals: {
     },
-    optimization: {
-        removeEmptyChunks: false,
-        usedExports: true,
-        minimize: false
-    },
     module: {
         rules: [
             /**
