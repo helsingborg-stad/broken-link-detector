@@ -10,6 +10,7 @@ const {getIfUtils, removeEmpty} = require('webpack-config-utils');
 const { ifProduction } = getIfUtils(process.env.NODE_ENV);
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+
 module.exports = {
     mode: ifProduction('production', 'development'),
 
@@ -18,6 +19,7 @@ module.exports = {
      */
     entry: {
         'css/broken-link-detector':              './source/sass/broken-link-detector.scss',
+        // 'js/broken-link-detector':               './source/js/broken-link-detector.js',
         'js/mce-broken-link-detector':           './source/mce/mce-broken-link-detector.js'
     },
     
@@ -25,14 +27,20 @@ module.exports = {
      * Output settings
      */
     output: {
-        filename: '[name].js',
+        filename: '[name].[contenthash].min.js',
         path: path.resolve(__dirname, 'dist'),
         publicPath: '',
+        clean: true,
     },
     /**
      * Define external dependencies here
      */
     externals: {
+    },
+    optimization: {
+        removeEmptyChunks: false,
+        usedExports: true,
+        minimize: false
     },
     module: {
         rules: [
@@ -70,7 +78,7 @@ module.exports = {
         /**
          * Fix CSS entry chunks generating js file
          */
-         new RemoveEmptyScripts(),
+        new RemoveEmptyScripts(),
 
         /**
          * Clean dist folder
@@ -81,6 +89,12 @@ module.exports = {
          */
         new MiniCssExtractPlugin({
             filename: '[name].[contenthash].css'
+        }),
+
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: 'source/js/broken-link-detector.js', to: 'js/broken-link-detector.min.js' },
+            ],
         }),
 
         /**
@@ -97,6 +111,11 @@ module.exports = {
             },
             // Custom mapping of manifest item goes here
             map: function (file) {
+                // Adjust the manifest keys for the JS files
+                if (file.name === 'js/mce-broken-link-detector.min.js') {
+                    file.name = 'js/mce-broken-link-detector.js'; // The key in the manifest
+                }
+
                 // Fix incorrect key for fonts
                 if (
                     file.isAsset &&
@@ -133,13 +152,7 @@ module.exports = {
                     },
                 ],
             },
-        })),
-
-        new CopyWebpackPlugin({
-            patterns: [
-                { from: './source/js/broken-link-detector.js', to: 'js/broken-link-detector.js' },
-            ],
-        }),
+        }))
 
     ]).filter(Boolean),
     devtool: 'source-map',
