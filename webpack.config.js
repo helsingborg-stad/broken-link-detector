@@ -112,8 +112,12 @@ module.exports = {
             // Custom mapping of manifest item goes here
             map: function (file) {
                 // Adjust the manifest keys for the JS files
-                if (file.name === 'js/mce-broken-link-detector.min.js') {
-                    file.name = 'js/mce-broken-link-detector.js'; // The key in the manifest
+                if (file.name === 'js/broken-link-detector.js') {
+                    file.name = 'js/broken-link-detector.min.js'; // The key in the manifest
+                } else if (file.name === 'js/mce-broken-link-detector.js') {
+                    file.name = 'js/mce-broken-link-detector.min.js'; // The key in the manifest
+                } else if (file.name === 'css/broken-link-detector.css') {
+                    file.name = 'css/broken-link-detector.min.css';
                 }
 
                 // Fix incorrect key for fonts

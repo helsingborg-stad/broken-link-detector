@@ -1,5 +1,5 @@
 {
-  "css/broken-link-detector.css": "css/broken-link-detector.fdba7e11c160efd580f5.css",
-  "js/mce-broken-link-detector.js": "js/mce-broken-link-detector.d0632cafc2a13231cf4b.min.js",
-  "js/broken-link-detector.js": "js/broken-link-detector.min.js"
+  "css/broken-link-detector.min.css": "css/broken-link-detector.fdba7e11c160efd580f5.css",
+  "js/mce-broken-link-detector.min.js": "js/mce-broken-link-detector.d0632cafc2a13231cf4b.min.js",
+  "js/broken-link-detector.min.js": "js/broken-link-detector.min.js"
 }
