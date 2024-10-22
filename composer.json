@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "symfony/polyfill-intl-idn": "~1.2"
+        "symfony/polyfill-intl-idn": "~1.2",
+        "helsingborg-stad/wpservice": "^2.0"
     },
     "version": "3.0.6"
 }
