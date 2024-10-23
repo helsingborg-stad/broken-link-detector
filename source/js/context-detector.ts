@@ -104,11 +104,9 @@ export function initializeClientTypeChecker(
     new ClientTypeChecker(url, timeout, internalClass, externalClass);
 }
 
-/* Example usage:
 initializeClientTypeChecker(
     'https://example.com/image.jpg',
     3000,
     'internal-client',
     'external-client'
 );
-*/

@@ -17,8 +17,8 @@ module.exports = {
      */
     entry: {
         'css/broken-link-detector': './source/sass/broken-link-detector.scss',
-        'js/broken-link-detector': './source/js/broken-link-detector.ts', // Changed from .js to .ts
-        'js/mce-broken-link-detector': './source/mce/mce-broken-link-detector.ts' // Changed from .js to .ts
+        'js/context-detector': './source/js/context-detector.ts',
+        'js/mce-broken-link-detector': './source/mce/mce-broken-link-detector.js'
     },
 
     /**
