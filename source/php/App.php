@@ -10,7 +10,7 @@ class App
 
     public static $externalDetector = false;
 
-    public function __construct()
+    public function __construct($wpService, $acfService)
     {
         global $wpdb;
         self::$wpdb = $wpdb;
@@ -32,7 +32,24 @@ class App
 
         self::$externalDetector = new \BrokenLinkDetector\ExternalDetector();
         new \BrokenLinkDetector\Editor();
+
+
+        /*
+        * Init settings page
+        */
+        new \BrokenLinkDetector\Settings\AdminSettingsPage(
+            $wpService,
+            $acfService
+        );
+
+
+
     }
+
+
+
+
+
 
     public static function checkInstall()
     {

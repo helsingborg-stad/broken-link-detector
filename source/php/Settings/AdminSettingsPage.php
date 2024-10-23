@@ -1,8 +1,8 @@
 <?php
 
-namespace EventManager\Settings;
+namespace BrokenLinkDetector\Settings;
 
-use EventManager\HooksRegistrar\Hookable;
+use BrokenLinkDetector\HooksRegistrar\Hookable;
 use AcfService\Contracts\AddOptionsPage;
 use WpService\Contracts\AddAction;
 use WpService\Contracts\__;
@@ -21,7 +21,7 @@ class AdminSettingsPage implements Hookable
     public function registerSettingsPage(): void
     {
         $this->acfService->addOptionsPage(array(
-            'menu_slug'       => $this->wpService->__('broken-links-settings', 'broken-link-detector'),
+            'menu_slug'       => 'broken-links-settings',
             'page_title'      => $this->wpService->__('Broken Links Settings', 'broken-link-detector'),
             'active'          => true,
             'menu_title'      => $this->wpService->__('Broken Links', 'broken-link-detector'),

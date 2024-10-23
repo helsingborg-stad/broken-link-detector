@@ -13,6 +13,9 @@
  * Domain Path:       /languages
  */
 
+use AcfService\Implementations\NativeAcfService;
+use WpService\Implementations\NativeWpService;
+
  // Protect agains direct file access
 if (! defined('WPINC')) {
     die;
@@ -25,18 +28,19 @@ define('BROKENLINKDETECTOR_TEMPLATE_PATH', BROKENLINKDETECTOR_PATH . 'templates/
 load_plugin_textdomain('broken-link-detector', false, plugin_basename(dirname(__FILE__)) . '/languages');
 
 require_once __DIR__ . '/source/php/Vendor/admin-notice-helper.php';
-require_once BROKENLINKDETECTOR_PATH . 'source/php/Vendor/Psr4ClassLoader.php';
-require_once BROKENLINKDETECTOR_PATH . 'Public.php';
-require_once BROKENLINKDETECTOR_PATH . 'vendor/autoload.php';
 
-// Instantiate and register the autoloader
-$loader = new BrokenLinkDetector\Vendor\Psr4ClassLoader();
-$loader->addPrefix('BrokenLinkDetector', BROKENLINKDETECTOR_PATH);
-$loader->addPrefix('BrokenLinkDetector', BROKENLINKDETECTOR_PATH . 'source/php/');
-$loader->register();
+/*
+ * Composer autoload
+ */
+if (file_exists(BROKENLINKDETECTOR_PATH . 'vendor/autoload.php')) {
+    require BROKENLINKDETECTOR_PATH . '/vendor/autoload.php';
+}
 
 // Start application
-$brokenLinkDetectorApp = new BrokenLinkDetector\App();
+$brokenLinkDetectorApp = new BrokenLinkDetector\App(
+    new NativeWpService(),
+    new NativeAcfService()
+);
 
 register_activation_hook(__FILE__, '\BrokenLinkDetector\App::install');
 register_deactivation_hook(__FILE__, '\BrokenLinkDetector\App::uninstall');
