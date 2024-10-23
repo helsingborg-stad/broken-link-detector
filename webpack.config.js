@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const RemoveEmptyScripts = require('webpack-remove-empty-scripts');
 const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
 const autoprefixer = require('autoprefixer');
-const {getIfUtils, removeEmpty} = require('webpack-config-utils');
+const { getIfUtils, removeEmpty } = require('webpack-config-utils');
 const { ifProduction } = getIfUtils(process.env.NODE_ENV);
 
 module.exports = {
@@ -16,11 +16,11 @@ module.exports = {
      * Add your entry files here
      */
     entry: {
-        'css/broken-link-detector':              './source/sass/broken-link-detector.scss',
-        'js/broken-link-detector':               './source/js/broken-link-detector.js',
-        'js/mce-broken-link-detector':           './source/mce/mce-broken-link-detector.js'
+        'css/broken-link-detector': './source/sass/broken-link-detector.scss',
+        'js/broken-link-detector': './source/js/broken-link-detector.ts', // Changed from .js to .ts
+        'js/mce-broken-link-detector': './source/mce/mce-broken-link-detector.ts' // Changed from .js to .ts
     },
-    
+
     /**
      * Output settings
      */
@@ -29,13 +29,22 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         publicPath: '',
     },
+
     /**
      * Define external dependencies here
      */
-    externals: {
-    },
+    externals: {},
+
     module: {
         rules: [
+            /**
+             * TypeScript and JavaScript
+             */
+            {
+                test: /\.tsx?$/, // TypeScript and TSX file handling
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
             /**
              * Styles
              */
@@ -53,51 +62,56 @@ module.exports = {
                         loader: 'postcss-loader',
                         options: {
                             postcssOptions: {
-                                plugins: [ autoprefixer ],
-                            }
-                        }
+                                plugins: [autoprefixer],
+                            },
+                        },
                     },
                     {
                         loader: 'sass-loader',
-                        options: {}
+                        options: {},
                     },
-                    'import-glob-loader'
+                    'import-glob-loader',
                 ],
             },
         ],
     },
+
+    /**
+     * Add TypeScript resolution
+     */
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js'], // Resolve .ts and .tsx in addition to .js
+    },
+
     plugins: removeEmpty([
         /**
          * Fix CSS entry chunks generating js file
          */
-         new RemoveEmptyScripts(),
+        new RemoveEmptyScripts(),
 
         /**
          * Clean dist folder
          */
         new CleanWebpackPlugin(),
+
         /**
          * Output CSS files
          */
         new MiniCssExtractPlugin({
-            filename: '[name].[contenthash].css'
+            filename: '[name].[contenthash].css',
         }),
 
         /**
          * Output manifest.json for cache busting
          */
         new WebpackManifestPlugin({
-            // Filter manifest items
             filter: function (file) {
-                // Don't include source maps
                 if (file.path.match(/\.(map)$/)) {
                     return false;
                 }
                 return true;
             },
-            // Custom mapping of manifest item goes here
             map: function (file) {
-                // Fix incorrect key for fonts
                 if (
                     file.isAsset &&
                     file.isModuleAsset &&
@@ -106,12 +120,11 @@ module.exports = {
                     const pathParts = file.path.split('.');
                     const nameParts = file.name.split('.');
 
-                    // Compare extensions
                     if (pathParts[pathParts.length - 1] !== nameParts[nameParts.length - 1]) {
                         file.name = pathParts[0].concat('.', pathParts[pathParts.length - 1]);
                     }
                 }
-                
+
                 return file;
             },
         }),
@@ -119,23 +132,25 @@ module.exports = {
         /**
          * Enable build OS notifications (when using watch command)
          */
-        new WebpackNotifierPlugin({alwaysNotify: true, skipFirstNotification: true}),
+        new WebpackNotifierPlugin({ alwaysNotify: true, skipFirstNotification: true }),
 
         /**
          * Minimize CSS assets
          */
-        ifProduction(new CssMinimizerWebpackPlugin({
-            minimizerOptions: {
-                preset: [
-                    "default",
-                    {
-                        discardComments: { removeAll: true },
-                    },
-                ],
-            },
-        }))
-
+        ifProduction(
+            new CssMinimizerWebpackPlugin({
+                minimizerOptions: {
+                    preset: [
+                        'default',
+                        {
+                            discardComments: { removeAll: true },
+                        },
+                    ],
+                },
+            })
+        ),
     ]).filter(Boolean),
+
     devtool: 'source-map',
-    stats: { children: false }
+    stats: { children: false },
 };
