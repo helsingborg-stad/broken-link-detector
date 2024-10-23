@@ -24,7 +24,7 @@ class App
 
         add_filter('wp_insert_post_data', array($this, 'checkSavedPost'), 10, 2);
 
-        add_action('wp', array($this, 'postTypeColumns'));
+        //add_action('wp', array($this, 'postTypeColumns'));
         add_action('before_delete_post', array($this, 'deleteBrokenLinks'));
         add_action('post_submitbox_misc_actions', array($this, 'rescanPost'), 100);
 
@@ -34,22 +34,30 @@ class App
         new \BrokenLinkDetector\Editor();
 
 
+        /**
+         * Load text domain
+         */
+        $loadTextDomain = new \BrokenLinkDetector\TextDomain('broken-link-detector', $wpService);
+        $loadTextDomain->addHooks($loadTextDomain);
+
         /*
         * Init settings page
         */
-        new \BrokenLinkDetector\Settings\AdminSettingsPage(
+        $registerAdminSettingsPage = new \BrokenLinkDetector\Settings\AdminSettingsPage(
             $wpService,
             $acfService
         );
+        $registerAdminSettingsPage->addHooks();
 
-
-
+        /* 
+        * Field loader
+        */
+        $fieldLoader = new \BrokenLinkDetector\Fields\AcfExportManager\RegisterFieldConfiguration(
+            $wpService,
+            BROKENLINKDETECTOR_PATH . 'fields'
+        );
+        $fieldLoader->addHooks();
     }
-
-
-
-
-
 
     public static function checkInstall()
     {

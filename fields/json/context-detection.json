@@ -1,0 +1,77 @@
+[{
+    "key": "group_6718e9e8554ca",
+    "title": "Context Detect",
+    "fields": [
+        {
+            "key": "field_6718e9eed55b7",
+            "label": "Enable detection of user context",
+            "name": "enable_user_context_detection",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "The user detection functionality will disable links that are internal only. It also adds a tipbox to them explaining why the link is unreachable.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "Detects user context by fetching a internal resource.",
+            "default_value": 0,
+            "ui_on_text": "Enabled",
+            "ui_off_text": "Disabled",
+            "ui": 1
+        },
+        {
+            "key": "field_6718ea46d55b8",
+            "label": "Internal Context Detection Resource",
+            "name": "internal_context_detection_resource",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "The internal context checker require you to publish a image on a server without public access. The image should be as small as possible, if your site is running on https, this resource must also be served with https.",
+            "required": 1,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_6718e9eed55b7",
+                        "operator": "==",
+                        "value": "1"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https:\/\/internal.resource.admin-network.local\/image-1x1.jpg"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "broken-links-settings"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "left",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "acfe_display_title": "",
+    "acfe_autosync": [
+        "json"
+    ],
+    "acfe_form": 0,
+    "acfe_meta": "",
+    "acfe_note": ""
+}]
+

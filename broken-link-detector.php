@@ -25,8 +25,6 @@ define('BROKENLINKDETECTOR_PATH', plugin_dir_path(__FILE__));
 define('BROKENLINKDETECTOR_URL', plugins_url('', __FILE__));
 define('BROKENLINKDETECTOR_TEMPLATE_PATH', BROKENLINKDETECTOR_PATH . 'templates/');
 
-load_plugin_textdomain('broken-link-detector', false, plugin_basename(dirname(__FILE__)) . '/languages');
-
 require_once __DIR__ . '/source/php/Vendor/admin-notice-helper.php';
 
 /*

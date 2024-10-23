@@ -309,7 +309,7 @@ class ExternalDetector
             //406: Not acceptable
             //413: Payload to large
             //418: I'm a teapot
-            if(in_array($httpCode, array(401, 406, 413))) {
+            if(in_array($httpCode, array(401, 406, 413, 418))) {
                 return true;
             }
         }

@@ -9,9 +9,7 @@ use WpService\Contracts\__;
 
 class AdminSettingsPage implements Hookable
 {
-    public function __construct(private AddAction&__ $wpService, private AddOptionsPage $acfService)
-    {
-    }
+    public function __construct(private AddAction&__ $wpService, private AddOptionsPage $acfService){}
 
     public function addHooks(): void
     {
@@ -24,7 +22,7 @@ class AdminSettingsPage implements Hookable
             'menu_slug'       => 'broken-links-settings',
             'page_title'      => $this->wpService->__('Broken Links Settings', 'broken-link-detector'),
             'active'          => true,
-            'menu_title'      => $this->wpService->__('Broken Links', 'broken-link-detector'),
+            'menu_title'      => $this->wpService->__('Broken Links Settings', 'broken-link-detector'),
             'capability'      => 'administrator',
             'parent_slug'     => 'options-general.php',
             'position'        => '',
