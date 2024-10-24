@@ -35,6 +35,12 @@ class App
 
 
         /**
+         * Register activation and deactivation hooks
+         */
+        $registerActivation = new \BrokenLinkDetector\Installer($wpService, $pluginPath, $db);
+        $registerActivation->addHooks();
+
+        /**
          * Load text domain
          */
         $loadTextDomain = new \BrokenLinkDetector\TextDomain('broken-link-detector', $wpService);
@@ -59,38 +65,7 @@ class App
         $fieldLoader->addHooks();
     }
 
-    public static function checkInstall()
-    {
-        if (self::$installChecked) {
-            return;
-        }
-
-        $tableName = self::$dbTable;
-
-        //Update to 1.0.1
-        if(get_site_option('broken-links-detector-db-version') == "1.0.0") {
-
-            $charsetCollation = self::$wpdb->get_charset_collate();
-            $tableName = self::$dbTable;
-
-            $sql = "ALTER TABLE $tableName
-                    ADD time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
     
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
-
-            update_option('broken-links-detector-db-version', '1.0.1');
-        }
-
-        if(get_site_option('broken-links-detector-db-version')) {
-            return true; 
-        }
-
-        //Install
-        if(!self::$wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName) {
-            self::install();
-        }
-    }
 
     public function rescanPost()
     {
@@ -199,47 +174,6 @@ class App
                 include BROKENLINKDETECTOR_TEMPLATE_PATH . 'list-table.php';
             }
         );
-    }
-
-    /**
-     * Setsup the database table on plugin activation (hooked in App.php)
-     * @return void
-     */
-    public static function install()
-    {
-        $charsetCollation = self::$wpdb->get_charset_collate();
-        $tableName = self::$dbTable;
-
-        if (!empty(get_site_option('broken-links-detector-db-version')) && self::$wpdb->get_var("SHOW TABLES LIKE '$tableName'") == $tableName) {
-            return;
-        }
-
-        $sql = "CREATE TABLE $tableName (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            post_id bigint(20) DEFAULT NULL,
-            url varchar(255) DEFAULT '' NOT NULL,
-            time timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-            UNIQUE KEY id (id)
-        ) $charsetCollation;";
-
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-
-        update_option('broken-links-detector-db-version', '1.0.1');
-    }
-
-    /**
-     * Drops the database table on plugin deactivation (hooked in App.php)
-     * @return void
-     */
-    public static function uninstall()
-    {
-        $tableName = self::$dbTable;
-        $sql = 'DROP TABLE ' . $tableName;
-
-        self::$wpdb->query($sql);
-
-        delete_option('broken-links-detector-db-version');
     }
 
     /**

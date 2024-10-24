@@ -39,6 +39,3 @@ $brokenLinkDetectorApp = new BrokenLinkDetector\App(
     new NativeWpService(),
     new NativeAcfService()
 );
-
-register_activation_hook(__FILE__, '\BrokenLinkDetector\App::install');
-register_deactivation_hook(__FILE__, '\BrokenLinkDetector\App::uninstall');
