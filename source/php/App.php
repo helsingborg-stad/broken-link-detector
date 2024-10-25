@@ -5,8 +5,9 @@ namespace BrokenLinkDetector;
 use WpService\WpService;
 use AcfService\AcfService;
 use BrokenLinkDetector\Database\Database;
-use BrokenLinkDetector\Log\Log;
+use BrokenLinkDetector\BrokenLinkRegistry\BrokenLinkRegistry;
 use BrokenLinkDetector\Config\Config;
+use BrokenLinkDetector\LinkUpdater\LinkUpdater;
 
 class App
 {
@@ -20,7 +21,7 @@ class App
         WpService $wpService, 
         AcfService $acfService, 
         Database $db, 
-        Log $log, 
+        BrokenLinkRegistry $registry, 
         Config $config
     )
     {
@@ -85,28 +86,27 @@ class App
         /*
         * Register internal Link detector
         */
-        $internalLinkDetector = new \BrokenLinkDetector\Detector\Internal(
+        $internalLinkUpdater = new \BrokenLinkDetector\LinkUpdater\LinkUpdater(
             $wpService,
             $config,
             $db,
-            $log
+            $registry
         );
-        $internalLinkDetector->addHooks();
+        $internalLinkUpdater->addHooks();
 
         /*
         * Register external link detector
         */
+
+        /*
         $internalLinkDetector = new \BrokenLinkDetector\Detector\External(
             $wpService,
             $config,
             $db,
-            $log
+            $registry
         );
         $internalLinkDetector->addHooks();
-
-        /*
-        * Register the internal link detector
-        */
+*/ 
     }
 
     

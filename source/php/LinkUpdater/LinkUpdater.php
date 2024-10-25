@@ -1,24 +1,34 @@
 <?php 
 
 
-namespace BrokenLinkDetector;
+namespace BrokenLinkDetector\LinkUpdater;
 
 use WpService\WpService;
 use BrokenLinkDetector\Config\Config;
 use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\HooksRegistrar\Hookable;
 
-class LinkUpdater implements Hookable
+class LinkUpdater implements LinkUpdaterInterface, Hookable
 {
     public function __construct(private WpService $wpService, private Config $config, private Database $database)
     {
     }
 
+    /**
+     * Add hooks for the link updater
+     * @return void
+     */
     public function addHooks(): void
     {
       $this->wpService->addAction('wp_insert_post_data', array($this, 'updateLinks'), 10, 2);
     }
 
+    /**
+     * Update the links in the post content if the post name has changed
+     * @param array $data
+     * @param array $post
+     * @return bool
+     */
     public function updateLinks(array $data, array $post): bool
     {
       if($this->linkHasChanged($data, $post) && !$this->shouldReplaceForPosttype($data['post_type'])) {
@@ -36,6 +46,12 @@ class LinkUpdater implements Hookable
       return false;
     }
 
+    /**
+     * Replace the old link with the new link in posts that contains the link
+     * @param string $newLink
+     * @param string $oldLink
+     * @return int
+     */
     private function replaceLinks(string $newLink, string $oldLink): int
     {
 
