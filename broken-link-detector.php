@@ -2,11 +2,9 @@
 
 /**
  * Plugin Name:       Broken Link Detector
- * Plugin URI:        (#plugin_url#)
  * Description:       Detects and fixes (if possible) broken links in post_content
  * Version: 3.0.6
- * Author:            Kristoffer Svanmark
- * Author URI:        (#plugin_author_url#)
+ * Author:            Sebastian Thulin
  * License:           MIT
  * License URI:       https://opensource.org/licenses/MIT
  * Text Domain:       broken-link-detector
@@ -17,23 +15,26 @@ use AcfService\Implementations\NativeAcfService;
 use WpService\Implementations\NativeWpService;
 use BrokenLinkDetector\Database;
 use BrokenLinkDetector\Config\Config;
-use WpService\Contracts\PluginDirPath;
-use WpService\Contracts\PluginsUrl;
 
- // Protect agains direct file access
+/**
+ * If this file is called directly, abort.
+ */
 if (! defined('WPINC')) {
     die;
 }
 
-// TODO: Remove this when the plugin is refactored
-require_once __DIR__ . '/source/php/Vendor/admin-notice-helper.php';
-
-/* Autoload files */
-if (file_exists($wpService->pluginDirPath(__FILE__) . '/vendor/autoload.php')) {
-    require $wpService->pluginDirPath(__FILE__) . '/vendor/autoload.php';
+/**
+ * Autoload plugin classes, if dependencies are installed.
+ */
+try {
+    require_once __DIR__ . '/vendor/autoload.php';
+} catch (Exception $e) {
+    throw new Exception($e->getMessage());
 }
 
-//Initialize services
+/**
+ * Bootstrap the plugin
+ */
 $wpService  = new NativeWpService();
 $acfService = new NativeAcfService();
 $config     = new Config(
@@ -44,7 +45,9 @@ $config     = new Config(
 );
 $database   = new Database($config, $wpService);
 
-// Start application
+/**
+ * Run the plugin
+ */
 $brokenLinkDetectorApp = new BrokenLinkDetector\App(
     $wpService,
     $acfService,

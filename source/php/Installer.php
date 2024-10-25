@@ -7,11 +7,16 @@ use WpService\Contracts\AddAction;
 use WpService\Contracts\RegisterDeactivationHook;
 use WpService\Contracts\RegisterActivationHook;
 use WpService\Contracts\UpdateOption;
-use BrokenLinkDetector\DatabaseInterface;
+use BrokenLinkDetector\Database;
+use BrokenLinkDetector\Config\Config;
 
 class Installer implements Hookable
 {
-    public function __construct(private AddAction&RegisterActivationHook&RegisterDeactivationHook&UpdateOption $wpService, private ConfigInterface $config, private DatabaseInterface $db){
+    public function __construct(
+      private AddAction&RegisterActivationHook&RegisterDeactivationHook&UpdateOption $wpService, 
+      private Config $config, 
+      private Database $db
+    ){
       if (!file_exists($config->getPluginPath())) {
         throw new \InvalidArgumentException('The plugin path provided does not exist');
       }
@@ -24,8 +29,8 @@ class Installer implements Hookable
      */
     public function addHooks(): void
     {
-      $this->wpService->registerActivationHook($this->pluginPath, array($this, 'install'));
-      $this->wpService->registerDeactivationHook($this->pluginPath, array($this, 'uninstall'));
+      $this->wpService->registerActivationHook($this->config->getPluginPath(), array($this, 'install'));
+      $this->wpService->registerDeactivationHook($this->config->getPluginPath(), array($this, 'uninstall'));
     }
 
     /**

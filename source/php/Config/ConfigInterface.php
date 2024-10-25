@@ -2,10 +2,12 @@
 
 namespace BrokenLinkDetector\Config;
 
+use WpService\WpService;
+
 interface ConfigInterface
 {
   public function __construct(
-    $wpService, 
+    WpService $wpService, 
     string $filterPrefix,
     string $pluginPath,
     string $pluginUrl,
