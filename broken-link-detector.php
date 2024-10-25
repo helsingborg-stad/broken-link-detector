@@ -15,6 +15,8 @@
 
 use AcfService\Implementations\NativeAcfService;
 use WpService\Implementations\NativeWpService;
+use BrokenLinkDetector\Database;
+use BrokenLinkDetector\Config\Config;
 
  // Protect agains direct file access
 if (! defined('WPINC')) {
@@ -34,8 +36,16 @@ if (file_exists(BROKENLINKDETECTOR_PATH . 'vendor/autoload.php')) {
     require BROKENLINKDETECTOR_PATH . '/vendor/autoload.php';
 }
 
+//Initialize services
+$wpService  = new NativeWpService();
+$acfService = new NativeAcfService();
+$config     = new Config($wpService);
+$database   = new Database($config, $wpService);
+
 // Start application
 $brokenLinkDetectorApp = new BrokenLinkDetector\App(
-    new NativeWpService(),
-    new NativeAcfService()
+    $wpService,
+    $acfService,
+    $database,
+    $config
 );

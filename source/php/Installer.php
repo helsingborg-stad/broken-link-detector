@@ -11,8 +11,8 @@ use BrokenLinkDetector\DatabaseInterface;
 
 class Installer implements Hookable
 {
-    public function __construct(private AddAction&RegisterActivationHook&RegisterDeactivationHook&UpdateOption $wpService, private string $pluginPath, private DatabaseInterface $db){
-      if (!file_exists($this->pluginPath)) {
+    public function __construct(private AddAction&RegisterActivationHook&RegisterDeactivationHook&UpdateOption $wpService, private ConfigInterface $config, private DatabaseInterface $db){
+      if (!file_exists($config->getPluginPath())) {
         throw new \InvalidArgumentException('The plugin path provided does not exist');
       }
     }

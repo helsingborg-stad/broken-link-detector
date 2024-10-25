@@ -10,7 +10,7 @@ class App
 
     public static $externalDetector = false;
 
-    public function __construct($wpService, $acfService)
+    public function __construct($wpService, $acfService, $db, $config)
     {
         global $wpdb;
         self::$wpdb = $wpdb;
@@ -37,14 +37,14 @@ class App
         /**
          * Register activation and deactivation hooks
          */
-        $registerActivation = new \BrokenLinkDetector\Installer($wpService, $pluginPath, $db);
+        $registerActivation = new \BrokenLinkDetector\Installer($wpService, $config, $db);
         $registerActivation->addHooks();
 
         /**
          * Load text domain
          */
         $loadTextDomain = new \BrokenLinkDetector\TextDomain('broken-link-detector', $wpService);
-        $loadTextDomain->addHooks($loadTextDomain);
+        $loadTextDomain->addHooks();
 
         /*
         * Init settings page

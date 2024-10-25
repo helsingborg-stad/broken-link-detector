@@ -2,13 +2,14 @@
 
 namespace BrokenLinkDetector;
 
+use BrokenLinkDetector\Config\ConfigInterface;
 use BrokenLinkDetector\HooksRegistrar\Hookable;
 use WpService\Contracts\AddAction;
 use WpService\Contracts\LoadPluginTextDomain;
 
 class TextDomain implements Hookable
 {
-    public function __construct(private string $textDomain, private AddAction&LoadPluginTextDomain $wpService)
+    public function __construct(private ConfigInterface $config, private AddAction&LoadPluginTextDomain $wpService)
     {
     }
 
@@ -19,7 +20,10 @@ class TextDomain implements Hookable
 
     public function loadTextDomain(): void
     {
-        $relativeTo = defined('BROKENLINKDETECTOR_PATH') ? constant('BROKENLINKDETECTOR_PATH') . 'languages/' : '';
-        $this->wpService->loadPluginTextDomain($this->textDomain, false, $relativeTo);
+        $this->wpService->loadPluginTextDomain(
+            $this->config->gettextDomain(), 
+            false, 
+            $this->config->getPluginPath() . 'languages/'
+        );
     }
 }

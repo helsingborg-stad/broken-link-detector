@@ -33,6 +33,71 @@ class Config implements ConfigInterface
   }
 
   /**
+   * Get plugin url. 
+   * 
+   * @return string
+   */
+  public function getPluginUrl(): string
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      BROKENLINKDETECTOR_URL
+    );
+  }
+
+  /**
+   * Get plugin url. 
+   * 
+   * @return string
+   */
+  public function getPluginPath(): string
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      BROKENLINKDETECTOR_PATH
+    );
+  }
+
+  /**
+   * Get template path. 
+   * 
+   * @return string
+   */
+  public function getPluginTemplatePath(): string
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      BROKENLINKDETECTOR_TEMPLATE_PATH
+    );
+  }
+
+  /**
+   * Get location of fields
+   * 
+   * @return string
+   */
+  public function getPluginFieldsPath(): string
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      $this->getPluginPath() . 'fields'
+    );
+  }
+
+  /**
+   * Get text domain
+   * 
+   * @return string
+   */
+  public function getTextDomain(): string
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      'broken-link-detector'
+    );
+  }
+
+  /**
    * Create a prefix for image conversion filter.
    *
    * @return string
