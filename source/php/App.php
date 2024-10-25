@@ -33,17 +33,23 @@ class App
         self::$externalDetector = new \BrokenLinkDetector\ExternalDetector();
         new \BrokenLinkDetector\Editor();
 
-
         /**
          * Register activation and deactivation hooks
          */
-        $registerActivation = new \BrokenLinkDetector\Installer($wpService, $config, $db);
+        $registerActivation = new \BrokenLinkDetector\Installer(
+            $wpService,
+            $config,
+            $db
+        );
         $registerActivation->addHooks();
 
         /**
          * Load text domain
          */
-        $loadTextDomain = new \BrokenLinkDetector\TextDomain('broken-link-detector', $wpService);
+        $loadTextDomain = new \BrokenLinkDetector\TextDomain(
+            $wpService,
+            $config
+        );
         $loadTextDomain->addHooks();
 
         /*
@@ -60,7 +66,7 @@ class App
         */
         $fieldLoader = new \BrokenLinkDetector\Fields\AcfExportManager\RegisterFieldConfiguration(
             $wpService,
-            BROKENLINKDETECTOR_PATH . 'fields'
+            $config->getPluginFieldsPath()
         );
         $fieldLoader->addHooks();
     }

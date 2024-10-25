@@ -2,9 +2,16 @@
 
 namespace BrokenLinkDetector\Config;
 
+use WpService\Contracts\ApplyFilters;
+
 class Config implements ConfigInterface
 {
-  public function __construct(private $wpService, private string $filterPrefix = 'BrokenLinkDetector/Config'){}
+  public function __construct(
+    private ApplyFilters $wpService, 
+    private string $filterPrefix,
+    private string $pluginPath,
+    private string $pluginUrl
+  ){}
 
   /**
    * Get the key for the database version.
@@ -41,7 +48,7 @@ class Config implements ConfigInterface
   {
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
-      BROKENLINKDETECTOR_URL
+      $this->pluginUrl
     );
   }
 
@@ -54,7 +61,7 @@ class Config implements ConfigInterface
   {
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
-      BROKENLINKDETECTOR_PATH
+      $this->pluginPath
     );
   }
 
@@ -67,7 +74,7 @@ class Config implements ConfigInterface
   {
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
-      BROKENLINKDETECTOR_TEMPLATE_PATH
+      $this->getPluginPath() . 'templates'
     );
   }
 

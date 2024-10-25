@@ -9,7 +9,7 @@ use WpService\Contracts\LoadPluginTextDomain;
 
 class TextDomain implements Hookable
 {
-    public function __construct(private ConfigInterface $config, private AddAction&LoadPluginTextDomain $wpService)
+    public function __construct(private AddAction&LoadPluginTextDomain $wpService, private ConfigInterface $config)
     {
     }
 
