@@ -1,11 +1,11 @@
 <?php 
 
-namespace BrokenLinkDetector\Log;
+namespace BrokenLinkDetector\BrokenLinkRegistry;
 
 use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\Config\Config;
 
-class Log implements LogInterface
+class BrokenLinkRegistry implements BrokenLinkRegistryInterface
 {
   public function __construct(private Database $db, private Config $config)
   {

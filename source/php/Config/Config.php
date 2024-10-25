@@ -113,7 +113,7 @@ class Config implements ConfigInterface
   {
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
-      ['attachment', 'revision']
+      ['attachment', 'revision', 'acf', 'acf-field', 'acf-field-group']
     );
   }
 
