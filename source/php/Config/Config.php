@@ -105,12 +105,25 @@ class Config implements ConfigInterface
   }
 
   /**
+   * Get post types that should not be checked for broken links.
+   * 
+   * @return array
+   */
+  public function getDisabledLinkReplacementPostTypes(): array
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      ['attachment', 'revision']
+    );
+  }
+
+  /**
    * Create a prefix for image conversion filter.
    *
    * @return string
    */
   public function createFilterKey(string $filter = ""): string
   {
-      return $this->filterPrefix . "/" . ucfirst($filter);
+    return $this->filterPrefix . "/" . ucfirst($filter);
   }
 }

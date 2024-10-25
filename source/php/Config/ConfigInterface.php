@@ -18,4 +18,5 @@ interface ConfigInterface
   public function getPluginPath(): string;
   public function getPluginTemplatePath(): string;
   public function getTextDomain(): string;
+  public function getDisabledLinkReplacementPostTypes(): array;
 }
