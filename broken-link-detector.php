@@ -15,6 +15,7 @@ use AcfService\Implementations\NativeAcfService;
 use WpService\Implementations\NativeWpService;
 use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\Config\Config;
+use BrokenLinkDetector\BrokenLinkRegistry\BrokenLinkRegistry;
 
 /**
  * If this file is called directly, abort.
@@ -44,7 +45,7 @@ $config     = new Config(
     $wpService->pluginsUrl('', __FILE__)
 );
 $database   = new Database($config, $wpService);
-
+$registry   = new BrokenLinkRegistry($database, $config);
 /**
  * Run the plugin
  */
@@ -52,5 +53,6 @@ $brokenLinkDetectorApp = new BrokenLinkDetector\App(
     $wpService,
     $acfService,
     $database,
+    $registry,
     $config
 );

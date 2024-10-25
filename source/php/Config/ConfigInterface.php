@@ -13,6 +13,7 @@ interface ConfigInterface
     string $pluginUrl,
   );
   public function getDatabaseVersionKey(): string;
+  public function getDatabaseVersion(): string;
   public function getTableName(): string;
   public function getPluginUrl(): string;
   public function getPluginPath(): string;

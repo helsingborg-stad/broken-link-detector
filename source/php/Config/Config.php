@@ -3,11 +3,12 @@
 namespace BrokenLinkDetector\Config;
 
 use WpService\Contracts\ApplyFilters;
+use WpService\Contracts\GetOption;
 
 class Config implements ConfigInterface
 {
   public function __construct(
-    private ApplyFilters $wpService, 
+    private ApplyFilters&GetOption $wpService, 
     private string $filterPrefix,
     private string $pluginPath,
     private string $pluginUrl
@@ -23,6 +24,19 @@ class Config implements ConfigInterface
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
       'broken_link_detector_db_version'
+    );
+  }
+
+  /**
+   * Get the current database version from the options table.
+   * 
+   * @return string|null
+   */
+  public function getDatabaseVersion(): string
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      '2.0.0'
     );
   }
 
