@@ -7,7 +7,7 @@ use WpService\Contracts\AddAction;
 use WpService\Contracts\RegisterDeactivationHook;
 use WpService\Contracts\RegisterActivationHook;
 use WpService\Contracts\UpdateOption;
-use BrokenLinkDetector\Database;
+use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\Config\Config;
 
 class Installer implements Hookable
@@ -48,11 +48,13 @@ class Installer implements Hookable
         $installSql = "CREATE TABLE IF NOT EXISTS $tableName (
           id bigint(20) NOT NULL AUTO_INCREMENT,
           post_id bigint(20) DEFAULT NULL,
-          url varchar(255) DEFAULT '' NOT NULL,
+          url varchar(1024) NOT NULL DEFAULT '',
+          unique_hash char(32) NOT NULL,
           time TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-          UNIQUE KEY id (id)
+          PRIMARY KEY (id),
+          UNIQUE KEY unique_post_url_hash (unique_hash)
         ) $charsetCollation;";
-        
+                
         //Require the upgrade.php file
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
@@ -81,7 +83,7 @@ class Installer implements Hookable
     private function isInstalled(string $tableName): bool
     {
       $isInstalledQuery = $this->db->getInstance()->prepare("SHOW TABLES LIKE %s", $tableName);
-      if($isInstalledQuery && $this->db->getInstance()->get_var("SHOW TABLES LIKE '$tableName'") == $tableName) {
+      if($isInstalledQuery && $isInstalledQuery == $tableName) {
         return true; 
       }
       return false;

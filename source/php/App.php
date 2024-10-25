@@ -2,6 +2,12 @@
 
 namespace BrokenLinkDetector;
 
+use WpService\WpService;
+use AcfService\AcfService;
+use BrokenLinkDetector\Database\Database;
+use BrokenLinkDetector\Log\Log;
+use BrokenLinkDetector\Config\Config;
+
 class App
 {
     public static $dbTable = 'broken_links_detector';
@@ -10,7 +16,13 @@ class App
 
     public static $externalDetector = false;
 
-    public function __construct($wpService, $acfService, $db, $config)
+    public function __construct(
+        WpService $wpService, 
+        AcfService $acfService, 
+        Database $db, 
+        Log $log, 
+        Config $config
+    )
     {
         global $wpdb;
         self::$wpdb = $wpdb;
@@ -69,6 +81,32 @@ class App
             $config->getPluginFieldsPath()
         );
         $fieldLoader->addHooks();
+
+        /*
+        * Register internal Link detector
+        */
+        $internalLinkDetector = new \BrokenLinkDetector\Detector\Internal(
+            $wpService,
+            $config,
+            $db,
+            $log
+        );
+        $internalLinkDetector->addHooks();
+
+        /*
+        * Register external link detector
+        */
+        $internalLinkDetector = new \BrokenLinkDetector\Detector\External(
+            $wpService,
+            $config,
+            $db,
+            $log
+        );
+        $internalLinkDetector->addHooks();
+
+        /*
+        * Register the internal link detector
+        */
     }
 
     

@@ -1,6 +1,6 @@
 <?php
 
-namespace BrokenLinkDetector;
+namespace BrokenLinkDetector\Database;
 
 use BrokenLinkDetector\Config\ConfigInterface;
 use wpdb;

@@ -13,7 +13,7 @@
 
 use AcfService\Implementations\NativeAcfService;
 use WpService\Implementations\NativeWpService;
-use BrokenLinkDetector\Database;
+use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\Config\Config;
 
 /**
