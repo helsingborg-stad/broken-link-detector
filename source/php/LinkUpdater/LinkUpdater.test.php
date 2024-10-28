@@ -33,7 +33,7 @@ class LinkUpdaterTest extends TestCase
       
       $linkUpdater = new LinkUpdater(
           $wpService,
-          $config ,
+          $config,
           new Database(
               $config,
               $wpService
@@ -45,6 +45,46 @@ class LinkUpdaterTest extends TestCase
 
       // Assert
       $this->assertEquals($expected, $result);
+  }
+
+  public function testThatTheCheckOfLinkChangesWorks()
+  {
+    // Arrange
+    $wpService = new FakeWpService([
+      'getPermalink' => 'https://example.com/old-permalink/',
+      'getOption' => 'option'
+    ]);
+    $config = new Config(
+        $wpService,
+        'filter-prefix',
+        'plugin-path',
+        'plugin-url'
+    );
+    
+    $linkUpdater = new LinkUpdater(
+        $wpService,
+        $config ,
+        new Database(
+            $config,
+            $wpService
+        )
+    );
+
+    $data = [
+      'post_name' => 'sample-post',
+      'post_type' => 'post'
+    ];
+
+    $post = [
+      'ID' => 123,
+      'post_name' => 'old-post'
+    ];
+
+    // Act
+    $result = $linkUpdater->updateLinks($data, $post);
+
+    // Assert
+    $this->assertTrue($result);
   }
 
   /**
