@@ -107,6 +107,6 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
      */
     private function shouldReplaceForPosttype(string $postType): bool
     {
-      return !in_array($postType, $this->config->getDisabledLinkReplacementPostTypes());
+      return !in_array($postType, $this->config->linkUpdaterBannedPostTypes());
     }
 }

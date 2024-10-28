@@ -5,17 +5,6 @@ namespace BrokenLinkDetector\Config;
 use WpService\Contracts\ApplyFilters;
 use WpService\Contracts\GetOption;
 
-enum Feature: string
-{
-    case INSTALLER = 'Installer';
-    case LANGUAGE = 'Language';
-    case ADMIN_SETTINGS = 'AdminSettings';
-    case FIELD_LOADER = 'FieldLoader';
-    case SCAN_BROKEN_LINKS = 'ScanBrokenLinks';
-    case LIST_BROKEN_LINKS = 'ListBrokenLinks';
-    case FIX_INTERNAL_LINKS = 'FixInternalLinks';
-    case HIGHLIGHT_BROKEN_LINKS = 'HighlightBrokenLinks';
-}
 class Config implements ConfigInterface
 {
   public function __construct(
@@ -24,37 +13,6 @@ class Config implements ConfigInterface
     private string $pluginPath,
     private string $pluginUrl
   ){}
-
-  /**
-   * Check if a feature is enabled.
-   * 
-   * @param Feature $feature
-   */
-  public function isEnabled(Feature $feature) {
-
-    $defaultEnabled = [
-      Feature::INSTALLER => true,
-      Feature::LANGUAGE => true,
-      Feature::ADMIN_SETTINGS => true,
-      Feature::FIELD_LOADER => true,
-      Feature::SCAN_BROKEN_LINKS => true,
-      Feature::LIST_BROKEN_LINKS => true,
-      Feature::FIX_INTERNAL_LINKS => true,
-      Feature::HIGHLIGHT_BROKEN_LINKS => true,
-    ];
-
-    $defaultEnabled = $this->wpService->applyFilters(
-      $this->createFilterKey(__FUNCTION__), 
-      $defaultEnabled
-    );
-
-    $isEnabled = $defaultEnabled[$feature] ?? false;
-
-    return $this->wpService->applyFilters(
-        $this->createFilterKey(__FUNCTION__ . "/{$feature->value}"),
-        $isEnabled
-    );
-  }
 
   /**
    * Get the key for the database version.
@@ -161,15 +119,39 @@ class Config implements ConfigInterface
   }
 
   /**
-   * Get post types that should not be checked for broken links.
+   * Get post types where link repair (link updater) should not run.
    * 
    * @return array
    */
-  public function getDisabledLinkReplacementPostTypes(): array
+  public function linkUpdaterBannedPostTypes(): array
   {
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
       ['attachment', 'revision', 'acf', 'acf-field', 'acf-field-group']
+    ) ?? [];
+  }
+
+  /**
+   * Get post types that should not be checked for broken links.
+   * 
+   * @return array
+   */
+  public function linkDetectBannedPostTypes(): array {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      ['attachment', 'revision', 'acf', 'acf-field', 'acf-field-group']
+    ) ?? [];
+  }
+
+  /**
+   * Get post types that should not be checked for broken links.
+   * 
+   * @return array
+   */
+  public function linkDetectAllowedPostStatuses(): array {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      ['publish', 'private', 'password']
     ) ?? [];
   }
 

@@ -19,5 +19,7 @@ interface ConfigInterface
   public function getPluginPath(): string;
   public function getPluginTemplatePath(): string;
   public function getTextDomain(): string;
-  public function getDisabledLinkReplacementPostTypes(): array;
+  public function linkUpdaterBannedPostTypes(): array;
+  public function linkDetectBannedPostTypes(): array;
+  public function linkDetectAllowedPostStatuses(): array;
 }

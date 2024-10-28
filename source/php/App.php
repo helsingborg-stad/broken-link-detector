@@ -49,7 +49,7 @@ class App
         /**
          * Register activation and deactivation hooks
         */
-        if ($config->isEnabled(Feature::INSTALLER)) {
+        if (Feature::factory('installer')->isEnabled()) {
             $registerActivation = new \BrokenLinkDetector\Installer(
                 $wpService,
                 $config,
@@ -61,7 +61,7 @@ class App
         /**
          * Load text domain
         */
-        if ($config->isEnabled(Feature::LANGUAGE)) {
+        if (Feature::factory('language')->isEnabled()) {
             $loadTextDomain = new \BrokenLinkDetector\TextDomain(
                 $wpService,
                 $config
@@ -72,7 +72,7 @@ class App
         /**
          * Init settings page
         */
-        if ($config->isEnabled(Feature::ADMIN_SETTINGS)) {
+        if (Feature::factory('admin_settings')->isEnabled()) {
             $registerAdminSettingsPage = new \BrokenLinkDetector\Settings\AdminSettingsPage(
                 $wpService,
                 $acfService
@@ -83,7 +83,7 @@ class App
         /** 
          * Field loader
         */
-        if ($config->isEnabled(Feature::FIELD_LOADER)) {
+        if (Feature::factory('field_loader')->isEnabled()) {
             $fieldLoader = new \BrokenLinkDetector\Fields\AcfExportManager\RegisterFieldConfiguration(
                 $wpService,
                 $config->getPluginFieldsPath()
@@ -94,7 +94,7 @@ class App
         /**
          * Register internal link detector
         */
-        if ($config->isEnabled(Feature::FIX_INTERNAL_LINKS)) {
+        if (Feature::factory('fix_internal_links')->isEnabled()) {
             $internalLinkUpdater = new \BrokenLinkDetector\LinkUpdater\LinkUpdater(
                 $wpService,
                 $config,
@@ -107,7 +107,7 @@ class App
         /**
          * Add editor interface
         */
-        if ($config->isEnabled(Feature::HIGHLIGHT_BROKEN_LINKS)) {
+        if (Feature::factory('highlight_broken_links')->isEnabled()) {
             $editorInterface = new \BrokenLinkDetector\Admin\Editor(
                 $wpService,
                 $config

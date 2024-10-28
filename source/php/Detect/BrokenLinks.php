@@ -13,31 +13,20 @@ class BrokenLinks implements Hookable
     {
     }
 
-
-
+    public function addHooks(): void
     {
-        add_action('wp', array($this, 'schedule'));
-        add_action('broken-links-detector-external', array($this, 'lookForBrokenLinks'));
+        $this->wpService->addAction(__CLASS__, [$this, 'scanSite']); //Action: scanSite
+        $this->wpService->addAction('save_post', [$this, 'scanPost']);
+    }
 
-        add_action('save_post', function ($postId) {
-            if (wp_is_post_revision($postId) || !isset($_POST['broken-link-detector-rescan']) || $_POST['broken-link-detector-rescan'] !== 'true') {
-                return;
-            }
-
-            $this->lookForBrokenLinks($postId);
-        });
-
-        if (isset($_GET['broken-links-detector']) && $_GET['broken-links-detector'] == 'scan') {
-            do_action('broken-links-detector-external');
+    public function scanPostSaveHook($postId, $post, $update)
+    {
+        if(is_int($postId)) {
+            $this->scanPost($postId);
         }
     }
 
-    public function addHooks(): void
-    {
-        $this->wpService->addAction(__CLASS__, 'scan');
-    }
-
-    public function scanPost(integer $postId)
+    public function scanPost(int $postId)
     {
        
     }
@@ -47,6 +36,35 @@ class BrokenLinks implements Hookable
     }
 
 
+    private function postQuery() {
+
+        //Init DB object
+        $db = $this->db->getInstance();
+
+        // Get configuration
+        $bannedPostTypesArray   = $this->config->linkDetectBannedPostTypes();
+        $allowedPostStatuses    = $this->config->linkDetectAllowedPostStatuses();
+
+        // Prepare placeholders for each banned post type and allowed status
+        $placeholdersTypes      = implode(',', array_fill(0, count($bannedPostTypesArray), '%s'));
+        $placeholdersStatuses   = implode(',', array_fill(0, count($allowedPostStatuses), '%s'));
+
+        // Prepare the SQL statement
+        $query = $db->prepare("
+                SELECT ID, post_content
+                FROM $db->posts
+                WHERE
+                    post_content RLIKE ('href=*')
+                    AND post_type NOT IN ($placeholdersTypes)
+                    AND post_status NOT IN ($placeholdersStatuses)
+            ", array_merge(
+                $bannedPostTypesArray,
+                $allowedPostStatuses
+            )
+        );
+
+        return $query;
+    }
 
     /**
      * Look for broken links in post_content
@@ -56,7 +74,6 @@ class BrokenLinks implements Hookable
      */
     public function detectBrokenLinksInPost($postId = null, $url = null)
     {
-        \BrokenLinkDetector\App::checkInstall();
         $foundUrls = array();
 
         if ($url) {

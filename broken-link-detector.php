@@ -16,6 +16,7 @@ use WpService\Implementations\NativeWpService;
 use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\Config\Config;
 use BrokenLinkDetector\BrokenLinkRegistry\BrokenLinkRegistry;
+use BrokenLinkDetector\Config\Feature;
 
 /**
  * If this file is called directly, abort.
@@ -46,6 +47,7 @@ $config     = new Config(
 );
 $database   = new Database($config, $wpService);
 $registry   = new BrokenLinkRegistry($database, $config);
+
 /**
  * Run the plugin
  */
