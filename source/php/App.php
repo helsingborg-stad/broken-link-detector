@@ -9,6 +9,7 @@ use BrokenLinkDetector\BrokenLinkRegistry\BrokenLinkRegistry;
 use BrokenLinkDetector\Config\Config;
 use BrokenLinkDetector\LinkUpdater\LinkUpdater;
 use BrokenLinkDetector\Admin\Editor;
+use BrokenLinkDetector\Config\Feature;
 
 class App
 {
@@ -65,63 +66,76 @@ class App
 
 
 
+        
+
         /**
          * Register activation and deactivation hooks
-         */
-        $registerActivation = new \BrokenLinkDetector\Installer(
-            $wpService,
-            $config,
-            $db
-        );
-        $registerActivation->addHooks();
+        */
+        if ($config->isEnabled(Feature::SCAN_BROKEN_LINKS)) {
+            $registerActivation = new \BrokenLinkDetector\Installer(
+                $wpService,
+                $config,
+                $db
+            );
+            $registerActivation->addHooks();
+        }
 
         /**
          * Load text domain
-         */
-        $loadTextDomain = new \BrokenLinkDetector\TextDomain(
-            $wpService,
-            $config
-        );
-        $loadTextDomain->addHooks();
-
-        /*
-        * Init settings page
         */
-        $registerAdminSettingsPage = new \BrokenLinkDetector\Settings\AdminSettingsPage(
-            $wpService,
-            $acfService
-        );
-        $registerAdminSettingsPage->addHooks();
+        if ($config->isEnabled(Feature::LIST_BROKEN_LINKS)) {
+            $loadTextDomain = new \BrokenLinkDetector\TextDomain(
+                $wpService,
+                $config
+            );
+            $loadTextDomain->addHooks();
+        }
 
-        /* 
-        * Field loader
+        /**
+         * Init settings page
         */
-        $fieldLoader = new \BrokenLinkDetector\Fields\AcfExportManager\RegisterFieldConfiguration(
-            $wpService,
-            $config->getPluginFieldsPath()
-        );
-        $fieldLoader->addHooks();
+        if ($config->isEnabled(Feature::LIST_BROKEN_LINKS)) {
+            $registerAdminSettingsPage = new \BrokenLinkDetector\Settings\AdminSettingsPage(
+                $wpService,
+                $acfService
+            );
+            $registerAdminSettingsPage->addHooks();
+        }
 
-        /*
-        * Register internal Link detector
+        /** 
+         * Field loader
         */
-        $internalLinkUpdater = new \BrokenLinkDetector\LinkUpdater\LinkUpdater(
-            $wpService,
-            $config,
-            $db,
-            $registry
-        );
-        $internalLinkUpdater->addHooks();
+        if ($config->isEnabled(Feature::LIST_BROKEN_LINKS)) {
+            $fieldLoader = new \BrokenLinkDetector\Fields\AcfExportManager\RegisterFieldConfiguration(
+                $wpService,
+                $config->getPluginFieldsPath()
+            );
+            $fieldLoader->addHooks();
+        }
 
-        /*
-        * Add editor interface
+        /**
+         * Register internal link detector
         */
-        $editorInterface = new \BrokenLinkDetector\Admin\Editor(
-            $wpService,
-            $config
-        );
-        $editorInterface->addHooks();
+        if ($config->isEnabled(Feature::FIX_INTERNAL_LINKS)) {
+            $internalLinkUpdater = new \BrokenLinkDetector\LinkUpdater\LinkUpdater(
+                $wpService,
+                $config,
+                $db,
+                $registry
+            );
+            $internalLinkUpdater->addHooks();
+        }
 
+        /**
+         * Add editor interface
+        */
+        if ($config->isEnabled(Feature::HIGHLIGHT_BROKEN_LINKS)) {
+            $editorInterface = new \BrokenLinkDetector\Admin\Editor(
+                $wpService,
+                $config
+            );
+            $editorInterface->addHooks();
+        }
 
         /*
         * Register external link detector
