@@ -7,7 +7,7 @@ use BrokenLinkDetector\HooksRegistrar\Hookable;
 use WpService\Contracts\AddAction;
 use WpService\Contracts\LoadPluginTextDomain;
 
-class TextDomain implements Hookable
+class TextDomain implements TextDomainInterface, Hookable
 {
     public function __construct(private AddAction&LoadPluginTextDomain $wpService, private ConfigInterface $config)
     {
