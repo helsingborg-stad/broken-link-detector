@@ -8,6 +8,7 @@ use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\BrokenLinkRegistry\BrokenLinkRegistry;
 use BrokenLinkDetector\Config\Config;
 use BrokenLinkDetector\LinkUpdater\LinkUpdater;
+use BrokenLinkDetector\Admin\Editor;
 
 class App
 {
@@ -43,8 +44,26 @@ class App
 
         $this->brokenLinksColumnSorting();
 
-        self::$externalDetector = new \BrokenLinkDetector\ExternalDetector();
-        new \BrokenLinkDetector\Editor();
+        //self::$externalDetector = new \BrokenLinkDetector\ExternalDetector();
+        //new \BrokenLinkDetector\Editor();
+
+
+        /**
+         * FEATURES. This list describes features in this plugin.
+         * We may add configuration isEnabled('feature') to 
+         * enable/disable features in config. 
+         * 
+         * TODO: Director to feature classes.
+         * 
+         * - Scan for broken links, and register them. 
+         * - List broken links in table. 
+         * - Fix internal link when a posts gets a new permalink
+         * - Highlight broken links in editor. 
+         * 
+         */
+
+
+
 
         /**
          * Register activation and deactivation hooks
@@ -93,6 +112,16 @@ class App
             $registry
         );
         $internalLinkUpdater->addHooks();
+
+        /*
+        * Add editor interface
+        */
+        $editorInterface = new \BrokenLinkDetector\Admin\Editor(
+            $wpService,
+            $config
+        );
+        $editorInterface->addHooks();
+
 
         /*
         * Register external link detector
