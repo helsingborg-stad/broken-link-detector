@@ -7,6 +7,10 @@ use WpService\Contracts\GetOption;
 
 enum Feature: string
 {
+    case INSTALLER = 'Installer';
+    case LANGUAGE = 'Language';
+    case ADMIN_SETTINGS = 'AdminSettings';
+    case FIELD_LOADER = 'FieldLoader';
     case SCAN_BROKEN_LINKS = 'ScanBrokenLinks';
     case LIST_BROKEN_LINKS = 'ListBrokenLinks';
     case FIX_INTERNAL_LINKS = 'FixInternalLinks';
@@ -29,6 +33,10 @@ class Config implements ConfigInterface
   public function isEnabled(Feature $feature) {
 
     $defaultEnabled = [
+      Feature::INSTALLER => true,
+      Feature::LANGUAGE => true,
+      Feature::ADMIN_SETTINGS => true,
+      Feature::FIELD_LOADER => true,
       Feature::SCAN_BROKEN_LINKS => true,
       Feature::LIST_BROKEN_LINKS => true,
       Feature::FIX_INTERNAL_LINKS => true,

@@ -45,33 +45,11 @@ class App
 
         $this->brokenLinksColumnSorting();
 
-        //self::$externalDetector = new \BrokenLinkDetector\ExternalDetector();
-        //new \BrokenLinkDetector\Editor();
-
-
-        /**
-         * FEATURES. This list describes features in this plugin.
-         * We may add configuration isEnabled('feature') to 
-         * enable/disable features in config. 
-         * 
-         * TODO: Director to feature classes.
-         * 
-         * - Scan for broken links, and register them. 
-         * - List broken links in table. 
-         * - Fix internal link when a posts gets a new permalink
-         * - Highlight broken links in editor. 
-         * 
-         */
-
-
-
-
-        
 
         /**
          * Register activation and deactivation hooks
         */
-        if ($config->isEnabled(Feature::SCAN_BROKEN_LINKS)) {
+        if ($config->isEnabled(Feature::INSTALLER)) {
             $registerActivation = new \BrokenLinkDetector\Installer(
                 $wpService,
                 $config,
@@ -83,7 +61,7 @@ class App
         /**
          * Load text domain
         */
-        if ($config->isEnabled(Feature::LIST_BROKEN_LINKS)) {
+        if ($config->isEnabled(Feature::LANGUAGE)) {
             $loadTextDomain = new \BrokenLinkDetector\TextDomain(
                 $wpService,
                 $config
@@ -94,7 +72,7 @@ class App
         /**
          * Init settings page
         */
-        if ($config->isEnabled(Feature::LIST_BROKEN_LINKS)) {
+        if ($config->isEnabled(Feature::ADMIN_SETTINGS)) {
             $registerAdminSettingsPage = new \BrokenLinkDetector\Settings\AdminSettingsPage(
                 $wpService,
                 $acfService
@@ -105,7 +83,7 @@ class App
         /** 
          * Field loader
         */
-        if ($config->isEnabled(Feature::LIST_BROKEN_LINKS)) {
+        if ($config->isEnabled(Feature::FIELD_LOADER)) {
             $fieldLoader = new \BrokenLinkDetector\Fields\AcfExportManager\RegisterFieldConfiguration(
                 $wpService,
                 $config->getPluginFieldsPath()
