@@ -1,8 +1,8 @@
 <?php
 
-namespace BrokenLinkDetector;
+namespace BrokenLinkDetector\Detect;
 
-class ExternalDetector
+class BrokenLinks
 {
     public function __construct()
     {
