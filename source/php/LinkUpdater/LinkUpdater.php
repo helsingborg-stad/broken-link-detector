@@ -79,10 +79,14 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
      */
     public function createPermalink(int $postId, string $postName): string
     {
-        return preg_replace('/[^\/]+\/?$/',
+        $permalink =  preg_replace('/[^\/]+\/?$/',
           $postName, 
           $this->wpService->getPermalink($postId)
         );
+
+        $permalink = rtrim($permalink, '/');
+
+        return $permalink; 
     }
 
     /**
