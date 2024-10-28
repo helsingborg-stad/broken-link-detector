@@ -2,9 +2,19 @@
 
 namespace BrokenLinkDetector\Detect;
 
-class BrokenLinks
+use BrokenLinkDetector\Database\Database;
+use BrokenLinkDetector\HooksRegistrar\Hookable;
+use BrokenLinkDetector\Config\Config;
+use WpService\WpService;
+
+class BrokenLinks implements Hookable
 {
-    public function __construct()
+    public function __construct(private AddAction $wpService, private Config $config, private Database $db)
+    {
+    }
+
+
+
     {
         add_action('wp', array($this, 'schedule'));
         add_action('broken-links-detector-external', array($this, 'lookForBrokenLinks'));
@@ -22,14 +32,21 @@ class BrokenLinks
         }
     }
 
-    public function schedule()
+    public function addHooks(): void
     {
-        if (wp_next_scheduled('broken-links-detector-external')) {
-            return;
-        }
-
-        wp_schedule_event(time(), 'daily', 'broken-links-detector-external');
+        $this->wpService->addAction(__CLASS__, 'scan');
     }
+
+    public function scanPost(integer $postId)
+    {
+       
+    }
+
+    public function scanSite() {
+
+    }
+
+
 
     /**
      * Look for broken links in post_content
@@ -37,7 +54,7 @@ class BrokenLinks
      * @param  integer $post_id Optional post_id to update broken links for
      * @return void
      */
-    public function lookForBrokenLinks($postId = null, $url = null)
+    public function detectBrokenLinksInPost($postId = null, $url = null)
     {
         \BrokenLinkDetector\App::checkInstall();
         $foundUrls = array();

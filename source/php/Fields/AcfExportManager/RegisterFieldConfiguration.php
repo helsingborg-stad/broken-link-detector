@@ -4,6 +4,7 @@ namespace BrokenLinkDetector\Fields\AcfExportManager;
 
 use BrokenLinkDetector\HooksRegistrar\Hookable;
 use WpService\Contracts\AddAction;
+use RegisterFieldConfigurationInterface;
 
 class RegisterFieldConfiguration implements Hookable
 {
@@ -16,10 +17,10 @@ class RegisterFieldConfiguration implements Hookable
 
     public function addHooks(): void
     {
-        $this->wpService->addAction('acf/init', array($this, 'registerAcfExportManager'));
+        $this->wpService->addAction('acf/init', array($this, 'initFieldRegistration'));
     }
 
-    public function registerAcfExportManager(): void
+    public function initFieldRegistration(): void
     {
         $acfExportManager = new \AcfExportManager\AcfExportManager();
         $acfExportManager->setTextdomain('api-event-manager');
