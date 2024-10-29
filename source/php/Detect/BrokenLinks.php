@@ -33,6 +33,16 @@ class BrokenLinks implements Hookable
 
     public function scanSite() {
 
+        $siteQeuryPostsContainingLinls = $this->postQuery();
+        $postsContainingLinks = $this->db->getInstance()->get_results(
+            $siteQeuryPostsContainingLinls
+        );
+
+        if ($postsContainingLinks) {
+            foreach ($postsContainingLinks as $post) {
+                $this->detectBrokenLinksInPost($post->ID);
+            }
+        }
     }
 
 

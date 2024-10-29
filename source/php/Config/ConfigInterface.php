@@ -22,4 +22,11 @@ interface ConfigInterface
   public function linkUpdaterBannedPostTypes(): array;
   public function linkDetectBannedPostTypes(): array;
   public function linkDetectAllowedPostStatuses(): array;
+
+  /* Link classification */ 
+  public function responseCodesConsideredBroken(): array;
+
+  /* Http polling */ 
+  public function getMaxRedirects(): int;
+  public function getTimeout(): int;
 }

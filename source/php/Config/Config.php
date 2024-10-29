@@ -156,6 +156,45 @@ class Config implements ConfigInterface
   }
 
   /**
+   * Get response codes that are considered broken.
+   * 
+   * @return array
+   */
+  public function responseCodesConsideredBroken(): array
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      [400, 403, 404, 410, 500, 502, 503, 504]
+    ) ?? [];
+  }
+
+  /**
+   * Get the number of redirects to follow.
+   * 
+   * @return int
+   */
+  public function getMaxRedirects(): int
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      5
+    );
+  }
+
+  /**
+   * Get the timeout for the request.
+   * 
+   * @return int
+   */
+  public function getTimeout(): int
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      5
+    );
+  }
+
+  /**
    * Create a prefix for image conversion filter.
    *
    * @return string

@@ -5,7 +5,7 @@ namespace BrokenLinkDetector\BrokenLinkRegistry;
 use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\Config\Config;
 
-class BrokenLinkRegistry implements BrokenLinkRegistryInterface
+class ManageRegistry implements ManageRegistryInterface
 {
   public function __construct(private Database $db, private Config $config)
   {
@@ -39,7 +39,7 @@ class BrokenLinkRegistry implements BrokenLinkRegistryInterface
    * @param  integer $postId
    * @return void
    */
-  public function delete(int $postId): void
+  public function remove(int $postId): void
   {
     $this->db->getInstance()->delete(
       $this->config->getTableName(),

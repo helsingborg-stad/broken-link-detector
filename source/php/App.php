@@ -2,14 +2,28 @@
 
 namespace BrokenLinkDetector;
 
+/* Services */
 use WpService\WpService;
 use AcfService\AcfService;
-use BrokenLinkDetector\Database\Database;
-use BrokenLinkDetector\BrokenLinkRegistry\BrokenLinkRegistry;
+
+/* Config & Features */ 
 use BrokenLinkDetector\Config\Config;
-use BrokenLinkDetector\LinkUpdater\LinkUpdater;
-use BrokenLinkDetector\Admin\Editor;
 use BrokenLinkDetector\Config\Feature;
+
+/* Helpers */ 
+use BrokenLinkDetector\Database\Database;
+
+/* Link updater */
+use BrokenLinkDetector\LinkUpdater\LinkUpdater;
+
+/* Admin functions */ 
+use BrokenLinkDetector\Admin\Editor;
+
+/* Link Registry */
+use BrokenLinkDetector\BrokenLinkRegistry\BrokenLinkRegistry;
+use BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLink;
+use BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostContent;
+use BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostMeta;
 
 class App
 {
@@ -27,25 +41,7 @@ class App
         Config $config
     )
     {
-        global $wpdb;
-        self::$wpdb = $wpdb;
-
-        self::$dbTable = $wpdb->prefix . self::$dbTable;
-
-        add_action('admin_menu', array($this, 'addListTablePage'));
-
-        add_action('admin_enqueue_scripts', array($this, 'enqueueStyles'));
-        add_action('admin_enqueue_scripts', array($this, 'enqueueScripts'));
-
-        add_filter('wp_insert_post_data', array($this, 'checkSavedPost'), 10, 2);
-
-        //add_action('wp', array($this, 'postTypeColumns'));
-        add_action('before_delete_post', array($this, 'deleteBrokenLinks'));
-        add_action('post_submitbox_misc_actions', array($this, 'rescanPost'), 100);
-
-        $this->brokenLinksColumnSorting();
-
-
+       
         /**
          * Register activation and deactivation hooks
         */
@@ -116,18 +112,21 @@ class App
         }
 
         /*
-        * Register external link detector
+        * Link finder
         */
 
-        /*
-        $internalLinkDetector = new \BrokenLinkDetector\Detector\External(
-            $wpService,
-            $config,
-            $db,
-            $registry
-        );
-        $internalLinkDetector->addHooks();
-*/ 
+        if (Feature::factory('link_finder')->isEnabled()) {
+
+            $findLinkFromPostContent = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostContent();
+            $findLinkFromPostMeta = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostMeta();
+
+            $linkFinder = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLink(
+                $wpService,
+                $findLinkFromPostContent,
+                $findLinkFromPostMeta,
+            );
+            $linkFinder->addHooks();
+        }
     }
 
     
