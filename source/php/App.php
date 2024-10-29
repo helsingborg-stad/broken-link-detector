@@ -20,7 +20,7 @@ use BrokenLinkDetector\LinkUpdater\LinkUpdater;
 use BrokenLinkDetector\Admin\Editor;
 
 /* Link Registry */
-use BrokenLinkDetector\BrokenLinkRegistry\BrokenLinkRegistry;
+use BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry;
 use BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLink;
 use BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostContent;
 use BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostMeta;
@@ -37,7 +37,7 @@ class App
         WpService $wpService, 
         AcfService $acfService, 
         Database $db, 
-        BrokenLinkRegistry $registry, 
+        ManageRegistry $registry, 
         Config $config
     )
     {
@@ -117,6 +117,7 @@ class App
 
         if (Feature::factory('link_finder')->isEnabled()) {
 
+            /*
             $findLinkFromPostContent = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostContent();
             $findLinkFromPostMeta = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostMeta();
 
@@ -125,7 +126,10 @@ class App
                 $findLinkFromPostContent,
                 $findLinkFromPostMeta,
             );
-            $linkFinder->addHooks();
+            $linkFinder->addHooks();*/ 
+
+
+
         }
     }
 
