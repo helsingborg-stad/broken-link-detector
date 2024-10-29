@@ -15,7 +15,13 @@ class Classify implements ClassifyInterface {
   private function __construct(private string $url, private ?int $httpCode, private WpService $wpService, private Config $config) {
     //If a http code wasent passed, try to get it
     if(is_null($this->httpCode)) {
-      $this->tryGetHttpCode();
+      if($this->isInternal()) {
+        if($this->tryGetHttpCodeByPostStatus() === null) {
+          $this->tryGetHttpCodeByUrlResponse();
+        }
+      } else {
+        $this->tryGetHttpCodeByUrlResponse();
+      }
     }
   }
 
@@ -52,11 +58,23 @@ class Classify implements ClassifyInterface {
   }
 
   /**
+   * Try to get the post status of the URL internally.
+   */
+  private function tryGetHttpCodeByPostStatus(): string|WP_Error
+  {
+    $post = $this->wpService->urlToPostId($this->url);
+    if($post && $this->wpService->getPostStatus($post) == 'publish') {
+      return $this->httpCode = 200;
+    }
+    return null;
+  }
+
+  /**
    * Try to get the http code of the URL.
    * 
    * @return int|WP_Error   The http code if successful, otherwise WP_Error
    */
-  private function tryGetHttpCode(): int|WP_Error
+  private function tryGetHttpCodeByUrlResponse(): int|WP_Error
   {
     $response = $this->wpService->wpRemoteGet($this->url, [
       'headers_only' => true,
