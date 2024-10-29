@@ -1,6 +1,6 @@
 <?php
 
-namespace BrokenLinkDetector\Link;
+namespace BrokenLinkDetector\BrokenLinkRegistry\Link;
 
 use BrokenLinkDetector\BrokenLinkRegistry\ClassifyLink\Classify;
 use WpService\WpService;
@@ -11,7 +11,6 @@ class Link implements LinkInterface {
     private static WpService $wpService;
     private static Config $config;
     private function __construct(public string $url, public ?int $httpCode, public int $postId) {
-        $this->classify();
     }
     
     /**
@@ -47,3 +46,11 @@ class Link implements LinkInterface {
         return new Link($url, $httpCode, $postId);
     }
 }
+
+/* 
+    Usage: Add call to classify to run the classification logic 
+    (is internal, external, broken by http request or internal post status)
+
+    $link = Link::createLink('https://www.google.com', 200, 1, $wpService, $config)->classify();
+
+*/

@@ -1,8 +1,8 @@
 <?php 
 
-namespace BrokenLinkRegistry\FindLink;
+namespace BrokenLinkDetector\BrokenLinkRegistry\FindLink;
 
-use BrokenLinkRegistry\LinkList;
+use BrokenLinkDetector\BrokenLinkRegistry\LinkList\LinkList;
 
 interface FindLinkInterface
 {

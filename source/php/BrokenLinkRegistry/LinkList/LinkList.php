@@ -1,8 +1,8 @@
 <?php 
 
-namespace BrokenLinkDetector\LinkList;
+namespace BrokenLinkDetector\BrokenLinkRegistry\LinkList;
 
-use BrokenLinkDetector\Link\Link;
+use BrokenLinkDetector\BrokenLinkRegistry\Link\Link;
 
 class LinkList implements LinkListInterface
 {

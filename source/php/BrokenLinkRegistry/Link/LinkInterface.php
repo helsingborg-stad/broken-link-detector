@@ -1,6 +1,6 @@
 <?php
 
-namespace BrokenLinkDetector\Link;
+namespace BrokenLinkDetector\BrokenLinkRegistry\Link;
 
 use WpService\WpService;
 use BrokenLinkDetector\Config\Config;

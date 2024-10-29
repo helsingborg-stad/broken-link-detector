@@ -1,6 +1,6 @@
 <?php 
 
-namespace BrokenLinkDetector\BrokenLinkRegistry;
+namespace BrokenLinkDetector\BrokenLinkRegistry\Registry;
 
 interface ManageRegistryInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace BrokenLinkDetector\FindLink;
+namespace BrokenLinkDetector\BrokenLinkRegistry\FindLink;
 
 use BrokenLinkDetector\HooksRegistrar\Hookable;
 use BrokenLinkDetector\FindLink\FindLinkInterface;

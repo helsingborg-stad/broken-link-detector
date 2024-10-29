@@ -1,6 +1,6 @@
 <?php 
 
-namespace BrokenLinkDetector\BrokenLinkRegistry;
+namespace BrokenLinkDetector\BrokenLinkRegistry\Registry;
 
 use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\Config\Config;
