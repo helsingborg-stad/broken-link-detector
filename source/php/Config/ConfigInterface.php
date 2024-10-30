@@ -26,6 +26,9 @@ interface ConfigInterface
   /* Link classification */ 
   public function responseCodesConsideredBroken(): array;
 
+  /* DNS lookup */
+  public function getDNSRecordTypes(): array;
+
   /* Http polling */ 
   public function getMaxRedirects(): int;
   public function getTimeout(): int;

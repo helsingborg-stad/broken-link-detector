@@ -3,7 +3,7 @@
 namespace BrokenLinkDetector\BrokenLinkRegistry\FindLink;
 
 use BrokenLinkDetector\HooksRegistrar\Hookable;
-use BrokenLinkDetector\FindLink\FindLinkInterface;
+use BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkInterface;
 
 class FindLink implements Hookable
 {

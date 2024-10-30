@@ -169,6 +169,19 @@ class Config implements ConfigInterface
   }
 
   /**
+   * Get the DNS record types to check.
+   * 
+   * @return array
+   */
+  public function getDNSRecordTypes(): array
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      ['A', 'AAAA', 'CNAME']
+    ) ?? [];
+  }
+
+  /**
    * Get the number of redirects to follow.
    * 
    * @return int

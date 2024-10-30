@@ -117,18 +117,35 @@ class App
 
         if (Feature::factory('link_finder')->isEnabled()) {
 
-            /*
-            $findLinkFromPostContent = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostContent();
-            $findLinkFromPostMeta = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostMeta();
+            
+            $findLinkFromPostContent = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostContent(
+                $wpService,
+                $config,
+                $db
+            );
 
+
+            $x = $findLinkFromPostContent->findLinks();
+
+
+            
+
+
+            //$findLinkFromPostMeta = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostMeta();
+/*
             $linkFinder = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLink(
                 $wpService,
                 $findLinkFromPostContent,
-                $findLinkFromPostMeta,
+                //$findLinkFromPostMeta,
             );
-            $linkFinder->addHooks();*/ 
 
 
+
+
+
+            $linkFinder->addHooks();
+
+*/ 
 
         }
     }

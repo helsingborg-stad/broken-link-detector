@@ -43,27 +43,49 @@ class FindLinkFromPostContent implements FindLinkInterface
   {
     $query = $this->createQuery();
 
-    $results = $this->db->getInstance()->get_results($query);
+    $postsContainingLinks = $this->db->getInstance()->get_results($query);
 
-    if(!$this->wpService->isWpError($results)) {
-      foreach ($results as $result) {
-        $this->linkList->addLink(
+    if(!$this->wpService->isWpError($postsContainingLinks)) {
+      foreach ($postsContainingLinks as $postItem) {
+
+        $extractedLinks = $this->extractLinksFromPostContent($postItem->post_content);
+
+        foreach ($extractedLinks as $url) {
+          $this->linkList->addLink(
             Link::createLink(
               $url, 
               null, 
-              $postId, 
+              $postItem->ID, 
               $this->wpService, 
               $this->config
             )
           );
+        }
       }
     }
     
+
+    var_dump($this->linkList);
+
     return $this->linkList;
   }
 
+  /**
+   * Extract all links from the given post content.
+   *
+   * @param string $postContent
+   * @return array
+   */
+  private function extractLinksFromPostContent(string $postContent): array
+  {
+    $matches = [];
+    preg_match_all('/href="([^"]+)"/', $postContent, $matches);
 
-  private function createQuery() {
+    return $matches[1];
+  }
+
+
+  public function createQuery() {
 
     //Init DB object
     $db = $this->db->getInstance();
@@ -77,14 +99,14 @@ class FindLinkFromPostContent implements FindLinkInterface
     $placeholdersStatuses   = implode(',', array_fill(0, count($allowedPostStatuses), '%s'));
 
     // Prepare the SQL statement
-    $query = $db->prepare("
+    $query = $db->prepare('
             SELECT ID, post_content
-            FROM $db->posts
+            FROM ' . $db->posts . '
             WHERE
-                post_content RLIKE ('href=*')
-                AND post_type NOT IN ($placeholdersTypes)
-                AND post_status NOT IN ($placeholdersStatuses)
-        ", array_merge(
+                post_content RLIKE ("href=\\".*?\\"")
+                AND post_type NOT IN (' . $placeholdersTypes . ')
+                AND post_status NOT IN (' . $placeholdersStatuses . ')
+        ', array_merge(
             $bannedPostTypesArray,
             $allowedPostStatuses
         )

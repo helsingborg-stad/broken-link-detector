@@ -70,12 +70,31 @@ class Classify implements ClassifyInterface {
   }
 
   /**
+   * Try to get the DNS record of the domain.
+   */
+  private function tryGetDnsRecord(): string|WP_Error
+  {
+    $dnsRecordTypesToCheck = $this->config->getDNSRecordTypes();
+    foreach($dnsRecordTypesToCheck as $dnsRecordType) {
+      if(checkdnsrr($this->url, $dnsRecordType)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Try to get the http code of the URL.
    * 
    * @return int|WP_Error   The http code if successful, otherwise WP_Error
    */
   private function tryGetHttpCodeByUrlResponse(): int|WP_Error
   {
+    //Check if the URL is reachable
+    if(!$this->tryGetDnsRecord()) {
+      return $this->httpCode = 502; //Bad gateway, no better code available
+    }
+
     $response = $this->wpService->wpRemoteGet($this->url, [
       'headers_only' => true,
       'redirection' => $this->config->getMaxRedirects(),
