@@ -62,6 +62,7 @@ class Installer implements InstallerInterface, Hookable
           post_id bigint(20) DEFAULT NULL,
           url varchar(1024) NOT NULL DEFAULT '',
           unique_hash char(32) NOT NULL,
+          http_code int(3) DEFAULT NULL,
           time TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
           PRIMARY KEY (id),
           UNIQUE KEY unique_post_url_hash (unique_hash)
