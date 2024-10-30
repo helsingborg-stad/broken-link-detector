@@ -94,7 +94,7 @@ class Classify implements ClassifyInterface {
   {
     //Check if the URL is reachable
     if(!$this->tryGetDnsRecord()) {
-      return $this->httpCode = 502; //Bad gateway, no better code available
+      return $this->httpCode = 502; //Bad gateway, no better code available (not really a http error)
     }
 
     $response = $this->wpService->wpRemoteGet($this->url, [
