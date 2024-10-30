@@ -71,8 +71,10 @@ class Classify implements ClassifyInterface {
 
   /**
    * Try to get the DNS record of the domain.
+   * 
+   * @return bool True if the DNS record was found, otherwise false
    */
-  private function tryGetDnsRecord(): string|WP_Error
+  private function tryGetDnsRecord(): bool
   {
     $dnsRecordTypesToCheck = $this->config->getDNSRecordTypes();
     foreach($dnsRecordTypesToCheck as $dnsRecordType) {
