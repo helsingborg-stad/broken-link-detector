@@ -173,12 +173,12 @@ class Config implements ConfigInterface
    * 
    * @return array
    */
-  public function getDNSRecordTypes(): array
+  public function checkIfDnsRespondsBeforeProbingUrl(): bool
   {
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
-      ['A', 'AAAA', 'CNAME']
-    ) ?? [];
+      true
+    );
   }
 
   /**

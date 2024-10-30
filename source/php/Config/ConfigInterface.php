@@ -27,7 +27,7 @@ interface ConfigInterface
   public function responseCodesConsideredBroken(): array;
 
   /* DNS lookup */
-  public function getDNSRecordTypes(): array;
+  public function checkIfDnsRespondsBeforeProbingUrl(): bool;
 
   /* Http polling */ 
   public function getMaxRedirects(): int;

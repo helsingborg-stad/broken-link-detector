@@ -78,11 +78,16 @@ class Classify implements ClassifyInterface {
    */
   private function tryGetDnsRecord(): bool
   {
-    $dnsRecordTypesToCheck = $this->config->getDNSRecordTypes();
-    foreach($dnsRecordTypesToCheck as $dnsRecordType) {
-      if(checkdnsrr($this->url, $dnsRecordType)) {
-        return true;
-      }
+    if(!$this->config->checkIfDnsRespondsBeforeProbingUrl()) {
+      return true;
+    }
+
+    if ((bool) dns_get_record($this->getUrlDomain(), DNS_A)) {
+      return true;
+    }
+
+    if ((bool) dns_get_record($this->getUrlDomain(), DNS_CNAME)) {
+      return true;
     }
     return false;
   }
