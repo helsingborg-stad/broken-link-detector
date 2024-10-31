@@ -5,7 +5,7 @@ namespace BrokenLinkDetector\Cli;
 use WP_CLI;
 use Log;
 
-class CommandCommons
+abstract class CommandCommons
 {
 
   public function getCommandHelp(): string
@@ -31,4 +31,11 @@ class CommandCommons
 
         return $usage;
     }
+
+    abstract public function getCommandName(): string;
+
+    abstract public function getCommandDescription(): string;
+
+    abstract public function getCommandArguments(): array;
+
 }
