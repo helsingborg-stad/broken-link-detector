@@ -16,7 +16,7 @@ class Feature implements FeatureInterface {
     'fix_internal_links' => 1,
     'highlight_broken_links' => 1,
     'link_finder' => 1,
-    'cli_scan_broken_links' => 1
+    'classify_links' => 1
   ];
 
   private function __construct(private string $feature) {
