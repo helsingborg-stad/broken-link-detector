@@ -4,6 +4,8 @@ namespace BrokenLinkDetector\BrokenLinkRegistry\Registry;
 
 use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\Config\Config;
+use BrokenLinkDetector\BrokenLinkRegistry\Link\Link;
+use BrokenLinkDetector\BrokenLinkRegistry\LinkList\LinkList; 
 
 class ManageRegistry implements ManageRegistryInterface
 {
@@ -16,21 +18,38 @@ class ManageRegistry implements ManageRegistryInterface
    * @param  array $data
    * @return void
    */
-  public function add(array $data, int $postId): void
+  public function add(LinkList|Link $data, int $postId): void
   {
-    $uniqueRecordHash = $this->hash($data['url'], $data['post_id']);
-    if(!empty($data) && is_array($data)) {
-      foreach ($data as $item) {
-        $this->db->getInstance()->insert(
-          $this->config->getTableName(), 
-          array(
-              'post_id' => $item['post_id'],
-              'url' => $item['url'],
-              'unique_hash' => $uniqueRecordHash,
-          ), 
-          array('%d', '%s')
-        );
-      }
+    if ($data instanceof LinkList) {
+      $this->addLinkList($data);
+    }
+    if ($data instanceof Link) {
+      $this->addLink($data);
+    }
+  }
+
+  private function addLink(Link $link): void
+  {
+    $this->db->getInstance()->insert(
+      $this->config->getTableName(),
+      array(
+
+      ),
+      array('%d', '%s', '%s')
+    );
+  }
+
+  /**
+   * Add a list of links to the registry
+   * 
+   * @param LinkList $linkList
+   * 
+   * @return void
+   */
+  private function addLinkList(LinkList $linkList): void
+  {
+    foreach ($linkList->getLinks() as $link) {
+      $this->addLink($link);
     }
   }
 
