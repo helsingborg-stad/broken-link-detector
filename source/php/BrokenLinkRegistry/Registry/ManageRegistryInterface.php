@@ -7,6 +7,6 @@ use BrokenLinkDetector\BrokenLinkRegistry\Link\Link;
 
 interface ManageRegistryInterface
 {
-  public function add(LinkList|Link $data, int $postId): void;
+  public function add(LinkList|Link $data): void;
   public function remove(int $postId): void;
 }

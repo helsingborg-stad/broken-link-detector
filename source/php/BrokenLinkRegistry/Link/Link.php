@@ -21,12 +21,24 @@ class Link implements LinkInterface {
      * @return Classify
      */
     public function classify(): Classify {
-        return $this->classification = Classify::factory(
+        $this->classification = Classify::factory(
             $this->url, 
             $this->httpCode,
             self::$wpService,
             self::$config
         );
+
+        /** 
+         * Classification usage:
+         * $isExternal = $this->classification->isExternal();
+         * $isInternal = $this->classification->isInternal();
+         * $isBroken = $this->classification->isBroken();
+         * $httpCode = $this->classification->getHttpCode();
+         * 
+         * var_dump($isExternal, $isInternal, $isBroken, $httpCode);
+         * 
+        */
+        return $this->classification;
     }
 
     /**

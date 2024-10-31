@@ -58,13 +58,21 @@ class Classify implements ClassifyInterface {
   }
 
   /**
+   * Get the http code of the URL.
+   */
+  public function getHttpCode(): ?int 
+  {
+    return $this->httpCode;
+  }
+
+  /**
    * Try to get the post status of the URL internally.
    * 
    * @return int|null The http code if successful, otherwise null
    */
   private function tryGetHttpCodeByPostStatus(): ?int
   {
-    $post = $this->wpService->urlToPostId($this->url);
+    //$post = $this->wpService->urlToPostId($this->url);
     if($post && $this->wpService->getPostStatus($post) == 'publish') {
       return $this->httpCode = 200;
     }

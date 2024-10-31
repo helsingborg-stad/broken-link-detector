@@ -18,7 +18,7 @@ class ManageRegistry implements ManageRegistryInterface
    * @param  array $data
    * @return void
    */
-  public function add(LinkList|Link $data, int $postId): void
+  public function add(LinkList|Link $data): void
   {
     if ($data instanceof LinkList) {
       $this->addLinkList($data);
@@ -30,13 +30,16 @@ class ManageRegistry implements ManageRegistryInterface
 
   private function addLink(Link $link): void
   {
-    $this->db->getInstance()->insert(
+
+    echo "ADD...";
+
+    /*$this->db->getInstance()->insert(
       $this->config->getTableName(),
       array(
 
       ),
       array('%d', '%s', '%s')
-    );
+    );*/ 
   }
 
   /**

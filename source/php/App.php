@@ -25,6 +25,10 @@ use BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLink;
 use BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostContent;
 use BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostMeta;
 
+/* Cli commands */ 
+use BrokenLinkDetector\Cli\CommandRunner;
+use BrokenLinkDetector\Cli\FindLinks;
+
 class App
 {
     public static $dbTable = 'broken_links_detector';
@@ -116,38 +120,24 @@ class App
         */
 
         if (Feature::factory('link_finder')->isEnabled()) {
+        }
 
-            
-            $findLinkFromPostContent = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostContent(
+
+        /** 
+         * Cli commands
+         */
+        if(Feature::factory('cli_scan_broken_links')->isEnabled()) {
+            $runner = new \BrokenLinkDetector\Cli\CommandRunner();
+            $registry = new \BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry($db, $config);
+
+            $runner->addCommand(new \BrokenLinkDetector\Cli\FindLinks(
                 $wpService,
                 $config,
-                $db
-            );
-
-
-            $x = $findLinkFromPostContent->findLinks();
-
-
-            
-
-
-            //$findLinkFromPostMeta = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostMeta();
-/*
-            $linkFinder = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLink(
-                $wpService,
-                $findLinkFromPostContent,
-                //$findLinkFromPostMeta,
-            );
-
-
-
-
-
-            $linkFinder->addHooks();
-
-*/ 
-
+                $db,
+                $registry
+            ))->registerWithWPCLI();
         }
+
     }
 
     

@@ -63,9 +63,6 @@ class FindLinkFromPostContent implements FindLinkInterface
         }
       }
     }
-    
-
-    var_dump($this->linkList);
 
     return $this->linkList;
   }
@@ -79,12 +76,16 @@ class FindLinkFromPostContent implements FindLinkInterface
   private function extractLinksFromPostContent(string $postContent): array
   {
     $matches = [];
-    preg_match_all('/href="([^"]+)"/', $postContent, $matches);
+    preg_match_all('/href="(https?:\/\/[^"]+)"/', $postContent, $matches);
 
     return $matches[1];
   }
 
-
+  /**
+   * Create the SQL query to find all posts containing links.
+   *
+   * @return string
+   */
   public function createQuery() {
 
     //Init DB object
@@ -103,7 +104,7 @@ class FindLinkFromPostContent implements FindLinkInterface
             SELECT ID, post_content
             FROM ' . $db->posts . '
             WHERE
-                post_content RLIKE ("href=\\".*?\\"")
+                post_content RLIKE "href=\\"https?:\\/\\/"
                 AND post_type NOT IN (' . $placeholdersTypes . ')
                 AND post_status NOT IN (' . $placeholdersStatuses . ')
         ', array_merge(
