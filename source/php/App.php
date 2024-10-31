@@ -92,7 +92,7 @@ class App
         }
 
         /**
-         * Register internal link detector
+         * Register internal link updater
         */
         if (Feature::factory('fix_internal_links')->isEnabled()) {
             $internalLinkUpdater = new \BrokenLinkDetector\LinkUpdater\LinkUpdater(
@@ -115,21 +115,33 @@ class App
             $editorInterface->addHooks();
         }
 
-        /*
-        * Link finder
-        */
-
-        if (Feature::factory('link_finder')->isEnabled()) {
-        }
-
-
         /** 
          * Cli commands
          */
-        if(Feature::factory('cli_scan_broken_links')->isEnabled()) {
-            $runner = new \BrokenLinkDetector\Cli\CommandRunner();
-            $registry = new \BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry($db, $config);
 
+        $runner     = new \BrokenLinkDetector\Cli\CommandRunner();
+        $registry   = new \BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry(
+            $db, 
+            $config
+        );
+
+        $installer  = new \BrokenLinkDetector\Installer(
+            $wpService,
+            $config,
+            $db
+        );
+
+        //Commands for database management
+        if (Feature::factory('installer')->isEnabled()) {
+            $runner->addCommand(new \BrokenLinkDetector\Cli\Database(
+                $wpService,
+                $config,
+                $installer
+            ))->registerWithWPCLI();
+        }
+
+        //Commands for finding and registering links
+        if(Feature::factory('link_finder')->isEnabled()) {
             $runner->addCommand(new \BrokenLinkDetector\Cli\FindLinks(
                 $wpService,
                 $config,
@@ -137,6 +149,18 @@ class App
                 $registry
             ))->registerWithWPCLI();
         }
+    
+        //Commands for classifying links
+        /*
+        if(Feature::factory('classify_links')->isEnabled()) {
+            $runner->addCommand(new \BrokenLinkDetector\Cli\ClassifyLinks(
+                $wpService,
+                $config,
+                $db,
+                $registry
+            ))->registerWithWPCLI();
+        }
+        */
 
     }
 
