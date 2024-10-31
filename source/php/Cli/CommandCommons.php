@@ -34,7 +34,7 @@ abstract class CommandCommons
 
     abstract public function getCommandName(): string;
 
-    abstract public function getCommandDescription(): string;
+    abstract public function getCommandOptions(): array;
 
     abstract public function getCommandArguments(): array;
 
