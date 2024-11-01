@@ -119,7 +119,10 @@ class App
          * Cli commands
          */
 
-        $runner     = new \BrokenLinkDetector\Cli\CommandRunner();
+        $runner     = new \BrokenLinkDetector\Cli\CommandRunner(
+            $wpService,
+            $config
+        );
         $registry   = new \BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry(
             $db, 
             $config
@@ -151,7 +154,7 @@ class App
         }
     
         //Commands for classifying links
-        /*
+        
         if(Feature::factory('classify_links')->isEnabled()) {
             $runner->addCommand(new \BrokenLinkDetector\Cli\ClassifyLinks(
                 $wpService,
@@ -160,7 +163,6 @@ class App
                 $registry
             ))->registerWithWPCLI();
         }
-        */
 
     }
 

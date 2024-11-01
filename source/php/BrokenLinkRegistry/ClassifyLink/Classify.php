@@ -9,6 +9,7 @@ namespace BrokenLinkDetector\BrokenLinkRegistry\ClassifyLink;
 use WpService\WpService;
 use BrokenLinkDetector\Config\Config;
 use WP_Error;
+use BrokenLinkDetector\Cli\Log;
 
 class Classify implements ClassifyInterface {
 
@@ -16,10 +17,12 @@ class Classify implements ClassifyInterface {
     //If a http code wasent passed, try to get it
     if(is_null($this->httpCode)) {
       if($this->isInternal()) {
+        Log::info("Classify internal link: $this->url");
         if($this->tryGetHttpCodeByPostStatus() === null) {
           $this->tryGetHttpCodeByUrlResponse();
         }
       } else {
+        Log::info("Classify external link: $this->url");
         $this->tryGetHttpCodeByUrlResponse();
       }
     }
@@ -72,7 +75,7 @@ class Classify implements ClassifyInterface {
    */
   private function tryGetHttpCodeByPostStatus(): ?int
   {
-    //$post = $this->wpService->urlToPostId($this->url);
+    $post = $this->wpService->urlToPostId($this->url);
     if($post && $this->wpService->getPostStatus($post) == 'publish') {
       return $this->httpCode = 200;
     }
@@ -103,9 +106,9 @@ class Classify implements ClassifyInterface {
   /**
    * Try to get the http code of the URL.
    * 
-   * @return int|WP_Error   The http code if successful, otherwise WP_Error
+   * @return int   The http code, or placeholder 503 if not responding/unreachable
    */
-  private function tryGetHttpCodeByUrlResponse(): int|WP_Error
+  private function tryGetHttpCodeByUrlResponse(): int
   {
     //Check if the URL is reachable
     if(!$this->tryGetDnsRecord()) {
@@ -125,7 +128,7 @@ class Classify implements ClassifyInterface {
       return $this->httpCode;
     }
 
-    return $response;
+    return $this->httpCode = 503; //Not responding
   }
 
   /**

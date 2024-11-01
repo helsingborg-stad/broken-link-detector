@@ -208,6 +208,19 @@ class Config implements ConfigInterface
   }
 
   /**
+   * Get the namespace for the WP CLI command.
+   * 
+   * @return string
+   */
+  public function getCommandNamespace(): string
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      'broken-link-detector'
+    );
+  }
+
+  /**
    * Create a prefix for image conversion filter.
    *
    * @return string

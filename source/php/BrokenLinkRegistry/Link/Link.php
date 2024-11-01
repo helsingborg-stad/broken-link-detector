@@ -8,6 +8,10 @@ use BrokenLinkDetector\Config\Config;
 
 class Link implements LinkInterface {
     public ?Classify $classification = null;
+    public ?bool $isBroken = null;
+    public ?bool $isInternal = null;
+    public ?bool $isExternal = null;
+
     private static WpService $wpService;
     private static Config $config;
     private function __construct(public string $url, public ?int $httpCode, public int $postId) {
@@ -28,16 +32,14 @@ class Link implements LinkInterface {
             self::$config
         );
 
-        /** 
-         * Classification usage:
-         * $isExternal = $this->classification->isExternal();
-         * $isInternal = $this->classification->isInternal();
-         * $isBroken = $this->classification->isBroken();
-         * $httpCode = $this->classification->getHttpCode();
-         * 
-         * var_dump($isExternal, $isInternal, $isBroken, $httpCode);
-         * 
-        */
+        if(!is_null($this->classification->getHttpCode())) {
+            $this->httpCode     = $this->classification->getHttpCode();
+            $this->isBroken     = $this->classification->isBroken();
+        }
+
+        $this->isInternal   = $this->classification->isInternal();
+        $this->isExternal   = $this->classification->isExternal();
+
         return $this->classification;
     }
 

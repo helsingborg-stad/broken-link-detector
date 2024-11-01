@@ -23,6 +23,9 @@ interface ConfigInterface
   public function linkDetectBannedPostTypes(): array;
   public function linkDetectAllowedPostStatuses(): array;
 
+  /* Cli */ 
+  public function getCommandNamespace(): string;
+
   /* Link classification */ 
   public function responseCodesConsideredBroken(): array;
 

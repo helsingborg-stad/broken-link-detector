@@ -1,33 +1,45 @@
 <?php 
 
-namespace BrokenLinkDetector\Cli; 
+namespace BrokenLinkDetector\Cli;
 
+use BrokenLinkDetector\Config\Config;
 use WP_CLI;
+use WpService\WpService;
 
 class CommandRunner
 {
-    private string $commandPrefix = 'broken-link-detector'; // Move to conf
-
     private array $commands = [];
 
+    /**
+     * CommandRunner constructor.
+     */
+    public function __construct(private WpService $wpService, private Config $config){}
+
+    /**
+     * Add a command to the command runner.
+     */
     public function addCommand(CommandInterface $command): self
     {
         $this->commands[$command->getCommandName()] = $command;
         return $this;
     }
 
+    /**
+     * Get all registered commands.
+     */
     public function getCommands(): array
     {
         return $this->commands;
     }
 
+    /**
+     * Run a command with the given arguments and options.
+     */
     public function runCommand(string $commandName, array $arguments, array $options): void
     {
         if (!isset($this->commands[$commandName])) {
             throw new \Exception("Command not found");
         }
-
-        var_dump($arguments);
 
         $command = $this->commands[$commandName];
         $handler = $command->getCommandHandler();
@@ -40,7 +52,7 @@ class CommandRunner
     public function registerWithWPCLI(): void
     {
         foreach ($this->commands as $commandName => $command) {
-          WP_CLI::add_command("{$this->commandPrefix} {$commandName}", function ($options, $arguments) use ($command) {
+          WP_CLI::add_command("{$this->config->getCommandNamespace()} {$commandName}", function ($options, $arguments) use ($command) {
             $handler = $command->getCommandHandler();
             $handler($arguments, $options);
         }, [
@@ -50,6 +62,9 @@ class CommandRunner
       }
     }
 
+    /**
+     * Generate the synopsis for a command.
+     */
     private function generateSynopsis(CommandInterface $command): array
     {
         $synopsis = [];
