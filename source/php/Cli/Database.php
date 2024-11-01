@@ -25,47 +25,41 @@ class Database extends CommandCommons implements CommandInterface
 
     public function getCommandArguments(): array
     {
-        return [];
+        return [
+            'action' => 'Do a database action. (install, uninstall, reinstall)'
+        ];
     }
 
     public function getCommandOptions(): array
     {
-        return [
-            'install' => 'Install the database.',
-            'uninstall' => 'Uninstall the database.',
-            'reinstall' => 'Reinstall the database (uninstall, install).'
-        ];
+        return [];
     }
 
     public function getCommandHandler(): callable
     {
         return function (array $arguments, array $options) {
 
-            var_dump($options);
+            $action = $arguments['action'] ?? null;
 
-            if(count($options) != 1) {
-                Log::error("Invalid number of arguments, only a single argument is allowed.");
+            if(!in_array($action, ['install', 'uninstall', 'reinstall'])) {
+                Log::error("Invalid argument, action must be set to 'install', 'uninstall' or 'reinstall'.");
                 return;
             }
 
-            if(!in_array($options[0], ['install', 'uninstall', 'reinstall'])) {
-                Log::error("Invalid argument, only 'install', 'uninstall' or 'reinstall' is allowed.");
-                return;
-            }
-            
-            if($options[0] == 'install') {
+            if($action == 'install') {
                 $this->installer->install();
-                Log::log("Database installed.");
+                Log::success("Database installed.");
             }
 
-            if($options[0] == 'uninstall') {
+            if($action == 'uninstall') {
                 $this->installer->uninstall();
-                Log::log("Database uninstalled.");
+                Log::success("Database uninstalled.");
+                Log::warning("No database is installed: this will cause errors if the plugin is not reinstalled correctly.");
             }
 
-            if($options[0] == 'reinstall') {
+            if($action == 'reinstall') {
                 $this->installer->reinstall(true);
-                Log::log("Database reinstalled.");
+                Log::success("Database reinstalled.");
             }
 
         };

@@ -27,6 +27,8 @@ class CommandRunner
             throw new \Exception("Command not found");
         }
 
+        var_dump($arguments);
+
         $command = $this->commands[$commandName];
         $handler = $command->getCommandHandler();
         $handler($arguments, $options);
@@ -38,19 +40,14 @@ class CommandRunner
     public function registerWithWPCLI(): void
     {
         foreach ($this->commands as $commandName => $command) {
-            WP_CLI::add_command("{$this->commandPrefix} {$commandName}", function ($args, $assoc_args) use ($command) {
-                // Map WP-CLI arguments to CommandRunner expected format
-                $arguments = array_intersect_key($assoc_args, array_flip($command->getCommandArguments()));
-                $options = array_intersect_key($assoc_args, array_flip($command->getCommandOptions()));
-                
-                // Run the command
-                $handler = $command->getCommandHandler();
-                $handler($arguments, $options);
-            }, [
-                'shortdesc' => $command->getCommandDescription(),
-                'synopsis' => $this->generateSynopsis($command)
-            ]);
-        }
+          WP_CLI::add_command("{$this->commandPrefix} {$commandName}", function ($options, $arguments) use ($command) {
+            $handler = $command->getCommandHandler();
+            $handler($arguments, $options);
+        }, [
+            'shortdesc' => $command->getCommandDescription(),
+            'synopsis' => $this->generateSynopsis($command)
+        ]);
+      }
     }
 
     private function generateSynopsis(CommandInterface $command): array

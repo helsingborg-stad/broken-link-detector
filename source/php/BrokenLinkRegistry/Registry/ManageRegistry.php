@@ -16,30 +16,37 @@ class ManageRegistry implements ManageRegistryInterface
   /**
    * Save broken links (if not already in db, checked by hash)
    * @param  array $data
-   * @return void
+   * @return bool
    */
-  public function add(LinkList|Link $data): void
+  public function add(LinkList|Link $linkListOrLink): bool
   {
-    if ($data instanceof LinkList) {
-      $this->addLinkList($data);
+    if ($linkListOrLink instanceof LinkList) {
+      $this->addLinkList($linkListOrLink);
+      return true;
     }
-    if ($data instanceof Link) {
-      $this->addLink($data);
+    if ($linkListOrLink instanceof Link) {
+      $this->addLink($linkListOrLink);
+      return true;
     }
+    return false;
   }
 
   private function addLink(Link $link): void
   {
+      $uniqueHash = $this->hash($link->url, $link->postId);
+      $httpCode   = $link->classification->getHttpCode() ?? null;
 
-    echo "ADD...";
-
-    /*$this->db->getInstance()->insert(
-      $this->config->getTableName(),
-      array(
-
-      ),
-      array('%d', '%s', '%s')
-    );*/ 
+      $this->db->getInstance()->insert(
+          $this->config->getTableName(),
+          array(
+              'post_id'    => $link->postId,
+              'url'        => $link->url,
+              'unique_hash' => $uniqueHash,
+              'http_code'  => $httpCode,
+              'time'       => current_time('mysql')  // Set the current timestamp
+          ),
+          array('%d', '%s', '%s', '%d', '%s')
+      ); 
   }
 
   /**

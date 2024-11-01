@@ -14,6 +14,11 @@ class Log {
       \WP_CLI::error($message);
   }
 
+  public static function warning(string $message): void
+  {
+      \WP_CLI::warning($message);
+  }
+
   public static function log(string $message): void
   {
       \WP_CLI::log($message);
