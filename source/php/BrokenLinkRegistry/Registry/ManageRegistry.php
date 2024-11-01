@@ -34,7 +34,7 @@ class ManageRegistry implements ManageRegistryInterface
   private function addLink(Link $link): void
   {
       $uniqueHash = $this->hash($link->url, $link->postId);
-      $httpCode   = $link->classification->getHttpCode() ?? null;
+      $httpCode   = $link->classification?->getHttpCode() ?? null;
 
       $this->db->getInstance()->insert(
           $this->config->getTableName(),

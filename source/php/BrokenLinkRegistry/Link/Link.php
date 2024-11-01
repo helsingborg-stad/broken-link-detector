@@ -7,7 +7,7 @@ use WpService\WpService;
 use BrokenLinkDetector\Config\Config;
 
 class Link implements LinkInterface {
-    public Classify $classification;
+    public ?Classify $classification = null;
     private static WpService $wpService;
     private static Config $config;
     private function __construct(public string $url, public ?int $httpCode, public int $postId) {
