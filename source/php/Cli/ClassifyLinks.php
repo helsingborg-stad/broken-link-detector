@@ -55,13 +55,17 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
 
             //Log the classification
             $status       = $linkObject->isInternal ? 'internal' : 'external';
-            $brokenStatus = $linkObject->isBroken ? 'broken' : 'not broken';
+            $brokenStatus = $linkObject->isBroken ? 'unreachable' : 'reachable';
 
             //Add to summary
             $this->addToSummary($linkObject->isInternal, $linkObject->isBroken);
 
             //Log the classification
-            Log::log("Classifying link [{$counter}/{$totalNumberOfLinksToClassify}]: " . $link->url . " as {$status} and {$brokenStatus}.");
+            if($linkObject->isBroken) {
+              Log::warning("Classifying link [{$counter}/{$totalNumberOfLinksToClassify}]: " . $link->url . " as {$status} and {$brokenStatus}.");
+            } else {
+              Log::success("Classifying link [{$counter}/{$totalNumberOfLinksToClassify}]: " . $link->url . " as {$status} and {$brokenStatus}.");
+            }
 
             // Store the classification
             if($linkObject->httpCode != null) {
