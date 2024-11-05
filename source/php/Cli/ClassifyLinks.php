@@ -57,6 +57,10 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
             $status       = $linkObject->isInternal ? 'internal' : 'external';
             $brokenStatus = $linkObject->isBroken ? 'broken' : 'not broken';
 
+            //Add to summary
+            $this->addToSummary($linkObject->isInternal, $linkObject->isBroken);
+
+            //Log the classification
             Log::log("Classifying link [{$counter}/{$totalNumberOfLinksToClassify}]: " . $link->url . " as {$status} and {$brokenStatus}.");
 
             // Store the classification
@@ -82,7 +86,7 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
       if($isInternal && $isBroken) {
         $this->brokenInternalLinks++;
       }
-      if(!$isInternal && !$isBroken) {
+      if(!$isInternal && $isBroken) {
         $this->brokenExternalLinks++;
       }
     }
