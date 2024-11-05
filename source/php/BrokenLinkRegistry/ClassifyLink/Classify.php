@@ -17,12 +17,10 @@ class Classify implements ClassifyInterface {
     //If a http code wasent passed, try to get it
     if(is_null($this->httpCode)) {
       if($this->isInternal()) {
-        Log::info("Classify internal link: $this->url");
         if($this->tryGetHttpCodeByPostStatus() === null) {
           $this->tryGetHttpCodeByUrlResponse();
         }
       } else {
-        Log::info("Classify external link: $this->url");
         $this->tryGetHttpCodeByUrlResponse();
       }
     }

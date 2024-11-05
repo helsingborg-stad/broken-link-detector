@@ -62,7 +62,7 @@ class ManageRegistry implements ManageRegistryInterface
       $uniqueHash = $this->hash($link->url, $link->postId);
       $httpCode   = $link->classification?->getHttpCode() ?? null;
 
-      $this->db->getInstance()->update(
+      $x = $this->db->getInstance()->update(
         $this->db->getInstance()->prefix . $this->config->getTableName(),
           array(
               'http_code'  => $httpCode,
@@ -77,9 +77,7 @@ class ManageRegistry implements ManageRegistryInterface
 
       //Log results
       if ($lastError = $this->db->getInstance()->last_error) {
-          Log::warning("Error updating link in registry: " . $lastError);
-      } else {
-          Log::log("Link updated in registry: " . $link->url);
+        Log::warning("Error updating link in registry: " . $lastError);
       }
   }
 
@@ -124,8 +122,6 @@ class ManageRegistry implements ManageRegistryInterface
       //Log results
       if ($lastError = $this->db->getInstance()->last_error) {
           Log::warning("Error adding link to registry: " . $lastError);
-      } else {
-          Log::log("Link added to registry: " . $link->url);
       }
   }
 
@@ -173,13 +169,37 @@ class ManageRegistry implements ManageRegistryInterface
   }
 
   /**
-   * Hash the url and post id
-   * @param  string $url
-   * @param  integer $postId
+   * Normalize the URL to remove insignificant differences and hash with post ID.
+   *
+   * @param string $url
+   * @param integer $postId
    * @return string
    */
-  private function hash($url, $postId): string
+  public function hash($url, $postId): string
   {
-      return md5($url . $postId);
+      // Parse the URL components
+      $parsedUrl = parse_url($url);
+      
+      // Normalize components
+      $scheme = isset($parsedUrl['scheme']) ? strtolower($parsedUrl['scheme']) : 'http';
+      $host = isset($parsedUrl['host']) ? strtolower($parsedUrl['host']) : '';
+      $path = isset($parsedUrl['path']) ? rtrim($parsedUrl['path'], '/') : '';
+      $query = '';
+
+      // If query exists, parse and sort it
+      if (isset($parsedUrl['query'])) {
+          parse_str($parsedUrl['query'], $queryParams);
+          ksort($queryParams);
+          $query = http_build_query($queryParams);
+      }
+
+      // Rebuild the URL with normalized components
+      $normalizedUrl = $scheme . '://' . $host . $path;
+      if ($query) {
+          $normalizedUrl .= '?' . $query;
+      }
+
+      // Return the hash of the normalized URL and post ID
+      return md5($normalizedUrl . $postId);
   }
 }

@@ -40,10 +40,13 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
     {
         return function (array $arguments, array $options) {
             
-          $unclassifiedLinks = $this->registry->getUnclassifiedLinks();
+          $unclassifiedLinks            = $this->registry->getUnclassifiedLinks();
+          $totalNumberOfLinksToClassify = count($unclassifiedLinks);
+          $counter = 0;
 
           foreach($unclassifiedLinks as $link) {
-    
+            $counter++; 
+
             $linkObject = Link::createLink($link->url, null, $link->id, $this->wpService, $this->config);
             $linkObject->classify();
 
@@ -51,7 +54,7 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
             $status       = $linkObject->isInternal ? 'internal' : 'external';
             $brokenStatus = $linkObject->isBroken ? 'broken' : 'not broken';
 
-            Log::log("Classifying link: " . $link->url . " as {$status} and {$brokenStatus}.");
+            Log::log("Classifying link [{$counter}/{$totalNumberOfLinksToClassify}]: " . $link->url . " as {$status} and {$brokenStatus}.");
 
             // Store the classification
             if($linkObject->httpCode != null) {

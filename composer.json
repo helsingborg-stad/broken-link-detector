@@ -52,7 +52,9 @@
         "helsingborg-stad/acf-export-manager": ">=1.0.0",
         "symfony/polyfill-intl-idn": "1.31.0",
         "helsingborg-stad/wpservice": "^2.0",
-        "helsingborg-stad/acfservice": "^0.8.1"
+        "helsingborg-stad/acfservice": "^0.8.1",
+        "react/promise": "^2.8",
+        "react/event-loop": "^1.5.0"
     },
     "require-dev": {
         "codedungeon/phpunit-result-printer": "^0.32.0",
