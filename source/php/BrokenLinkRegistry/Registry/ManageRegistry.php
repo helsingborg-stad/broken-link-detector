@@ -156,15 +156,16 @@ class ManageRegistry implements ManageRegistryInterface
    * Get all unclassified links
    * @return array
    */
-  public function getUnclassifiedLinks(): array
+  public function getUnclassifiedLinks($maxLimit = null): array
   {
     return $this->db->getInstance()->get_results(
       $this->db->getInstance()->prepare("
         SELECT * FROM 
         " . $this->db->getInstance()->prefix . $this->config->getTableName() . " 
         WHERE http_code IS NULL
-        LIMIT 10
-      ")
+        ORDER BY time ASC
+        " . ($maxLimit ? "LIMIT " . $maxLimit : "")
+      )
     );
   }
 
