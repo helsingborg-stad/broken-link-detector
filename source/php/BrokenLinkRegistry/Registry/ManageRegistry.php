@@ -59,7 +59,6 @@ class ManageRegistry implements ManageRegistryInterface
    */
   private function updateLink(Link $link): void
   {
-      $uniqueHash = $this->hash($link->url, $link->postId);
       $httpCode   = $link->classification?->getHttpCode() ?? null;
 
       $x = $this->db->getInstance()->update(
@@ -69,7 +68,7 @@ class ManageRegistry implements ManageRegistryInterface
               'time'       => current_time('mysql')  // Set the current timestamp
           ),
           array(
-              'unique_hash' => $uniqueHash
+              'url' => $this->normalizeUrl($link->url),
           ),
           array('%d', '%s'),
           array('%s')
@@ -111,7 +110,7 @@ class ManageRegistry implements ManageRegistryInterface
         $this->db->getInstance()->prefix . $this->config->getTableName(),
           array(
               'post_id'    => $link->postId,
-              'url'        => $link->url,
+              'url'        => $this->normalizeUrl($link->url),
               'unique_hash' => $uniqueHash,
               'http_code'  => $httpCode,
               'time'       => current_time('mysql')  // Set the current timestamp
@@ -121,7 +120,7 @@ class ManageRegistry implements ManageRegistryInterface
 
       //Log results
       if ($lastError = $this->db->getInstance()->last_error) {
-          Log::warning("Error adding link to registry: " . $lastError);
+          Log::warning("Error adding link to registry: " . $lastError . " for link: " . $link->url . " with postID: " . $link->postId);
       }
   }
 
@@ -164,12 +163,13 @@ class ManageRegistry implements ManageRegistryInterface
         SELECT * FROM 
         " . $this->db->getInstance()->prefix . $this->config->getTableName() . " 
         WHERE http_code IS NULL
+        LIMIT 10
       ")
     );
   }
 
   /**
-   * Normalize the URL to remove insignificant differences and hash with post ID.
+   * Create a hash from a normalized url and post id.
    *
    * @param string $url
    * @param integer $postId
@@ -177,29 +177,36 @@ class ManageRegistry implements ManageRegistryInterface
    */
   public function hash($url, $postId): string
   {
-      // Parse the URL components
-      $parsedUrl = parse_url($url);
-      
-      // Normalize components
-      $scheme = isset($parsedUrl['scheme']) ? strtolower($parsedUrl['scheme']) : 'http';
-      $host = isset($parsedUrl['host']) ? strtolower($parsedUrl['host']) : '';
-      $path = isset($parsedUrl['path']) ? rtrim($parsedUrl['path'], '/') : '';
-      $query = '';
+    return md5($this->normalizeUrl($url) . (string) $postId);
+  }
 
-      // If query exists, parse and sort it
-      if (isset($parsedUrl['query'])) {
-          parse_str($parsedUrl['query'], $queryParams);
-          ksort($queryParams);
-          $query = http_build_query($queryParams);
-      }
+  /**
+   * Normalize the URL to remove insignificant differences.
+   * 
+   * @param string $url
+   * 
+   * @return string     The normalized URL
+   */
+  private function normalizeUrl($url): string
+  {
+    $parsedUrl = parse_url($url);
 
-      // Rebuild the URL with normalized components
-      $normalizedUrl = $scheme . '://' . $host . $path;
-      if ($query) {
-          $normalizedUrl .= '?' . $query;
-      }
+    $scheme = isset($parsedUrl['scheme']) ? strtolower($parsedUrl['scheme']) : 'http';
+    $host = isset($parsedUrl['host']) ? strtolower($parsedUrl['host']) : '';
+    $path = isset($parsedUrl['path']) ? rtrim($parsedUrl['path'], '/') : '';
+    $query = '';
 
-      // Return the hash of the normalized URL and post ID
-      return md5($normalizedUrl . $postId);
+    if (isset($parsedUrl['query'])) {
+      parse_str($parsedUrl['query'], $queryParams);
+      ksort($queryParams);
+      $query = http_build_query($queryParams);
+    }
+
+    $normalizedUrl = $scheme . '://' . $host . $path;
+    if ($query) {
+      $normalizedUrl .= '?' . $query;
+    }
+
+    return $normalizedUrl;
   }
 }
