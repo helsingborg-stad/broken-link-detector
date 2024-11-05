@@ -208,6 +208,19 @@ class Config implements ConfigInterface
   }
 
   /**
+   * Get the interval for rechecking broken links.
+   * 
+   * @return int  The interval in minutes
+   */
+  public function getRecheckInterval(): int
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      5
+    );
+  }
+
+  /**
    * Get the namespace for the WP CLI command.
    * 
    * @return string

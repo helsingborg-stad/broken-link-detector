@@ -28,6 +28,7 @@ interface ConfigInterface
 
   /* Link classification */ 
   public function responseCodesConsideredBroken(): array;
+  public function getRecheckInterval(): int; //The minimum time between rechecking a link
 
   /* DNS lookup */
   public function checkIfDnsRespondsBeforeProbingUrl(): bool;

@@ -9,4 +9,6 @@ interface ManageRegistryInterface
 {
   public function add(LinkList|Link $data): bool;
   public function remove(int $postId): void;
+  public function update(LinkList|Link $data): bool;
+  public function getLinksThatNeedsClassification(int $maxLimit): array;
 }

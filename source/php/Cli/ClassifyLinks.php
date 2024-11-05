@@ -43,7 +43,7 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
     {
         return function (array $arguments, array $options) {
             
-          $unclassifiedLinks            = $this->registry->getUnclassifiedLinks();
+          $unclassifiedLinks            = $this->registry->getLinksThatNeedsClassification();
           $totalNumberOfLinksToClassify = count($unclassifiedLinks);
           $counter = 0;
 

@@ -156,17 +156,23 @@ class ManageRegistry implements ManageRegistryInterface
    * Get all unclassified links
    * @return array
    */
-  public function getUnclassifiedLinks($maxLimit = null): array
+  public function getLinksThatNeedsClassification($maxLimit = null): array
   {
-    return $this->db->getInstance()->get_results(
-      $this->db->getInstance()->prepare("
-        SELECT * FROM 
-        " . $this->db->getInstance()->prefix . $this->config->getTableName() . " 
-        WHERE http_code IS NULL
-        ORDER BY time ASC
-        " . ($maxLimit ? "LIMIT " . $maxLimit : "")
-      )
-    );
+      $recheckInterval = $this->config->getRecheckInterval();
+
+      $results = $this->db->getInstance()->get_results(
+          $this->db->getInstance()->prepare("
+              SELECT * FROM 
+              " . $this->db->getInstance()->prefix . $this->config->getTableName() . " 
+              WHERE http_code IS NULL 
+              OR time < DATE_SUB(NOW(), INTERVAL %d MINUTE)
+              ORDER BY time ASC
+              LIMIT %d", 
+            $recheckInterval, (is_int($maxLimit) ? $maxLimit : PHP_INT_MAX)
+          )
+      );
+
+      return $results;
   }
 
   /**
