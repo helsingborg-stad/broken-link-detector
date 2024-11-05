@@ -13,15 +13,30 @@ use BrokenLinkDetector\Cli\Log;
 
 class Classify implements ClassifyInterface {
 
+  private static $statusCodeCache = [];
+
   private function __construct(private string $url, private ?int $httpCode, private WpService $wpService, private Config $config) {
+
     //If a http code wasent passed, try to get it
     if(is_null($this->httpCode)) {
+
+      //Check if the URL is already classified in this run
+      if(array_key_exists($this->url, self::$statusCodeCache)) {
+        $this->httpCode = self::$statusCodeCache[$this->url];
+        return;
+      }
+
       if($this->isInternal()) {
         if($this->tryGetHttpCodeByPostStatus() === null) {
           $this->tryGetHttpCodeByUrlResponse();
         }
       } else {
         $this->tryGetHttpCodeByUrlResponse();
+      }
+
+      //Store the http code in cache
+      if(!is_null($this->httpCode)) {
+       self::$statusCodeCache[$this->url] = $this->httpCode;
       }
     }
   }
