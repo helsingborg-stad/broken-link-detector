@@ -12,6 +12,9 @@ use BrokenLinkDetector\BrokenLinkRegistry\Link\Link;
 
 class ClassifyLinks extends CommandCommons implements CommandInterface
 {
+    private $brokenInternalLinks = 0;
+    private $brokenExternalLinks = 0;
+
     public function __construct(private WpService $wpService, private Config $config, private Database $database, private ManageRegistry $registry)
     {
     }
@@ -64,7 +67,23 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
             } 
           }
 
-          Log::success("Link classification has been made.");
+          Log::success("Link classification has been made. We found {$this->brokenInternalLinks} broken internal links and {$this->brokenExternalLinks} broken external links.");
         };
+    }
+
+    /**
+     * Add a link to the registry
+     * 
+     * @param Link $link
+     * 
+     * @return void
+     */
+    private function addToSummary($isInternal, $isBroken) {
+      if($isInternal && $isBroken) {
+        $this->brokenInternalLinks++;
+      }
+      if(!$isInternal && !$isBroken) {
+        $this->brokenExternalLinks++;
+      }
     }
 }

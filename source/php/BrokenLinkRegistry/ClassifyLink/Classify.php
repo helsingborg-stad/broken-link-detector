@@ -87,18 +87,19 @@ class Classify implements ClassifyInterface {
    */
   private function tryGetDnsRecord(): bool
   {
-    if(!$this->config->checkIfDnsRespondsBeforeProbingUrl()) {
-      return true;
-    }
+      static $dnsCache = [];
 
-    if ((bool) dns_get_record($this->getUrlDomain(), DNS_A)) {
-      return true;
-    }
+      if (!$this->config->checkIfDnsRespondsBeforeProbingUrl()) {
+        return true;
+      }
 
-    if ((bool) dns_get_record($this->getUrlDomain(), DNS_CNAME)) {
-      return true;
-    }
-    return false;
+      $domain = $this->getUrlDomain();
+
+      if (isset($dnsCache[$domain])) {
+        return $dnsCache[$domain];
+      }
+
+      return $dnsCache[$domain] = (bool) dns_get_record($domain, DNS_A) || (bool) dns_get_record($domain, DNS_CNAME);
   }
 
   /**
