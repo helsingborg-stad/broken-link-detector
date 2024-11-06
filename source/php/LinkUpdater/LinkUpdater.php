@@ -31,7 +31,7 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
      */
     public function updateLinks(array $data, array $post): bool
     {
-      if($this->linkHasChanged($data, $post) && !$this->shouldReplaceForPosttype($data['post_type'])) {
+      if($this->linkHasChanged($data, $post) && $this->shouldReplaceForPosttype($data['post_type'])) {
        
         $postId = $post['ID'] ?? null;
 
@@ -95,7 +95,7 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
      * @param array $post   The stored post data
      * @return bool
      */
-    private function linkHasChanged(array $data, array $post): bool
+    public function linkHasChanged(array $data, array $post): bool
     {
       return $data['post_name'] !== $post['post_name'];
     }
