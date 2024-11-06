@@ -52,7 +52,7 @@ class CommandRunner
     public function registerWithWPCLI(): void
     {
         foreach ($this->commands as $commandName => $command) {
-          \WP_CLI::add_command("{$this->config->getCommandNamespace()} {$commandName}", function ($options, $arguments) use ($command) {
+          WP_CLI::add_command("{$this->config->getCommandNamespace()} {$commandName}", function ($options, $arguments) use ($command) {
             $handler = $command->getCommandHandler();
             $handler($arguments, $options);
         }, [

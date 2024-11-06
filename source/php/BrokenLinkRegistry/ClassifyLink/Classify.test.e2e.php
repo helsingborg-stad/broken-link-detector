@@ -2,14 +2,19 @@
 
 namespace BrokenLinkDetector\BrokenLinkRegistry\ClassifyLink;
 
+use BrokenLinkDetector\Config\Config;
 use WP_UnitTestCase;
+use WpService\Implementations\NativeWpService;
 
 class ClassifyTest extends WP_UnitTestCase
 {
   public function testRemoteGet() {
-    $response = wp_remote_get('https://www.google.com/');
-    $responseCode = wp_remote_retrieve_response_code($response);
+    $wpService = new NativeWpService();
+    $config = new Config($wpService, 'filterPrefix', 'pluginPath', 'pluginUrl');
+    $classified = Classify::factory('https://www.google.com/', null, $wpService, $config);
 
-    $this->assertEquals(403, $responseCode);
+      $this->assertEquals(true, $classified->isExternal());
+      $this->assertEquals(false, $classified->isBroken());
+      $this->assertEquals(200, $classified->getHttpCode());
   }
 }
