@@ -37,21 +37,23 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
 
     public function getCommandOptions(): array
     {
-        return [];
+        return [
+            'limit' => 'Optional: Limit the number of links to classify.',
+        ];
     }
 
     public function getCommandHandler(): callable
     {
         return function (array $arguments, array $options) {
-            
-            $unclassifiedLinks = $this->registry->getLinksThatNeedsClassification(10);
+            $limit = isset($arguments['limit']) ? ((int) $arguments['limit']) : null;
+            $unclassifiedLinks = $this->registry->getLinksThatNeedsClassification($limit);
             $totalNumberOfLinksToClassify = count($unclassifiedLinks);
 
             Log::info("Starting link classification of {$totalNumberOfLinksToClassify} links...");
 
             $progress = \WP_CLI\Utils\make_progress_bar("Working: ", $totalNumberOfLinksToClassify);
 
-            foreach ($unclassifiedLinks as $counter => $link) {
+            foreach ($unclassifiedLinks as $link) {
                 $linkObject = Link::createLink($link->url, null, $link->id, $this->wpService, $this->config);
                 $linkObject->classify();
 
