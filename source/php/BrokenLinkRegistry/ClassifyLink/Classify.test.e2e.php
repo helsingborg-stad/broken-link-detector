@@ -24,8 +24,10 @@ class ClassifyTest extends WP_UnitTestCase
 
   private function externalSuccessfullUrlProvider():array {
     return [
-      ['https://www.scb.se'],
-      ['https://google.com'],
+      ['http://scb.se/'],
+      ['https://www.scb.se/'],
+      ['https://google.com/'],
+      ['https://www.naturvardsverket.se/'],
     ];
   }
 }
