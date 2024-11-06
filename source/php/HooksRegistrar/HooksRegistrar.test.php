@@ -3,7 +3,7 @@
 namespace BrokenLinkDetector\HooksRegistrar;
 
 use BrokenLinkDetector\HooksRegistrar\Hookable;
-use WP_Mock\Tools\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class HooksRegistrarTest extends TestCase
 {

@@ -29,21 +29,10 @@
 			],
 			"settings": {
 				"intelephense.environment.includePaths": [
-					"/var/www/html"
-				]
-			}
-		},
-		"codespaces": {
-			"extensions": [
-				"xdebug.php-debug",
-				"ms-azuretools.vscode-docker"
-			],
-			"settings": {
-				"intelephense.environment.includePaths": [
-					"/var/www/html/wp-includes",
-					"/var/www/html/wp-admin"
+					"/var/www/html",
+					"/tmp/wordpress-tests-lib/includes"
 				],
-				"intelephense.environment.phpVersion": "8.2"
+				"intelephense.environment.phpVersion": "8.3"
 			}
 		}
 	},
