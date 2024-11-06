@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<phpunit
+	bootstrap="tests/bootstrap.e2e.php"
+	backupGlobals="false"
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	>
+		<testsuites>
+    		<testsuite name="default">
+      			<directory suffix=".test.e2e.php">source/php</directory>
+    		</testsuite>
+  		</testsuites>
+</phpunit>

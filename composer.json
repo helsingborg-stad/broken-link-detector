@@ -4,8 +4,10 @@
     "type": "wordpress-plugin",
     "license": "MIT",
     "scripts": {
-        "test": "XDEBUG_MODE=off ./vendor/bin/phpunit --testdox --no-coverage",
+        "test": "XDEBUG_MODE=off phpunit -c phpunit.default.xml --testdox",
         "test:debug": "XDEBUG_MODE=debug ./vendor/bin/phpunit --testdox --no-coverage",
+        "test:setup:e2e": "./tests/install-wp-tests.sh test root dev 127.0.0.1",
+        "test:e2e": "phpunit -c phpunit.e2e.xml --testdox",
         "coverage": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --testdox",
         "minimal": "./vendor/bin/phpunit",
         "php:lint": "./vendor/bin/phpcs -s",
@@ -62,12 +64,13 @@
         "wp-coding-standards/wpcs": "^3.0",
         "phpcompatibility/phpcompatibility-wp": "*",
         "brainmaestro/composer-git-hooks": "^2.8",
-        "10up/wp_mock": "^1.0",
         "composer/installers": "~1.0",
         "php-mock/php-mock-mockery": "^1.4",
         "wikimedia/composer-merge-plugin": "^2.1",
         "phpstan/phpstan": "2.0.x-dev",
-        "johnpbloch/wordpress-core": "dev-master"
+        "johnpbloch/wordpress-core": "dev-master",
+        "phpunit/phpunit": "^9.6",
+        "yoast/phpunit-polyfills": "^3.0"
     },
     "config": {
         "allow-plugins": {

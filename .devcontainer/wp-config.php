@@ -42,7 +42,7 @@ if (!defined('DB_CHARSET')) define('DB_CHARSET', 'utf8mb4');
 /** The database collate type. Don't change this if in doubt. */
 if (!defined('DB_COLLATE')) define('DB_COLLATE', '');
 
-if (!defined('WP_SITEURL')) define('WP_SITEURL', 'http://' . $_SERVER['HTTP_HOST']);
+if (!defined('WP_SITEURL')) define('WP_SITEURL', 'http://' . $_SERVER['HTTP_HOST'] ?? 'localhost');
 if (!defined('WP_HOME')) define('WP_HOME', WP_SITEURL);
 if (!defined('WP_CONTENT_URL')) define('WP_CONTENT_URL', WP_SITEURL . '/wp-content');
 
