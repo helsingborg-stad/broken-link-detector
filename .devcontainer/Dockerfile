@@ -3,7 +3,7 @@
 ARG WORDPRESS_VERSION=latest
 
 # PHP Variant can be any of the listed tags from https://mcr.microsoft.com/v2/devcontainers/php/tags/list
-ARG PHP_VARIANT=8.2-bullseye
+ARG PHP_VARIANT=8.3-bullseye
 
 FROM wordpress:${WORDPRESS_VERSION}
 FROM mcr.microsoft.com/vscode/devcontainers/php:${PHP_VARIANT}
@@ -16,6 +16,11 @@ RUN chown -R vscode:vscode /var/www/html
 
 # Install php-mysql driver
 RUN docker-php-ext-install mysqli pdo pdo_mysql
+
+# Install additional packages for running e2e tests
+RUN apt-get update && \
+    apt-get install -y subversion && \
+    apt-get install -y default-mysql-client
 
 # Enable apache mods
 RUN a2enmod rewrite expires
