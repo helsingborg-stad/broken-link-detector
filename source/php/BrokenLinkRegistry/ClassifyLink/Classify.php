@@ -130,12 +130,13 @@ class Classify implements ClassifyInterface {
     }
 
     $response = $this->wpService->wpRemoteGet($this->url, [
+      'headers' => [
+          'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
+          "Sec-Fetch-Mode" => "navigate",
+      ],
       'headers_only' => true,
       'redirection' => $this->config->getMaxRedirects(),
       'timeout' => $this->config->getTimeout(),
-      'headers' => [
-          'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
-      ],
     ]);
 
     if(!$this->wpService->isWpError($response)) {
