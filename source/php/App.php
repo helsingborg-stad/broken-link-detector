@@ -135,34 +135,33 @@ class App
         );
 
         //Commands for database management
-        // if (Feature::factory('installer')->isEnabled()) {
-        //     $runner->addCommand(new \BrokenLinkDetector\Cli\Database(
-        //         $wpService,
-        //         $config,
-        //         $installer
-        //     ))->registerWithWPCLI();
-        // }
+        if (Feature::factory('installer')->isEnabled()) {
+            $runner->addCommand(new \BrokenLinkDetector\Cli\Database(
+                $wpService,
+                $config,
+                $installer
+            ))->registerWithWPCLI();
+        }
 
-        //Commands for finding and registering links
-        // if(Feature::factory('link_finder')->isEnabled()) {
-        //     $runner->addCommand(new \BrokenLinkDetector\Cli\FindLinks(
-        //         $wpService,
-        //         $config,
-        //         $db,
-        //         $registry
-        //     ))->registerWithWPCLI();
-        // }
+        // Commands for finding and registering links
+        if(Feature::factory('link_finder')->isEnabled()) {
+            $runner->addCommand(new \BrokenLinkDetector\Cli\FindLinks(
+                $wpService,
+                $config,
+                $db,
+                $registry
+            ))->registerWithWPCLI();
+        }
     
         //Commands for classifying links
-        
-        // if(Feature::factory('classify_links')->isEnabled()) {
-        //     $runner->addCommand(new \BrokenLinkDetector\Cli\ClassifyLinks(
-        //         $wpService,
-        //         $config,
-        //         $db,
-        //         $registry
-        //     ))->registerWithWPCLI();
-        // }
+        if(Feature::factory('classify_links')->isEnabled()) {
+            $runner->addCommand(new \BrokenLinkDetector\Cli\ClassifyLinks(
+                $wpService,
+                $config,
+                $db,
+                $registry
+            ))->registerWithWPCLI();
+        }
 
     }
 
