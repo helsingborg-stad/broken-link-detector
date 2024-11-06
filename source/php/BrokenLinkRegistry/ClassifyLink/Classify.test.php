@@ -19,7 +19,7 @@ class ClassifyTest extends TestCase
   {
       $wpService = new FakeWpService([
         'getPermalink' => 'https://example.com/old-permalink/',
-        'getOption' => 'option',
+        'isWpError' => false,
         'siteUrl' => 'https://example.com',
         'applyFilters' => function($filter, $value) {
           return $value;
@@ -37,6 +37,9 @@ class ClassifyTest extends TestCase
               'code' => 200
             ]
           ];
+        },
+        'wpRemoteRetrieveResponseCode' => function($response) {
+          return $response['response']['code'];
         }
       ]);
 
@@ -51,7 +54,7 @@ class ClassifyTest extends TestCase
       );
       $link->classify();
 
-      $result = $link->classification->getHttpCode();
+      $result = $link->classification->isBroken();
 
       // Assert
       $this->assertEquals($expected, $result);
@@ -63,9 +66,9 @@ class ClassifyTest extends TestCase
   private function uriProvider()
   {
       return [
-          ['https://scb.se/', 200],
-          ['https://this-domain-does-not-exists.tdl', 503],
-          ['https://google.com', 200]
+          ['https://scb.se/', false],
+          ['https://this-domain-does-not-exists.tdl', true],
+          ['https://google.com', false]
       ];
   }
 }
