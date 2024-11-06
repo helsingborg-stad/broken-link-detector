@@ -14,6 +14,7 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
 {
     private $brokenInternalLinks = 0;
     private $brokenExternalLinks = 0;
+    private $brokenLinksSummary = []; // Store broken links data for summary table
 
     public function __construct(private WpService $wpService, private Config $config, private Database $database, private ManageRegistry $registry)
     {
@@ -43,55 +44,69 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
     {
         return function (array $arguments, array $options) {
             
-          $unclassifiedLinks            = $this->registry->getLinksThatNeedsClassification();
-          $totalNumberOfLinksToClassify = count($unclassifiedLinks);
-          $counter = 0;
+            $unclassifiedLinks = $this->registry->getLinksThatNeedsClassification(10);
+            $totalNumberOfLinksToClassify = count($unclassifiedLinks);
 
-          foreach($unclassifiedLinks as $link) {
-            $counter++; 
+            Log::info("Starting link classification of {$totalNumberOfLinksToClassify} links...");
 
-            $linkObject = Link::createLink($link->url, null, $link->id, $this->wpService, $this->config);
-            $linkObject->classify();
+            $progress = \WP_CLI\Utils\make_progress_bar("Working: ", $totalNumberOfLinksToClassify);
 
-            //Log the classification
-            $status       = $linkObject->isInternal ? 'internal' : 'external';
-            $brokenStatus = $linkObject->isBroken ? 'unreachable' : 'reachable';
+            foreach ($unclassifiedLinks as $counter => $link) {
+                $linkObject = Link::createLink($link->url, null, $link->id, $this->wpService, $this->config);
+                $linkObject->classify();
 
-            //Add to summary
-            $this->addToSummary($linkObject->isInternal, $linkObject->isBroken);
+                if ($linkObject->httpCode !== null) {
+                    $this->registry->update($linkObject);
+                }
 
-            //Log the classification
-            if($linkObject->isBroken) {
-              Log::warning("Classifying link [{$counter}/{$totalNumberOfLinksToClassify}]: " . $link->url . " as {$status} and {$brokenStatus}.");
-            } else {
-              Log::success("Classifying link [{$counter}/{$totalNumberOfLinksToClassify}]: " . $link->url . " as {$status} and {$brokenStatus}.");
+                $this->addToSummary($linkObject->isInternal, $linkObject->isBroken, $linkObject->httpCode, $linkObject->url);
+
+                $progress->tick();
             }
 
-            // Store the classification
-            if($linkObject->httpCode != null) {
-              $this->registry->update(
-                $linkObject
-              );
-            } 
-          }
+            // Finish the progress bar
+            $progress->finish();
 
-          Log::success("Link classification has been made. We found {$this->brokenInternalLinks} broken internal links and {$this->brokenExternalLinks} broken external links.");
+            // Final success log
+            Log::success("Link classification completed. Found {$this->brokenInternalLinks} broken internal link(s) and {$this->brokenExternalLinks} broken external link(s).");
+
+            // Output the summary table
+            $this->getSummary();
         };
     }
 
     /**
-     * Add a link to the registry
+     * Add a link to the summary table if it's broken
      * 
-     * @param Link $link
+     * @param bool $isInternal
+     * @param bool $isBroken
+     * @param int|null $httpCode
+     * @param string $url
      * 
      * @return void
      */
-    private function addToSummary($isInternal, $isBroken) {
-      if($isInternal && $isBroken) {
-        $this->brokenInternalLinks++;
-      }
-      if(!$isInternal && $isBroken) {
-        $this->brokenExternalLinks++;
-      }
+    private function addToSummary(bool $isInternal, bool $isBroken, ?int $httpCode, string $url): void {
+        if ($isBroken) {
+            $this->brokenLinksSummary[] = [
+                'url' => $url,
+                'httpCode' => $httpCode,
+                'internal' => ($isInternal ? 'Internal' : 'External')
+            ];
+        }
+
+        if ($isInternal && $isBroken) {
+            $this->brokenInternalLinks++;
+        } elseif (!$isInternal && $isBroken) {
+            $this->brokenExternalLinks++;
+        }
+    }
+
+    /**
+     * Output the summary table of broken links
+     * 
+     * @return void
+     */
+    private function getSummary(): void {
+        \WP_CLI\Utils\format_items('table', $this->brokenLinksSummary, ['url', 'httpCode', 'internal']);
     }
 }
