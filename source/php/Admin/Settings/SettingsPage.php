@@ -1,13 +1,13 @@
 <?php
 
-namespace BrokenLinkDetector\Settings;
+namespace BrokenLinkDetector\Admin\Settings;
 
 use BrokenLinkDetector\HooksRegistrar\Hookable;
 use AcfService\Contracts\AddOptionsPage;
 use WpService\Contracts\AddAction;
 use WpService\Contracts\__;
 
-class AdminSettingsPage implements Hookable
+class SettingsPage implements Hookable
 {
     public function __construct(private AddAction&__ $wpService, private AddOptionsPage $acfService){}
 
