@@ -171,6 +171,18 @@ class App
             ))->registerWithWPCLI();
         }
 
+
+        /**
+         * Adds assets 
+         * 
+         */
+        $contextDetectionAsset = new \BrokenLinkDetector\Asset\ContextDetection(
+            $wpService,
+            $config
+        );
+        $contextDetectionAsset->addHooks();
+
+
     }
 
    
