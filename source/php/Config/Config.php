@@ -2,13 +2,14 @@
 
 namespace BrokenLinkDetector\Config;
 
+use AcfService\Contracts\GetField;
 use WpService\Contracts\ApplyFilters;
-use WpService\Contracts\GetOption;
 
 class Config implements ConfigInterface
 {
   public function __construct(
-    private ApplyFilters&GetOption $wpService, 
+    private ApplyFilters $wpService, 
+    private GetField $acfService,
     private string $filterPrefix,
     private string $pluginPath,
     private string $pluginUrl
@@ -217,6 +218,25 @@ class Config implements ConfigInterface
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
       5
+    );
+  }
+
+  /**
+   * Get the domains that should not be checked if broken or not. 
+   * These will get registered, but will always be null.
+   * 
+   * @return array
+   */
+  public function getDomainsThatShouldNotBeChecked(): array
+  {
+    $domains = $this->acfService->getField(
+      'broken_links_local_domains',
+      'option'
+    ) ?: [];
+    $domains = array_map('trim', $domains);
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      []
     );
   }
 

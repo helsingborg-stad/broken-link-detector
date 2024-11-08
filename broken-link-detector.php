@@ -41,6 +41,7 @@ $wpService  = new NativeWpService();
 $acfService = new NativeAcfService();
 $config     = new Config(
     $wpService, 
+    $acfService,
     'BrokenLinkDetector/Config',
     $wpService->pluginDirPath(__FILE__),
     $wpService->pluginsUrl('', __FILE__)

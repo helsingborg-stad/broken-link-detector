@@ -48,7 +48,7 @@ class OptionsPage implements Hookable
         echo '<input type="hidden" name="page" value="broken-links-report">';
 
         // Initialize and display the table
-        $table = new Table($this->db, $this->config);
+        $table = new Table($this->wpService, $this->db, $this->config);
         $table->prepare_items();
         $table->display();
         

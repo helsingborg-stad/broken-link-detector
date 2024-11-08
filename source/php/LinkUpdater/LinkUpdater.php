@@ -20,7 +20,7 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
      */
     public function addHooks(): void
     {
-      $this->wpService->addAction('wp_insert_post_data', array($this, 'updateLinks'), 10, 2);
+      $this->wpService->addFilter('wp_insert_post_data', array($this, 'updateLinks'), 10, 2);
     }
 
     /**
@@ -29,8 +29,18 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
      * @param array $post
      * @return bool
      */
-    public function updateLinks(array $data, array $post): bool
+    public function updateLinks(array $data, array $post): array
     {
+      if(is_null($post)) {
+        return $data;
+      }
+
+      foreach(['post_type', 'post_name'] as $keys) {
+        if(!isset($data[$keys]) || !isset($post[$keys])) {
+          return $data;
+        }
+      }
+
       if($this->linkHasChanged($data, $post) && $this->shouldReplaceForPosttype($data['post_type'])) {
        
         $postId = $post['ID'] ?? null;
@@ -40,10 +50,10 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
             $this->createPermalink($postId, $data['post_name']), 
             $this->createPermalink($postId, $post['post_name'])
           );
-          return true;
+          $data['linkUpdated'] = true;
         }
       }
-      return false;
+      return $data;
     }
 
     /**

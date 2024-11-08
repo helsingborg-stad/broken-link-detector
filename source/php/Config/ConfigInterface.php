@@ -2,12 +2,14 @@
 
 namespace BrokenLinkDetector\Config;
 
+use AcfService\AcfService;
 use WpService\WpService;
 
 interface ConfigInterface
 {
   public function __construct(
     WpService $wpService, 
+    AcfService $acfService,
     string $filterPrefix,
     string $pluginPath,
     string $pluginUrl,

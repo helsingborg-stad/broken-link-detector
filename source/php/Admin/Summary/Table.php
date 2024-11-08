@@ -4,10 +4,11 @@ namespace BrokenLinkDetector\Admin\Summary;
 
 use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\Config\Config;
+use WpService\WpService;
 
 class Table extends \WP_List_Table
 {
-    public function __construct(private Database $db, private Config $config)
+    public function __construct(private WpService $wpService, private Database $db, private Config $config)
     {
         parent::__construct([
             'singular' => __('Broken Link', 'broken-link-detector'),
@@ -43,6 +44,14 @@ class Table extends \WP_List_Table
       $query .= " ORDER BY {$orderby} {$order}";
       
       return $this->db->getInstance()->get_results($query);
+    }
+
+    private function retriveHttpCodes(): array
+    {
+        $result = $this->db->getInstance()->get_col(
+            "SELECT DISTINCT http_code FROM {$this->db->getTableName()}"
+        );
+        return array_map('absint', $result ?? []);
     }
 
     public function prepare_items(): void
@@ -90,6 +99,10 @@ class Table extends \WP_List_Table
             return __('N/A', 'broken-link-detector');
         }
 
+        if ($column_name === 'http_code') {
+            return $this->wpService->getStatusHeaderDesc($item->$column_name) . " (" . $item->$column_name . ")";
+        }
+
         return $item->$column_name ?? '';
     }
 
@@ -101,10 +114,12 @@ class Table extends \WP_List_Table
             echo '<div class="alignright actions">';
               echo '<select name="http_code_filter">';
                 echo '<option value="">' . __('All HTTP Codes', 'broken-link-detector') . '</option>';
-                echo '<option value="404"' . selected($selectedCode, 404, false) . '>' . __('404 Not Found', 'broken-link-detector') . '</option>';
-                echo '<option value="500"' . selected($selectedCode, 500, false) . '>' . __('500 Internal Server Error', 'broken-link-detector') . '</option>';
+                $httpCodes = $this->retriveHttpCodes();
+                foreach ($httpCodes as $code) {
+                    echo '<option value="' . $code . '"' . selected($selectedCode, $code, false) . '>' . $code . ' - '.$this->wpService->getStatusHeaderDesc($code).'</option>';
+                }
               echo '</select>';
-            submit_button(__('Filter'), 'button', '', false);
+                submit_button(__('Filter'), 'button', '', false);
             echo '</div>';
         }
     }

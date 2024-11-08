@@ -18,7 +18,7 @@ class Classify implements ClassifyInterface {
   private function __construct(private string $url, private ?int $httpCode, private WpService $wpService, private Config $config) {
 
     //If a http code wasent passed, try to get it
-    if(is_null($this->httpCode)) {
+    if(is_null($this->httpCode) && $this->shouldClassify($url)) {
 
       //Check if the URL is already classified in this run
       if(array_key_exists($this->url, self::$statusCodeCache)) {
@@ -158,6 +158,19 @@ class Classify implements ClassifyInterface {
    */
   public static function factory(string $url, ?int $httpCode, WpService $wpService, Config $config): Classify {
     return new self($url, $httpCode, $wpService, $config);
+  }
+
+  /**
+   * Check if the URL should be classified.
+   * 
+   * @param string $url
+   * @return bool
+   */
+  private function shouldClassify(string $url): bool {
+    $doNotClassifyDomains = $this->config->getDomainsThatShouldNotBeChecked();
+    if(in_array($this->getHostName($url), $doNotClassifyDomains)) {
+      return false;
+    }
   }
 
   /**
