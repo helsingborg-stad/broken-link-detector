@@ -39,12 +39,20 @@ class OptionsPage implements Hookable
 
     public function renderSummaryPage(): void
     {
-        echo '<h1>Broken Links Report</h1>';
-        echo '<p>Here is a summary of broken links found in your content.</p>';
+        echo '<div class="wrap">';
+        echo '<h1 class="wp-heading-inline">' . esc_html__('Broken Links Report', 'broken-link-detector') . '</h1>';
+        echo '<p class="description">' . esc_html__('Here is a summary of broken links found in your content.', 'broken-link-detector') . '</p>';
+        
+        echo '<hr class="wp-header-end">';
+        echo '<form method="get">';
+        echo '<input type="hidden" name="page" value="broken-links-report">';
 
         // Initialize and display the table
         $table = new Table($this->db, $this->config);
         $table->prepare_items();
         $table->display();
+        
+        echo '</form>';
+        echo '</div>';
     }
 }
