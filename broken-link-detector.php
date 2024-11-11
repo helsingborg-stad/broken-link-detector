@@ -18,6 +18,14 @@ use BrokenLinkDetector\Config\Config;
 use BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry;
 use BrokenLinkDetector\Config\Feature;
 
+/* Assets */ 
+use WpService\FileSystem\BaseFileSystem;
+use WpService\FileSystemResolvers\ManifestFilePathResolver;
+use WpService\FileSystemResolvers\UrlFilePathResolver;
+use WpService\Implementations\FilePathResolvingWpService;
+use WpService\Implementations\WpServiceLazyDecorator;
+use WpService\Implementations\WpServiceWithTextDomain;
+
 /**
  * If this file is called directly, abort.
  */
@@ -37,8 +45,13 @@ try {
 /**
  * Bootstrap the plugin
  */
-$wpService  = new NativeWpService();
+$wpService                = new NativeWpService();
+$manifestFileWpService    = new WpServiceLazyDecorator();
+$urlFilePathResolver      = new UrlFilePathResolver($manifestFileWpService);
+$baseFileSystem           = new BaseFileSystem();
+
 $acfService = new NativeAcfService();
+
 $config     = new Config(
     $wpService, 
     $acfService,
@@ -46,6 +59,22 @@ $config     = new Config(
     $wpService->pluginDirPath(__FILE__),
     $wpService->pluginsUrl('', __FILE__)
 );
+
+$manifestFilePathResolver = new ManifestFilePathResolver(
+    $config->getPluginPath() . "dist/manifest.json", 
+    $baseFileSystem, 
+    $manifestFileWpService, 
+    $urlFilePathResolver
+);
+
+$wpService = new FilePathResolvingWpService(
+    new NativeWpService(), 
+    $manifestFilePathResolver
+);
+
+$manifestFileWpService->setInner(new WpServiceWithTextDomain($wpService, $config->getTextDomain()));
+
+
 $database   = new Database($config, $wpService);
 $registry   = new ManageRegistry($database, $config);
 
@@ -53,7 +82,7 @@ $registry   = new ManageRegistry($database, $config);
  * Run the plugin
  */
 $brokenLinkDetectorApp = new BrokenLinkDetector\App(
-    $wpService,
+    $manifestFileWpService,
     $acfService,
     $database,
     $registry,

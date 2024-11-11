@@ -19,6 +19,7 @@ use BrokenLinkDetector\LinkUpdater\LinkUpdater;
 /* Admin functions */ 
 use BrokenLinkDetector\Admin\Editor;
 use BrokenLinkDetector\Admin\Settings\SanitizeLocalDomainSetting;
+
 /* Link Registry */
 use BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry;
 use BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLink;
@@ -177,21 +178,15 @@ class App
 
         /**
          * Adds assets 
-         * 
          */
         $contextDetectionAsset = new \BrokenLinkDetector\Asset\ContextDetection(
             $wpService,
             $config
         );
+
         $contextDetectionAsset->addHooks();
-
-
     }
-
-   
-
     
-
     /**
      * Checks if a saved posts permalink is changed and updates permalinks throughout the site
      * @param  array $data     Post data

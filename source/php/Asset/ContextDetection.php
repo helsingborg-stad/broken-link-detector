@@ -14,7 +14,7 @@ class ContextDetection extends AssetRegistry implements AssetInterface
 
   public function getFilename(): string
   {
-    return 'js/context-detection.js';
+    return 'js/context-detector.js';
   }
 
   public function getLocalizeData(): ?array
