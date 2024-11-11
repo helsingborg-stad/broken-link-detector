@@ -256,10 +256,15 @@ class Config implements ConfigInterface
    */
   public function getTooltipText(): string
   {
+    $dbLabel = $this->acfService->getField(
+      'broken_links_local_label',
+      'option'
+    ) ?: false;
+
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
-      $this->wpService->__(
-        'Link unavabile on this network',
+      $dbLabel ?: $this->wpService->__(
+        'Link unavabile',
         'broken-link-detector'
       )
     );

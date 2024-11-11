@@ -16,7 +16,6 @@ class ClientTypeChecker {
         private externalClass: string, // Class for external clients
         private contextData: { domains: string[]; tooltip: string } // Context data
     ) {
-        this.checkDevToolsOpen();
         this.initializeCheck();
     }
 
@@ -85,24 +84,14 @@ class ClientTypeChecker {
 
     // Log messages only if DevTools is open
     private log(message: string): void {
-        if (this.isDevToolsOpen) {
-            console.log(message);
-        }
-    }
-
-    // Check if DevTools is open by measuring execution time of the debugger
-    private checkDevToolsOpen(): void {
-        const start = performance.now();
-        debugger;
-        const timeTaken = performance.now() - start;
-        // DevTools are likely open if execution time is more than 100ms
-        this.isDevToolsOpen = timeTaken > 100;
+        console.log(message);
     }
 
     // Apply domain restrictions to domains in the domain list
     public applyDomainRestrictions(): void {
         this.contextData.domains.forEach(domain => {
             const elements = document.querySelectorAll(`a[href*="${domain}"]`);
+            console.log(elements);
             elements.forEach(element => {
                 element.setAttribute("disabled", "disabled");
                 element.setAttribute("data-tooltip", this.contextData.tooltip);
@@ -120,7 +109,9 @@ export function initializeClientTypeChecker(
     contextData: { domains: string[], tooltip: string }
 ): void {
     const checker = new ClientTypeChecker(url, timeout, internalClass, externalClass, contextData);
-    checker.applyDomainRestrictions();
+    document.addEventListener("DOMContentLoaded", () => {
+        checker.applyDomainRestrictions();
+    });
 }
 
 initializeClientTypeChecker(
