@@ -156,7 +156,7 @@ class ManageRegistry implements ManageRegistryInterface
    * Get all unclassified links
    * @return array
    */
-  public function getLinksThatNeedsClassification($maxLimit = null): array
+  public function getLinksThatNeedsClassification($maxLimit = null, $random = true): array
   {
       $recheckInterval = $this->config->getRecheckInterval();
 
@@ -166,7 +166,7 @@ class ManageRegistry implements ManageRegistryInterface
               " . $this->db->getInstance()->prefix . $this->config->getTableName() . " 
               WHERE http_code IS NULL 
               OR time < DATE_SUB(NOW(), INTERVAL %d MINUTE)
-              ORDER BY time ASC
+              ORDER BY " . ($random ? "RAND()" : "time ASC") . "
               LIMIT %d", 
             $recheckInterval, (is_int($maxLimit) ? $maxLimit : PHP_INT_MAX)
           )
