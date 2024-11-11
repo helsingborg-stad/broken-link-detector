@@ -1,3 +1,8 @@
+var brokenLinkContextDetectionData = {
+    "domains": ["google.com", "ifg.se", "dev.local.municipio.tech"],
+    "tooltip": "Access to this domain is restricted."
+};
+
 class ClientTypeChecker {
     private timedOut: boolean = false;
     private img: HTMLImageElement = new Image();
@@ -8,7 +13,8 @@ class ClientTypeChecker {
         private url: string, // URL to the image
         private timeout: number, // Timeout duration in milliseconds
         private internalClass: string, // Class for internal clients
-        private externalClass: string // Class for external clients
+        private externalClass: string, // Class for external clients
+        private contextData: { domains: string[]; tooltip: string } // Context data
     ) {
         this.checkDevToolsOpen();
         this.initializeCheck();
@@ -92,6 +98,17 @@ class ClientTypeChecker {
         // DevTools are likely open if execution time is more than 100ms
         this.isDevToolsOpen = timeTaken > 100;
     }
+
+    // Apply domain restrictions to domains in the domain list
+    public applyDomainRestrictions(): void {
+        this.contextData.domains.forEach(domain => {
+            const elements = document.querySelectorAll(`a[href*="${domain}"]`);
+            elements.forEach(element => {
+                element.setAttribute("disabled", "disabled");
+                element.setAttribute("data-tooltip", this.contextData.tooltip);
+            });
+        });
+    }
 }
 
 // Function to initialize client type checker
@@ -99,14 +116,17 @@ export function initializeClientTypeChecker(
     url: string,
     timeout: number,
     internalClass: string,
-    externalClass: string
+    externalClass: string,
+    contextData: { domains: string[], tooltip: string }
 ): void {
-    new ClientTypeChecker(url, timeout, internalClass, externalClass);
+    const checker = new ClientTypeChecker(url, timeout, internalClass, externalClass, contextData);
+    checker.applyDomainRestrictions();
 }
 
 initializeClientTypeChecker(
     'https://example.com/image.jpg',
     3000,
     'internal-client',
-    'external-client'
+    'external-client',
+    brokenLinkContextDetectionData
 );

@@ -12,6 +12,18 @@ vendor/
 # ignore composer lock file
 composer.lock
 
+# ignore .env file
+.env
+
+# ignore .DS_Store files
+.DS_Store
+
+# ignore .vscode files
+.vscode/
+
+# ignore dist files
+/dist/*
+
 # ignore jekyll build directory
 /_site
 

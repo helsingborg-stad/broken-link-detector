@@ -4,11 +4,12 @@ namespace BrokenLinkDetector\Config;
 
 use AcfService\Contracts\GetField;
 use WpService\Contracts\ApplyFilters;
+use WpService\Contracts\__;
 
 class Config implements ConfigInterface
 {
   public function __construct(
-    private ApplyFilters $wpService, 
+    private ApplyFilters&__ $wpService, 
     private GetField $acfService,
     private string $filterPrefix,
     private string $pluginPath,
@@ -245,6 +246,22 @@ class Config implements ConfigInterface
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
       $domains ?? []
+    );
+  }
+
+  /**
+   * Get the tooltip text for the context detection disabled link.
+   * 
+   * @return string
+   */
+  public function getTooltipText(): string
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      $this->wpService->__(
+        'Link unavabile on this network',
+        'broken-link-detector'
+      )
     );
   }
 

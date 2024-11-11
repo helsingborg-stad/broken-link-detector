@@ -15,6 +15,6 @@
     ]
   },
   "include": [
-    "assets/source/**/*",
+    "source/js/*.ts"
   ]
 }
