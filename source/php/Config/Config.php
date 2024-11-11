@@ -244,7 +244,7 @@ class Config implements ConfigInterface
 
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
-      []
+      $domains ?? []
     );
   }
 

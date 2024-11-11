@@ -59,7 +59,7 @@ abstract class AssetRegistry implements Hookable, AssetInterface
             if (!empty($this->getLocalizeData())) {
               $this->wpService->wpLocalizeScript(
                   $this->getHandle(),
-                  $this->getHandle() . 'Data',
+                  $this->getHandle() . '-data',
                   $this->getLocalizeData()
               );
             }
