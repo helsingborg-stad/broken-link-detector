@@ -5,7 +5,7 @@
         {
             "key": "field_6718e7d0b54f7",
             "label": "Local domains",
-            "name": "local_domains",
+            "name": "broken_links_local_domains",
             "aria-label": "",
             "type": "repeater",
             "instructions": "Add domains in this list, that should not be checked.",

@@ -14,8 +14,8 @@ class Editor implements Hookable
 
     public function addHooks(): void
     {
-        $this->wpService->addAction('mce_external_plugins', array($this, 'registerMcePlugin'));
-        $this->wpService->addAction('admin_footer', array($this, 'getBrokenLinks'));
+        //$this->wpService->addAction('mce_external_plugins', array($this, 'registerMcePlugin'));
+        //$this->wpService->addAction('admin_footer', array($this, 'getBrokenLinks'));
     }
 
     /**

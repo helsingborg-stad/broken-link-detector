@@ -233,7 +233,10 @@ class Config implements ConfigInterface
       'broken_links_local_domains',
       'option'
     ) ?: [];
+
+    $domains = array_column($domains, 'domain');
     $domains = array_map('trim', $domains);
+
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
       []

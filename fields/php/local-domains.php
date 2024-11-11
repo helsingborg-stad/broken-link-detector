@@ -8,7 +8,7 @@
         0 => array(
             'key' => 'field_6718e7d0b54f7',
             'label' => __('Local domains', 'api-event-manager'),
-            'name' => 'local_domains',
+            'name' => 'broken_links_local_domains',
             'aria-label' => '',
             'type' => 'repeater',
             'instructions' => __('Add domains in this list, that should not be checked.', 'api-event-manager'),
