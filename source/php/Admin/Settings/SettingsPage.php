@@ -9,13 +9,48 @@ use WpService\Contracts\__;
 
 class SettingsPage implements Hookable
 {
-    public function __construct(private AddAction&__ $wpService, private AddOptionsPage $acfService){}
+    /**
+     * @param iterable<Hookable> $filters
+     */
+    public function __construct(
+        private AddAction&__ $wpService, 
+        private AddOptionsPage $acfService, 
+        private iterable $additionalHooks // Inject iterable of Hookable objects
+    ) {}
 
+    /**
+     * Add hooks
+     * 
+     * @return void
+     */
     public function addHooks(): void
     {
         $this->wpService->addAction('acf/init', [$this, 'registerSettingsPage']);
+        $this->registerAdditionalHooks();
     }
 
+    /**
+     * Register additional hooks provided in $additionalHooks
+     * 
+     * @return void
+     */
+    private function registerAdditionalHooks(): void
+    {
+        foreach ($this->additionalHooks as $hook) {
+            if (!$hook instanceof Hookable) {
+                throw new \InvalidArgumentException(
+                    sprintf('Expected instance of Hookable, got %s', get_debug_type($hook))
+                );
+            }
+            $hook->addHooks();
+        }
+    }
+
+    /**
+     * Register the settings page
+     * 
+     * @return void
+     */
     public function registerSettingsPage(): void
     {
         $this->acfService->addOptionsPage(array(
@@ -29,7 +64,7 @@ class SettingsPage implements Hookable
             'icon_url'        => '',
             'redirect'        => true,
             'post_id'         => 'options',
-            'autoload'        => false,
+            'autoload'        => true,
             'update_button'   => $this->wpService->__('Update', 'broken-link-detector'),
             'updated_message' => $this->wpService->__('Settings updated', 'broken-link-detector'),
         ));

@@ -30,9 +30,9 @@
                     "label": "Domain",
                     "name": "domain",
                     "aria-label": "",
-                    "type": "text",
-                    "instructions": "eg. domain.com or subdomain.domain.com",
-                    "required": 1,
+                    "type": "url",
+                    "instructions": "eg. https:\/\/domain.com or https:\/\/subdomain.domain.com",
+                    "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
                         "width": "",
@@ -40,10 +40,7 @@
                         "id": ""
                     },
                     "default_value": "",
-                    "maxlength": "",
                     "placeholder": "",
-                    "prepend": "",
-                    "append": "",
                     "parent_repeater": "field_6718e7d0b54f7"
                 }
             ]

@@ -20,7 +20,6 @@ class ContextDetection extends AssetRegistry implements AssetInterface
   public function getLocalizeData(): ?array
   {
     return [
-      'foo' => 'bar',
       'domains' => $this->config->getDomainsThatShouldNotBeChecked()
     ];
   }

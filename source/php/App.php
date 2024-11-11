@@ -18,7 +18,7 @@ use BrokenLinkDetector\LinkUpdater\LinkUpdater;
 
 /* Admin functions */ 
 use BrokenLinkDetector\Admin\Editor;
-
+use BrokenLinkDetector\Admin\Settings\SanitizeLocalDomainSetting;
 /* Link Registry */
 use BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry;
 use BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLink;
@@ -75,7 +75,10 @@ class App
         if (Feature::factory('admin_settings')->isEnabled()) {
             $registerAdminSettingsPage = new \BrokenLinkDetector\Admin\Settings\SettingsPage(
                 $wpService,
-                $acfService
+                $acfService,
+                [
+                    new SanitizeLocalDomainSetting($wpService, $acfService)
+                ]
             );
             $registerAdminSettingsPage->addHooks();
         }

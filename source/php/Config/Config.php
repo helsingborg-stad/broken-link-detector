@@ -102,7 +102,7 @@ class Config implements ConfigInterface
   {
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
-      $this->getPluginPath() . 'fields'
+      $this->getPluginPath() . 'source/fields'
     );
   }
 
@@ -235,7 +235,12 @@ class Config implements ConfigInterface
     ) ?: [];
 
     $domains = array_column($domains, 'domain');
-    $domains = array_map('trim', $domains);
+    
+    $domains = array_map(function($domain) {
+      return parse_url($domain, PHP_URL_HOST);
+    }, $domains);
+
+    $domains = array_filter($domains);
 
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
