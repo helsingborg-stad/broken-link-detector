@@ -270,6 +270,32 @@ class Config implements ConfigInterface
     );
   }
 
+  public function isContextCheckEnabled() : bool {
+    $isEnabled = $this->acfService->getField(
+        'broken_links_context_check_enabled',
+        'option'
+    ) ?: false;
+    
+    $hasUrl = $this->getContextCheckUrl() ? true : false;
+
+    return $this->wpService->applyFilters(
+        $this->createFilterKey(__FUNCTION__),
+        ($isEnabled && $hasUrl) ?: false
+    );
+  }
+
+  public function getContextCheckUrl() : string {
+      $url = $this->acfService->getField(
+          'broken_links_context_check_url',
+          'option'
+      ) ?: false;
+
+      return $this->wpService->applyFilters(
+          $this->createFilterKey(__FUNCTION__),
+          $url ?: ''
+      );
+  }
+
   /**
    * Get the namespace for the WP CLI command.
    * 

@@ -1,13 +1,7 @@
-var brokenLinkContextDetectionData = {
-    "domains": ["google.com", "ifg.se", "dev.local.municipio.tech"],
-    "tooltip": "Access to this domain is restricted."
-};
-
 class ClientTypeChecker {
     private timedOut: boolean = false;
     private img: HTMLImageElement = new Image();
     private timer: number | null = null;
-    private isDevToolsOpen: boolean = false;
 
     constructor(
         private url: string, // URL to the image
@@ -95,6 +89,9 @@ class ClientTypeChecker {
             elements.forEach(element => {
                 element.setAttribute("disabled", "disabled");
                 element.setAttribute("data-tooltip", this.contextData.tooltip);
+                element.addEventListener("click", (event) => {
+                    event.preventDefault();
+                });
             });
         });
     }
@@ -114,10 +111,11 @@ export function initializeClientTypeChecker(
     });
 }
 
+const contextData = window['brokenLinkContextDetectionData'] as { domains: string[], tooltip: string };
 initializeClientTypeChecker(
     'https://example.com/image.jpg',
     3000,
     'internal-client',
     'external-client',
-    brokenLinkContextDetectionData
+    contextData
 );
