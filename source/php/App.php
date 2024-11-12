@@ -71,7 +71,9 @@ class App
         }
 
         /**
-         * Init settings page
+         * Settings page to configure the plugin
+         * 
+         * @capability: administrators
         */
         if (Feature::factory('admin_settings')->isEnabled()) {
             $registerAdminSettingsPage = new \BrokenLinkDetector\Admin\Settings\SettingsPage(
@@ -84,7 +86,11 @@ class App
             $registerAdminSettingsPage->addHooks();
         }
 
-        /** Init summary */
+        /**
+         * Summary page to view a list of broken links
+         * 
+         * @capability: editors
+         */
         if (Feature::factory('admin_summary')->isEnabled()) {
             $registerAdminSettingsPage = new \BrokenLinkDetector\Admin\Summary\OptionsPage(
                 $wpService,
@@ -94,8 +100,19 @@ class App
             $registerAdminSettingsPage->addHooks();
         }
 
+        /**
+         * Add MCE editor interface to highlight broken links
+        */
+        if (Feature::factory('admin_highlight_links')->isEnabled()) {
+            $editorInterface = new \BrokenLinkDetector\Admin\Editor(
+                $wpService,
+                $config
+            );
+            $editorInterface->addHooks();
+        }
+
         /** 
-         * Field loader
+         * Loads editor and options fields 
         */
         if (Feature::factory('field_loader')->isEnabled()) {
             $fieldLoader = new \BrokenLinkDetector\Fields\AcfExportManager\RegisterFieldConfiguration(
@@ -118,16 +135,7 @@ class App
             $internalLinkUpdater->addHooks();
         }
 
-        /**
-         * Add editor interface
-        */
-        if (Feature::factory('highlight_broken_links')->isEnabled()) {
-            $editorInterface = new \BrokenLinkDetector\Admin\Editor(
-                $wpService,
-                $config
-            );
-            $editorInterface->addHooks();
-        }
+        
 
         /** 
          * Cli commands
@@ -139,7 +147,7 @@ class App
             );
             
             //Commands for database management
-            if (Feature::factory('installer')->isEnabled()) {
+            if (Feature::factory('cli_installer')->isEnabled()) {
                 $installer  = new \BrokenLinkDetector\Installer(
                     $wpService,
                     $config,
@@ -159,7 +167,7 @@ class App
             );
 
             // Commands for finding and registering links
-            if(Feature::factory('link_finder')->isEnabled()) {
+            if(Feature::factory('cli_link_finder')->isEnabled()) {
                 $runner->addCommand(new \BrokenLinkDetector\Cli\FindLinks(
                     $wpService,
                     $config,
@@ -169,7 +177,7 @@ class App
             }
         
             //Commands for classifying links
-            if(Feature::factory('classify_links')->isEnabled()) {
+            if(Feature::factory('cli_link_classifier')->isEnabled()) {
                 $runner->addCommand(new \BrokenLinkDetector\Cli\ClassifyLinks(
                     $wpService,
                     $config,
