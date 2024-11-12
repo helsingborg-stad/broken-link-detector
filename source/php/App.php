@@ -137,6 +137,16 @@ class App
             $internalLinkUpdater->addHooks();
         }
 
+        if (Feature::factory('maintain_link_registry')->isEnabled(1)) {
+            $findLinksOnSavePost = new \BrokenLinkDetector\Hooks\MaintainLinkRegistryOnSavePost(
+                $wpService,
+                $config,
+                $db,
+                $registry
+            );
+            $findLinksOnSavePost->addHooks();
+        }
+
         /** 
          * Cli commands
          */
