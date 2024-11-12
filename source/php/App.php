@@ -199,46 +199,4 @@ class App
             $contextDetectionAsset->addHooks();
         }
     }
-
-    /**
-     * Checks if a saved posts permalink is changed and updates permalinks throughout the site
-     * @param  array $data     Post data
-     * @param  array $postarr  $_POST data
-     * @return array           Post data (do not change)
-     */
-    public function checkSavedPost($data, $postarr)
-    {
-        remove_action('wp_insert_post_data', array($this, 'checkSavedPost'), 10, 2);
-
-        $detector = new \BrokenLinkDetector\InternalDetector($data, $postarr);
-        return $data;
-    }
-
-    /**
-     * Remove broken links when deleting a page
-     * @param int $postId The post id that is being deleted
-     */
-    public function deleteBrokenLinks($postId)
-    {
-        global $wpdb;
-        $tableName = self::$dbTable;
-        $wpdb->delete($tableName, array('post_id' => $postId), array('%d'));
-    }
-
-    /**
-     * Enqueue required style
-     * @return void
-     */
-    public function enqueueStyles()
-    {
-        wp_enqueue_style('broken-links-detector', BROKENLINKDETECTOR_URL . '/dist/css/broken-link-detector.min.css', '', '1.0.0');
-    }
-
-    /**
-     * Enqueue required scripts
-     * @return void
-     */
-    public function enqueueScripts()
-    {
-    }
 }

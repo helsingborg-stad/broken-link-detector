@@ -16,7 +16,6 @@ use WpService\Implementations\NativeWpService;
 use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\Config\Config;
 use BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry;
-use BrokenLinkDetector\Config\Feature;
 
 /* Assets */ 
 use WpService\FileSystem\BaseFileSystem;
@@ -73,7 +72,6 @@ $wpService = new FilePathResolvingWpService(
 );
 
 $manifestFileWpService->setInner(new WpServiceWithTextDomain($wpService, $config->getTextDomain()));
-
 
 $database   = new Database($config, $wpService);
 $registry   = new ManageRegistry($database, $config);
