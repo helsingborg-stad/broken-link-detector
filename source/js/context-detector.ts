@@ -20,7 +20,7 @@ class ClientTypeChecker {
         this.timer = window.setTimeout(() => {
             this.timedOut = true;
             this.cancelImageLoad();
-            this.setExternalClient('timeout');
+            this.setExternalClient();
         }, this.config.checkTimeout);
     }
 
@@ -43,7 +43,7 @@ class ClientTypeChecker {
     private handleImageError = (): void => {
         if (!this.timedOut) {
             this.clearTimer();
-            this.setExternalClient('image error');
+            this.setExternalClient();
         }
     }
 
@@ -62,14 +62,14 @@ class ClientTypeChecker {
 
     // Mark as internal client
     private setInternalClient(): void {
+        console.log('Internal client');
         document.body.classList.add(this.config.successClass);
-        this.log('Internal client detected (image loaded).');
     }
 
     // Mark as external client
-    private setExternalClient(reason: string): void {
+    private setExternalClient(): void {
         document.body.classList.add(this.config.failedClass);
-        this.log(`External client detected (${reason}).`);
+        this.applyDomainRestrictions();
     }
 
     // Log messages only if DevTools is open
@@ -78,9 +78,10 @@ class ClientTypeChecker {
     }
 
     // Apply domain restrictions to domains in the domain list
-    public applyDomainRestrictions(): void {
+    private applyDomainRestrictions(): void {
         this.config.domains.forEach(domain => {
             const elements = document.querySelectorAll(`a[href*="${domain}"]`);
+            console.log(elements);
             elements.forEach(element => {
                 element.setAttribute("disabled", "disabled");
                 element.setAttribute("data-tooltip", this.config.tooltip);
@@ -111,10 +112,8 @@ declare global {
 
 // @ts-ignore Function to initialize client type checker  
 export function initializeClientTypeChecker(brokenLinkContextDetectionData): void {
-    
     document.addEventListener("DOMContentLoaded", () => {
-        const checker = new ClientTypeChecker(brokenLinkContextDetectionData);
-        checker.applyDomainRestrictions();
+        new ClientTypeChecker(brokenLinkContextDetectionData);
     });
 }
 // @ts-ignore
