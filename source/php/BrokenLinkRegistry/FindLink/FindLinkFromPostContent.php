@@ -39,9 +39,9 @@ class FindLinkFromPostContent implements FindLinkInterface
    *
    * @param string $postContent
    */
-  public function findLinks(): LinkList
+  public function findLinks(?int $postId = null): LinkList
   {
-    $query = $this->createQuery();
+    $query = $this->createQuery($postId);
 
     $postsContainingLinks = $this->db->getInstance()->get_results($query);
 
@@ -86,32 +86,40 @@ class FindLinkFromPostContent implements FindLinkInterface
    *
    * @return string
    */
-  public function createQuery() {
-
-    //Init DB object
+  public function createQuery(?int $postId = null): string {
+    // Init DB object
     $db = $this->db->getInstance();
 
     // Get configuration
-    $bannedPostTypesArray   = $this->config->linkDetectBannedPostTypes();
-    $allowedPostStatuses    = $this->config->linkDetectAllowedPostStatuses();
+    $bannedPostTypesArray = $this->config->linkDetectBannedPostTypes();
+    $allowedPostStatuses = $this->config->linkDetectAllowedPostStatuses();
 
     // Prepare placeholders for each banned post type and allowed status
-    $placeholdersTypes      = implode(',', array_fill(0, count($bannedPostTypesArray), '%s'));
-    $placeholdersStatuses   = implode(',', array_fill(0, count($allowedPostStatuses), '%s'));
+    $placeholdersTypes = implode(',', array_fill(0, count($bannedPostTypesArray), '%s'));
+    $placeholdersStatuses = implode(',', array_fill(0, count($allowedPostStatuses), '%s'));
+
+    // Start building the base SQL query
+    $query = '
+        SELECT ID, post_content
+        FROM ' . $db->posts . '
+        WHERE
+            post_content RLIKE "href=\\"https?:\\/\\/"
+            AND post_type NOT IN (' . $placeholdersTypes . ')
+            AND post_status NOT IN (' . $placeholdersStatuses . ')';
+
+    // If a postId is provided, add the condition to the query
+    if ($postId !== null) {
+        $query .= ' AND ID = %d';
+    }
+
+    // Merge parameters for binding (banned post types, allowed post statuses, and optional postId)
+    $queryParams = array_merge($bannedPostTypesArray, $allowedPostStatuses);
+    if ($postId !== null) {
+        $queryParams[] = $postId; // Add postId to parameters if provided
+    }
 
     // Prepare the SQL statement
-    $query = $db->prepare('
-            SELECT ID, post_content
-            FROM ' . $db->posts . '
-            WHERE
-                post_content RLIKE "href=\\"https?:\\/\\/"
-                AND post_type NOT IN (' . $placeholdersTypes . ')
-                AND post_status NOT IN (' . $placeholdersStatuses . ')
-        ', array_merge(
-            $bannedPostTypesArray,
-            $allowedPostStatuses
-        )
-    );
+    $query = $db->prepare($query, $queryParams);
 
     return $query;
   }

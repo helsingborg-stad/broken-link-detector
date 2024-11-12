@@ -39,9 +39,9 @@ class FindLinkFromPostMeta implements FindLinkInterface
      *
      * @return LinkList
      */
-    public function findLinks(): LinkList
+    public function findLinks(?int $postId = null): LinkList
     {
-        $query = $this->createQuery();
+        $query = $this->createQuery($postId);
         $metaContainingLinks = $this->db->getInstance()->get_results($query);
 
         if (!$this->wpService->isWpError($metaContainingLinks)) {
@@ -83,7 +83,7 @@ class FindLinkFromPostMeta implements FindLinkInterface
      *
      * @return string
      */
-    public function createQuery()
+    public function createQuery(?int $postId = null): string
     {
         // Init DB object
         $db = $this->db->getInstance();
@@ -96,19 +96,29 @@ class FindLinkFromPostMeta implements FindLinkInterface
         $placeholdersTypes    = implode(',', array_fill(0, count($bannedPostTypesArray), '%s'));
         $placeholdersStatuses = implode(',', array_fill(0, count($allowedPostStatuses), '%s'));
 
-        // Prepare the SQL statement
-        $query = $db->prepare('
+        // Start building the base SQL query
+        $query = '
             SELECT post_id, meta_value
             FROM ' . $db->postmeta . ' pm
             INNER JOIN ' . $db->posts . ' p ON pm.post_id = p.ID
             WHERE
-                meta_value RLIKE ("(https?:\\/\\/[^\\s\"]+)")
+                meta_value RLIKE "(https?:\\/\\/[^\\s\"]+)"
                 AND p.post_type NOT IN (' . $placeholdersTypes . ')
-                AND p.post_status NOT IN (' . $placeholdersStatuses . ')
-        ', array_merge(
-            $bannedPostTypesArray,
-            $allowedPostStatuses
-        ));
+                AND p.post_status NOT IN (' . $placeholdersStatuses . ')';
+
+        // If post_id is provided, add the condition to the query
+        if ($postId !== null) {
+            $query .= ' AND pm.post_id = %d';
+        }
+
+        // Merge parameters for binding (banned post types, allowed post statuses, and optional post_id)
+        $queryParams = array_merge($bannedPostTypesArray, $allowedPostStatuses);
+        if ($postId !== null) {
+            $queryParams[] = $postId; // Add post_id to parameters if provided
+        }
+
+        // Prepare the SQL statement
+        $query = $db->prepare($query, $queryParams);
 
         return $query;
     }
