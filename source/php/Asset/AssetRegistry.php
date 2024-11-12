@@ -3,6 +3,7 @@
 namespace BrokenLinkDetector\Asset;
 
 use BrokenLinkDetector\Config\Config;
+use BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry;
 use BrokenLinkDetector\HooksRegistrar\Hookable;
 use WpService\Contracts\AddAction;
 use WpService\Contracts\WpEnqueueScript;
@@ -14,15 +15,24 @@ use WpService\Contracts\WpRegisterStyle;
 abstract class AssetRegistry implements Hookable, AssetInterface
 {
     protected Config $config;
+    protected ?ManageRegistry $registry = null;
 
     abstract public function getFilename(): string;
     abstract public function getHandle(): string;
     abstract public function getLocalizeData(): ?array;
     abstract public function getHook(): string;
 
-    public function __construct(private AddAction&WpRegisterScript&WpRegisterStyle&WpLocalizeScript&WpEnqueueScript&WpEnqueueStyle $wpService, Config $config)
+    public function __construct(
+        private AddAction&WpRegisterScript&WpRegisterStyle&WpLocalizeScript&WpEnqueueScript&WpEnqueueStyle $wpService, 
+        Config $config, 
+        ?ManageRegistry $registry = null
+    )
     {
         $this->config = $config;
+
+        if (!is_null($registry)) {
+            $this->registry = $registry;
+        }
     }
 
     public function addHooks(): void

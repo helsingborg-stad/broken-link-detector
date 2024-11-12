@@ -107,7 +107,8 @@ class App
         if (Feature::factory('admin_highlight_links')->isEnabled(1)) {
             $editorHighlightAsset = new \BrokenLinkDetector\Asset\EditorHighlight(
                 $wpService,
-                $config
+                $config,
+                $registry
             );
             $editorHighlightAsset->addHooks();
         }

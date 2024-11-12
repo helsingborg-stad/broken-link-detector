@@ -23,7 +23,28 @@ class EditorHighlight extends AssetRegistry implements AssetInterface
 
   public function getLocalizeData(): ?array
   {
+    if (!$this->registry || !$this->getPostid()) {
+      return [];
+    }
+
+    $links = $this->registry->getBrokenLinksByPostId(
+      $this->getPostid()
+    );
+    $links = array_column($links, 'url');
+
+    var_dump($links);
+
     return [
+      'links' => $links,
     ];
+  }
+
+  /**
+   * Get the post id
+   */
+  private function getPostid(): ?int
+  {
+    global $post;
+    return $post->ID ?? null;
   }
 }
