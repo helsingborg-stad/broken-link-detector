@@ -83,7 +83,6 @@ class ClientTypeChecker {
             const elements = document.querySelectorAll(`a[href*="${domain}"]`);
             console.log(elements);
             elements.forEach(element => {
-                element.setAttribute("disabled", "disabled");
                 element.setAttribute("data-tooltip", this.config.tooltip);
                 element.addEventListener("click", (event) => {
                     event.preventDefault();
