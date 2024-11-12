@@ -85,12 +85,14 @@ class App
         }
 
         /** Init summary */
-        $registerAdminSettingsPage = new \BrokenLinkDetector\Admin\Summary\OptionsPage(
-            $wpService,
-            $db,
-            $config
-        );
-        $registerAdminSettingsPage->addHooks();
+        if (Feature::factory('admin_summary')->isEnabled()) {
+            $registerAdminSettingsPage = new \BrokenLinkDetector\Admin\Summary\OptionsPage(
+                $wpService,
+                $db,
+                $config
+            );
+            $registerAdminSettingsPage->addHooks();
+        }
 
         /** 
          * Field loader
@@ -130,63 +132,66 @@ class App
         /** 
          * Cli commands
          */
-
-        $runner     = new \BrokenLinkDetector\Cli\CommandRunner(
-            $wpService,
-            $config
-        );
-        $registry   = new \BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry(
-            $db, 
-            $config
-        );
-
-        $installer  = new \BrokenLinkDetector\Installer(
-            $wpService,
-            $config,
-            $db
-        );
-
-        //Commands for database management
-        if (Feature::factory('installer')->isEnabled()) {
-            $runner->addCommand(new \BrokenLinkDetector\Cli\Database(
+        if(Feature::factory('cli')->isEnabled()) {
+            $runner     = new \BrokenLinkDetector\Cli\CommandRunner(
                 $wpService,
-                $config,
-                $installer
-            ))->registerWithWPCLI();
-        }
+                $config
+            );
+            
+            //Commands for database management
+            if (Feature::factory('installer')->isEnabled()) {
+                $installer  = new \BrokenLinkDetector\Installer(
+                    $wpService,
+                    $config,
+                    $db
+                );
 
-        // Commands for finding and registering links
-        if(Feature::factory('link_finder')->isEnabled()) {
-            $runner->addCommand(new \BrokenLinkDetector\Cli\FindLinks(
-                $wpService,
-                $config,
-                $db,
-                $registry
-            ))->registerWithWPCLI();
-        }
-    
-        //Commands for classifying links
-        if(Feature::factory('classify_links')->isEnabled()) {
-            $runner->addCommand(new \BrokenLinkDetector\Cli\ClassifyLinks(
-                $wpService,
-                $config,
-                $db,
-                $registry
-            ))->registerWithWPCLI();
-        }
+                $runner->addCommand(new \BrokenLinkDetector\Cli\Database(
+                    $wpService,
+                    $config,
+                    $installer
+                ))->registerWithWPCLI();
+            }
 
+            $registry = new \BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry(
+                $db, 
+                $config
+            );
+
+            // Commands for finding and registering links
+            if(Feature::factory('link_finder')->isEnabled()) {
+                $runner->addCommand(new \BrokenLinkDetector\Cli\FindLinks(
+                    $wpService,
+                    $config,
+                    $db,
+                    $registry
+                ))->registerWithWPCLI();
+            }
+        
+            //Commands for classifying links
+            if(Feature::factory('classify_links')->isEnabled()) {
+                $runner->addCommand(new \BrokenLinkDetector\Cli\ClassifyLinks(
+                    $wpService,
+                    $config,
+                    $db,
+                    $registry
+                ))->registerWithWPCLI();
+            }
+
+        }
 
         /**
-         * Adds assets 
+         * Context detection frontend 
          */
-        $contextDetectionAsset = new \BrokenLinkDetector\Asset\ContextDetection(
-            $wpService,
-            $config
-        );
-
-        $contextDetectionAsset->addHooks();
+        if (Feature::factory('context_detection')->isEnabled() && $config->isContextCheckEnabled()) {
+            $contextDetectionAsset = new \BrokenLinkDetector\Asset\ContextDetection(
+                $wpService,
+                $config
+            );
+            $contextDetectionAsset->addHooks();
+        }
     }
-    
+
     /**
      * Checks if a saved posts permalink is changed and updates permalinks throughout the site
      * @param  array $data     Post data

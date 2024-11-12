@@ -4,11 +4,7 @@ class ClientTypeChecker {
     private timer: number | null = null;
 
     constructor(
-        private url: string, // URL to the image
-        private timeout: number, // Timeout duration in milliseconds
-        private internalClass: string, // Class for internal clients
-        private externalClass: string, // Class for external clients
-        private contextData: { domains: string[]; tooltip: string } // Context data
+        private config: brokenLinkContextDetectionData
     ) {
         this.initializeCheck();
     }
@@ -25,14 +21,14 @@ class ClientTypeChecker {
             this.timedOut = true;
             this.cancelImageLoad();
             this.setExternalClient('timeout');
-        }, this.timeout);
+        }, this.config.checkTimeout);
     }
 
     // Load the image and handle success or failure
     private loadImage(): void {
         this.img.onload = this.handleImageLoad;
         this.img.onerror = this.handleImageError;
-        this.img.src = this.url;
+        this.img.src = this.config.checkUrl;
     }
 
     // Handle successful image load (internal client)
@@ -66,13 +62,13 @@ class ClientTypeChecker {
 
     // Mark as internal client
     private setInternalClient(): void {
-        document.body.classList.add(this.internalClass);
+        document.body.classList.add(this.config.successClass);
         this.log('Internal client detected (image loaded).');
     }
 
     // Mark as external client
     private setExternalClient(reason: string): void {
-        document.body.classList.add(this.externalClass);
+        document.body.classList.add(this.config.failedClass);
         this.log(`External client detected (${reason}).`);
     }
 
@@ -83,12 +79,11 @@ class ClientTypeChecker {
 
     // Apply domain restrictions to domains in the domain list
     public applyDomainRestrictions(): void {
-        this.contextData.domains.forEach(domain => {
+        this.config.domains.forEach(domain => {
             const elements = document.querySelectorAll(`a[href*="${domain}"]`);
-            console.log(elements);
             elements.forEach(element => {
                 element.setAttribute("disabled", "disabled");
-                element.setAttribute("data-tooltip", this.contextData.tooltip);
+                element.setAttribute("data-tooltip", this.config.tooltip);
                 element.addEventListener("click", (event) => {
                     event.preventDefault();
                 });
@@ -97,25 +92,30 @@ class ClientTypeChecker {
     }
 }
 
-// Function to initialize client type checker
-export function initializeClientTypeChecker(
-    url: string,
-    timeout: number,
-    internalClass: string,
-    externalClass: string,
-    contextData: { domains: string[], tooltip: string }
-): void {
-    const checker = new ClientTypeChecker(url, timeout, internalClass, externalClass, contextData);
+// Interfaces
+interface brokenLinkContextDetectionData {
+    isEnabled: string; // Assuming '1' or '0' as string, change to `boolean` if converted
+    checkUrl: string;
+    checkTimeout: number; // or number if it’s parsed as a number
+    domains: string[];
+    tooltip: string;
+    successClass: string;
+    failedClass: string;
+}
+
+declare global {
+    interface Window {
+        brokenLinkContextDetectionData?: brokenLinkContextDetectionData;
+    }
+}
+
+// @ts-ignore Function to initialize client type checker  
+export function initializeClientTypeChecker(brokenLinkContextDetectionData): void {
+    
     document.addEventListener("DOMContentLoaded", () => {
+        const checker = new ClientTypeChecker(brokenLinkContextDetectionData);
         checker.applyDomainRestrictions();
     });
 }
-
-const contextData = window['brokenLinkContextDetectionData'] as { domains: string[], tooltip: string };
-initializeClientTypeChecker(
-    'https://example.com/image.jpg',
-    3000,
-    'internal-client',
-    'external-client',
-    contextData
-);
+// @ts-ignore
+initializeClientTypeChecker(brokenLinkContextDetectionData);

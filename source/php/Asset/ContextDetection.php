@@ -20,8 +20,13 @@ class ContextDetection extends AssetRegistry implements AssetInterface
   public function getLocalizeData(): ?array
   {
     return [
-      'domains' => $this->config->getDomainsThatShouldNotBeChecked(),
-      'tooltip' => $this->config->getTooltipText(),
+      'isEnabled' => $this->config->isContextCheckEnabled(),
+      'checkUrl' => $this->config->getContextCheckUrl(),
+      'checkTimeout' => $this->config->getContextCheckTimeout(),
+      'domains' => $this->config->getContextCheckDomainsToDisable(),
+      'tooltip' => $this->config->getContextCheckTooltipText(),
+      'successClass' => $this->config->getContextCheckSuccessClass(),
+      'failedClass' => $this->config->getContextCheckFailedClass(),
     ];
   }
 }

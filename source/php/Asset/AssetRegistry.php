@@ -59,7 +59,7 @@ abstract class AssetRegistry implements Hookable, AssetInterface
             if (!empty($this->getLocalizeData())) {
               $this->wpService->wpLocalizeScript(
                   $this->getHandle(),
-                  $this->getHandle() . '-data',
+                  $this->camelCaseObjectName($this->getHandle() . '-data'),
                   $this->getLocalizeData()
               );
             }
@@ -93,5 +93,16 @@ abstract class AssetRegistry implements Hookable, AssetInterface
         if ($this->getType($filename) === 'js') {
             $this->wpService->wpEnqueueScript($this->getHandle());
         }
+    }
+
+    /**
+     * Get the object name in camel case
+     *
+     * @param string $objectName
+     * @return string
+     */
+    private function camelCaseObjectName($objectName): string
+    {
+        return lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $objectName))));
     }
 }

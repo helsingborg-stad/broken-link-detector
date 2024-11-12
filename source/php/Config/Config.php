@@ -250,32 +250,16 @@ class Config implements ConfigInterface
   }
 
   /**
-   * Get the tooltip text for the context detection disabled link.
+   * Get the context check enabled status.
    * 
-   * @return string
+   * @return bool
    */
-  public function getTooltipText(): string
-  {
-    $dbLabel = $this->acfService->getField(
-      'broken_links_local_label',
-      'option'
-    ) ?: false;
-
-    return $this->wpService->applyFilters(
-      $this->createFilterKey(__FUNCTION__), 
-      $dbLabel ?: $this->wpService->__(
-        'Link unavabile',
-        'broken-link-detector'
-      )
-    );
-  }
-
   public function isContextCheckEnabled() : bool {
     $isEnabled = $this->acfService->getField(
         'broken_links_context_check_enabled',
         'option'
     ) ?: false;
-    
+
     $hasUrl = $this->getContextCheckUrl() ? true : false;
 
     return $this->wpService->applyFilters(
@@ -283,7 +267,12 @@ class Config implements ConfigInterface
         ($isEnabled && $hasUrl) ?: false
     );
   }
-
+  
+  /**
+   * Get the URL to probe for the context check.
+   * 
+   * @return string
+   */
   public function getContextCheckUrl() : string {
       $url = $this->acfService->getField(
           'broken_links_context_check_url',
@@ -294,6 +283,77 @@ class Config implements ConfigInterface
           $this->createFilterKey(__FUNCTION__),
           $url ?: ''
       );
+  }
+
+  /**
+   * Get the timeout for the context check.
+   * 
+   * @return int  The timeout in milliseconds
+   */
+  public function getContextCheckTimeout() : int {
+    return $this->wpService->applyFilters(
+        $this->createFilterKey(__FUNCTION__),
+        3000
+    );
+  }
+
+  /**
+   * Get the domains that should be disabled when context failes.
+   * 
+   * @return array
+   */
+  public function getContextCheckDomainsToDisable(): array
+  {
+    $domains = $this->getDomainsThatShouldNotBeChecked();
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      $domains ?? []
+    );
+  }
+
+  /**
+   * Get the class for the context check success.
+   * 
+   * @return string
+   */
+  public function getContextCheckSuccessClass() : string {
+      return $this->wpService->applyFilters(
+          $this->createFilterKey(__FUNCTION__),
+          'context-check-avabile'
+      );
+  }
+
+  /**
+   * Get the class for the context check failed.
+   * 
+   * @return string
+   */
+  public function getContextCheckFailedClass() : string {
+    return $this->wpService->applyFilters(
+        $this->createFilterKey(__FUNCTION__),
+        'context-check-unavabile'
+    );
+  }
+
+  /**
+   * Get the tooltip text for the context detection disabled link.
+   * 
+   * @return string
+   */
+  public function getContextCheckTooltipText(): string
+  {
+    $dbLabel = $this->acfService->getField(
+      'broken_links_context_tooltip',
+      'option'
+    ) ?: false;
+
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      $dbLabel ?: $this->wpService->__(
+        'Link unavabile',
+        'broken-link-detector'
+      )
+    );
   }
 
   /**
