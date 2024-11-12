@@ -19,6 +19,7 @@ abstract class AssetRegistry implements Hookable, AssetInterface
 
     abstract public function getFilename(): string;
     abstract public function getHandle(): string;
+    abstract public function getDependencies(): array;
     abstract public function getLocalizeData(): ?array;
     abstract public function getHook(): string;
 
@@ -67,7 +68,10 @@ abstract class AssetRegistry implements Hookable, AssetInterface
         if ($this->getType($filename) === 'js') {
             $this->wpService->wpRegisterScript(
                 $this->getHandle(),
-                $this->getFilename()
+                $this->getFilename(),
+                $this->getDependencies(),
+                false,
+                ['in_footer' => true]
             );
 
             if (!empty($this->getLocalizeData())) {
@@ -82,7 +86,8 @@ abstract class AssetRegistry implements Hookable, AssetInterface
         if ($this->getType($filename) === 'css') {
             $this->wpService->wpRegisterStyle(
                 $this->getHandle(),
-                $this->getFilename()
+                $this->getFilename(),
+                $this->getDependencies(),
             );
 
             if($this->getLocalizeData() !== null) {
@@ -105,7 +110,9 @@ abstract class AssetRegistry implements Hookable, AssetInterface
             $this->wpService->wpEnqueueStyle($this->getHandle());
         }
         if ($this->getType($filename) === 'js') {
-            $this->wpService->wpEnqueueScript($this->getHandle());
+            $this->wpService->wpEnqueueScript(
+                $this->getHandle()
+        );
         }
     }
 

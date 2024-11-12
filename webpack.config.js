@@ -18,7 +18,7 @@ module.exports = {
     entry: {
         'css/broken-link-detector': './source/sass/broken-link-detector.scss',
         'js/context-detector': './source/js/context-detector.ts',
-        'js/editor-highlight': './source/js/editor-highlight.ts'
+        'js/editor-highlight': './source/js/editor-highlight.js'
     },
 
     /**

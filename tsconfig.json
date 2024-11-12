@@ -12,9 +12,11 @@
       "ES2021",
       "DOM",
       "DOM.Iterable",
-    ]
+    ],
+    "types": ["@types/tinymce"]
   },
   "include": [
-    "source/js/*.ts"
+    "source/js/*.ts",
+    "source/js/*.js"
   ]
 }

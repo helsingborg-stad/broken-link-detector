@@ -16,6 +16,11 @@ class ContextDetection extends AssetRegistry implements AssetInterface
     return 'broken-link-context-detection';
   }
 
+  public function getDependencies(): array
+  {
+    return [];
+  }
+
   public function getFilename(): string
   {
     return 'js/context-detector.js';

@@ -16,6 +16,11 @@ class EditorHighlight extends AssetRegistry implements AssetInterface
     return 'broken-link-editor-highlight';
   }
 
+  public function getDependencies(): array
+  {
+    return ['editor', 'jquery'];
+  }
+
   public function getFilename(): string
   {
     return 'js/editor-highlight.js';
@@ -31,7 +36,7 @@ class EditorHighlight extends AssetRegistry implements AssetInterface
       $this->getPostid()
     );
     $links = array_column($links, 'url');
-    
+
     return [
       'links' => $links,
     ];
