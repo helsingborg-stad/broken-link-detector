@@ -36,10 +36,12 @@ class Feature implements FeatureInterface {
     }
   }
 
-  public function isEnabled(): bool 
+  public function isEnabled(?int $version = null): bool 
   {
-    $isEnabled = self::FEATURES[$this->feature];
-    return $isEnabled ? true : false;
+    if (is_null($version)) {
+      return (bool) self::FEATURES[$this->feature];
+    }
+    return (version_compare($version, self::FEATURES[$this->feature], 'eq'));
   }
 
   public function getVersion(): int|false {

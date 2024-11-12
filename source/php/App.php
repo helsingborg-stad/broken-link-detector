@@ -50,7 +50,7 @@ class App
         /**
          * Register activation and deactivation hooks
         */
-        if (Feature::factory('installer')->isEnabled()) {
+        if (Feature::factory('installer')->isEnabled(1)) {
             $registerActivation = new \BrokenLinkDetector\Installer(
                 $wpService,
                 $config,
@@ -62,7 +62,7 @@ class App
         /**
          * Load text domain
         */
-        if (Feature::factory('language')->isEnabled()) {
+        if (Feature::factory('language')->isEnabled(1)) {
             $loadTextDomain = new \BrokenLinkDetector\TextDomain(
                 $wpService,
                 $config
@@ -75,7 +75,7 @@ class App
          * 
          * @capability: administrators
         */
-        if (Feature::factory('admin_settings')->isEnabled()) {
+        if (Feature::factory('admin_settings')->isEnabled(1)) {
             $registerAdminSettingsPage = new \BrokenLinkDetector\Admin\Settings\SettingsPage(
                 $wpService,
                 $acfService,
@@ -91,7 +91,7 @@ class App
          * 
          * @capability: editors
          */
-        if (Feature::factory('admin_summary')->isEnabled()) {
+        if (Feature::factory('admin_summary')->isEnabled(1)) {
             $registerAdminSettingsPage = new \BrokenLinkDetector\Admin\Summary\OptionsPage(
                 $wpService,
                 $db,
@@ -103,7 +103,7 @@ class App
         /**
          * Add MCE editor interface to highlight broken links
         */
-        if (Feature::factory('admin_highlight_links')->isEnabled()) {
+        if (Feature::factory('admin_highlight_links')->isEnabled(1)) {
             $editorInterface = new \BrokenLinkDetector\Admin\Editor(
                 $wpService,
                 $config
@@ -114,7 +114,7 @@ class App
         /** 
          * Loads editor and options fields 
         */
-        if (Feature::factory('field_loader')->isEnabled()) {
+        if (Feature::factory('field_loader')->isEnabled(1)) {
             $fieldLoader = new \BrokenLinkDetector\Fields\AcfExportManager\RegisterFieldConfiguration(
                 $wpService,
                 $config->getPluginFieldsPath()
@@ -125,7 +125,7 @@ class App
         /**
          * Register internal link updater
         */
-        if (Feature::factory('fix_internal_links')->isEnabled()) {
+        if (Feature::factory('fix_internal_links')->isEnabled(1)) {
             $internalLinkUpdater = new \BrokenLinkDetector\LinkUpdater\LinkUpdater(
                 $wpService,
                 $config,
@@ -140,14 +140,14 @@ class App
         /** 
          * Cli commands
          */
-        if(Feature::factory('cli')->isEnabled()) {
+        if(Feature::factory('cli')->isEnabled(1)) {
             $runner     = new \BrokenLinkDetector\Cli\CommandRunner(
                 $wpService,
                 $config
             );
             
             //Commands for database management
-            if (Feature::factory('cli_installer')->isEnabled()) {
+            if (Feature::factory('cli_installer')->isEnabled(1)) {
                 $installer  = new \BrokenLinkDetector\Installer(
                     $wpService,
                     $config,
@@ -167,7 +167,7 @@ class App
             );
 
             // Commands for finding and registering links
-            if(Feature::factory('cli_link_finder')->isEnabled()) {
+            if(Feature::factory('cli_link_finder')->isEnabled(1)) {
                 $runner->addCommand(new \BrokenLinkDetector\Cli\FindLinks(
                     $wpService,
                     $config,
@@ -177,7 +177,7 @@ class App
             }
         
             //Commands for classifying links
-            if(Feature::factory('cli_link_classifier')->isEnabled()) {
+            if(Feature::factory('cli_link_classifier')->isEnabled(1)) {
                 $runner->addCommand(new \BrokenLinkDetector\Cli\ClassifyLinks(
                     $wpService,
                     $config,
@@ -191,7 +191,7 @@ class App
         /**
          * Context detection frontend 
          */
-        if (Feature::factory('context_detection')->isEnabled() && $config->isContextCheckEnabled()) {
+        if (Feature::factory('context_detection')->isEnabled(1) && $config->isContextCheckEnabled()) {
             $contextDetectionAsset = new \BrokenLinkDetector\Asset\ContextDetection(
                 $wpService,
                 $config
