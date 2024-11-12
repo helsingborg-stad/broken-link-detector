@@ -27,8 +27,8 @@ abstract class AssetRegistry implements Hookable, AssetInterface
 
     public function addHooks(): void
     {
-        if(!in_array($this->getHook(), ['wp_enqueue_scripts', 'admin_enqueue_scripts', 'login_enqueue_scripts'])) {
-            throw new \Exception('Invalid hook enqueued in Enqueue class. Must be either "wp_enqueue_scripts", "admin_enqueue_scripts" or "login_enqueue_scripts"');
+        if(!in_array($this->getHook(), ['wp_enqueue_scripts', 'admin_enqueue_scripts', 'login_enqueue_scripts', 'mce_external_plugins'])) {
+            throw new \Exception('Invalid hook enqueued in Enqueue class. Must be either "mce_external_plugins", "wp_enqueue_scripts", "admin_enqueue_scripts" or "login_enqueue_scripts"');
         }
         $this->wpService->addAction($this->getHook(), [$this, 'register'], 10);
         $this->wpService->addAction($this->getHook(), [$this, 'enqueue'], 20);

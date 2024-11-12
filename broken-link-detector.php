@@ -16,6 +16,7 @@ use WpService\Implementations\NativeWpService;
 use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\Config\Config;
 use BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry;
+use BrokenLinkDetector\Cli\CommandRunner;
 
 /* Assets */ 
 use WpService\FileSystem\BaseFileSystem;
@@ -75,6 +76,7 @@ $manifestFileWpService->setInner(new WpServiceWithTextDomain($wpService, $config
 
 $database   = new Database($config, $wpService);
 $registry   = new ManageRegistry($database, $config);
+$cliRunner  = new CommandRunner($wpService, $config);
 
 /**
  * Run the plugin
@@ -84,5 +86,6 @@ $brokenLinkDetectorApp = new BrokenLinkDetector\App(
     $acfService,
     $database,
     $registry,
-    $config
+    $config,
+    $cliRunner
 );

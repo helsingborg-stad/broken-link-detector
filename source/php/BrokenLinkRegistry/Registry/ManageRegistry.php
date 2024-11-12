@@ -176,6 +176,24 @@ class ManageRegistry implements ManageRegistryInterface
   }
 
   /**
+   * Get broken links by post id
+   * @param  integer $postId
+   * @return array
+   */
+  public function getBrokenLinksByPostId(int $postId): array
+  {
+    $httpCodesConsideredBroken = $this->config->responseCodesConsideredBroken();
+    return $this->db->getInstance()->get_results(
+      $this->db->getInstance()->prepare(
+        "SELECT * FROM " . $this->db->getInstance()->prefix . $this->config->getTableName() . " 
+        WHERE post_id = %d 
+        AND http_code IN (" . implode(',', $httpCodesConsideredBroken) . ")",
+        $postId
+      )
+    );
+  }
+
+  /**
    * Create a hash from a normalized url and post id.
    *
    * @param string $url

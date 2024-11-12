@@ -43,7 +43,8 @@ class App
         AcfService $acfService, 
         Database $db, 
         ManageRegistry $registry, 
-        Config $config
+        Config $config,
+        CommandRunner $cliRunner
     )
     {
        
@@ -104,11 +105,11 @@ class App
          * Add MCE editor interface to highlight broken links
         */
         if (Feature::factory('admin_highlight_links')->isEnabled(1)) {
-            $editorInterface = new \BrokenLinkDetector\Admin\Editor(
+            $editorHighlightAsset = new \BrokenLinkDetector\Asset\EditorHighlight(
                 $wpService,
                 $config
             );
-            $editorInterface->addHooks();
+            $editorHighlightAsset->addHooks();
         }
 
         /** 
@@ -135,16 +136,10 @@ class App
             $internalLinkUpdater->addHooks();
         }
 
-        
-
         /** 
          * Cli commands
          */
         if(Feature::factory('cli')->isEnabled(1)) {
-            $runner     = new \BrokenLinkDetector\Cli\CommandRunner(
-                $wpService,
-                $config
-            );
             
             //Commands for database management
             if (Feature::factory('cli_installer')->isEnabled(1)) {
@@ -154,21 +149,16 @@ class App
                     $db
                 );
 
-                $runner->addCommand(new \BrokenLinkDetector\Cli\Database(
+                $cliRunner->addCommand(new \BrokenLinkDetector\Cli\Database(
                     $wpService,
                     $config,
                     $installer
                 ))->registerWithWPCLI();
             }
 
-            $registry = new \BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry(
-                $db, 
-                $config
-            );
-
             // Commands for finding and registering links
             if(Feature::factory('cli_link_finder')->isEnabled(1)) {
-                $runner->addCommand(new \BrokenLinkDetector\Cli\FindLinks(
+                $cliRunner->addCommand(new \BrokenLinkDetector\Cli\FindLinks(
                     $wpService,
                     $config,
                     $db,
@@ -178,7 +168,7 @@ class App
         
             //Commands for classifying links
             if(Feature::factory('cli_link_classifier')->isEnabled(1)) {
-                $runner->addCommand(new \BrokenLinkDetector\Cli\ClassifyLinks(
+                $cliRunner->addCommand(new \BrokenLinkDetector\Cli\ClassifyLinks(
                     $wpService,
                     $config,
                     $db,
