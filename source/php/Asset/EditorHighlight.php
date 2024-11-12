@@ -31,9 +31,7 @@ class EditorHighlight extends AssetRegistry implements AssetInterface
       $this->getPostid()
     );
     $links = array_column($links, 'url');
-
-    var_dump($links);
-
+    
     return [
       'links' => $links,
     ];
