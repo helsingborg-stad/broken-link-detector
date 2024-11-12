@@ -10,6 +10,7 @@ use WpService\Contracts\WpRegisterStyle;
 
 interface AssetInterface
 {
+  public function getHook(): string;
   public function getHandle(): string;
   public function getFilename(): string;
   public function getLocalizeData(): ?array;

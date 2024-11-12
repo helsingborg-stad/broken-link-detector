@@ -18,6 +18,7 @@ abstract class AssetRegistry implements Hookable, AssetInterface
     abstract public function getFilename(): string;
     abstract public function getHandle(): string;
     abstract public function getLocalizeData(): ?array;
+    abstract public function getHook(): string;
 
     public function __construct(private AddAction&WpRegisterScript&WpRegisterStyle&WpLocalizeScript&WpEnqueueScript&WpEnqueueStyle $wpService, Config $config)
     {
@@ -26,8 +27,11 @@ abstract class AssetRegistry implements Hookable, AssetInterface
 
     public function addHooks(): void
     {
-        $this->wpService->addAction('wp_enqueue_scripts', [$this, 'register'], 10);
-        $this->wpService->addAction('wp_enqueue_scripts', [$this, 'enqueue'], 20);
+        if(!in_array($this->getHook(), ['wp_enqueue_scripts', 'admin_enqueue_scripts', 'login_enqueue_scripts'])) {
+            throw new \Exception('Invalid hook enqueued in Enqueue class. Must be either "wp_enqueue_scripts", "admin_enqueue_scripts" or "login_enqueue_scripts"');
+        }
+        $this->wpService->addAction($this->getHook(), [$this, 'register'], 10);
+        $this->wpService->addAction($this->getHook(), [$this, 'enqueue'], 20);
     }
 
     private function getType($filename): string
