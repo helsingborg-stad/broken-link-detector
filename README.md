@@ -6,6 +6,15 @@ The **Broken Link Detector** plugin identifies and, where possible, fixes broken
 - Allowing administrators to create a blacklist of domains that should be excluded from the link-checking process.
 - Displaying a warning (via a tooltip) for images that cannot be fetched from blacklisted external domains.
 
+# Admin UI
+This plugin adds two admin menu options: 
+
+## Tools > Broken links summary
+This page presents a summary of all links that was found to be broken in the last classification. This page is avabile for users that can edit posts. 
+
+## Settings > Broken links settings
+This page gives an administrator the ability to configure the plugin. A whitelist of domains is provided, and the ability to enable context detection feature. 
+
 # Cli documentation
 Broken link detector does not rely on scheduled actions due to its resource intensive nature. Instead a set of cli actions is provided to maintain the link registry.
 
