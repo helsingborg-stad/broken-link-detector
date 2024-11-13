@@ -6,6 +6,30 @@ The **Broken Link Detector** plugin identifies and, where possible, fixes broken
 - Allowing administrators to create a blacklist of domains that should be excluded from the link-checking process.
 - Displaying a warning (via a tooltip) for images that cannot be fetched from blacklisted external domains.
 
+# Cli documentation
+Broken link detector does not rely on scheduled actions due to its resource intensive nature. Instead a set of cli actions is provided to maintain the link registry.
+
+## Cli commands
+All broken links cli commands are placed under  **broken-link-detector** prefix. To get a up to date index of all options please use the following command: 
+
+```wp broken-link-detector --info``
+
+## Install, Uninstall & Reinstall
+This command allows you to install, reinstall or uninstall the database table required for broken link registry. 
+
+```wp broken-link-detector database --[install, uninstall, reinstall]```
+
+## Find links 
+This command will scan your sites content and meta data for links, and register them in the link registry. The links will not show up in the summary, util they have been classified as broken. The flags in this command is optional, and will default to true.
+
+```wp broken-link-detector find-links --meta=true --content=true```
+
+## Classify Links 
+This command will asses and classify each found link to check if the link is valid or not. This is a resource intensive action, therefore a limit can be applied to classify a subset of links. 
+
+```wp broken-link-detector classify-links --limit=[NUMBER]```
+
+
 # Filter Documentation
 
 This document provides an overview of the available filters within the `BrokenLinkDetector\Config` class. All filters are prefixed with `BrokenLinkDetector/Config`.
