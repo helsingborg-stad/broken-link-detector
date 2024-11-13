@@ -14,17 +14,17 @@ All broken links cli commands are placed under  **broken-link-detector** prefix.
 
 ```wp broken-link-detector --info``
 
-## Install, Uninstall & Reinstall
+### Install, Uninstall & Reinstall
 This command allows you to install, reinstall or uninstall the database table required for broken link registry. 
 
 ```wp broken-link-detector database --[install, uninstall, reinstall]```
 
-## Find links 
+### Find links 
 This command will scan your sites content and meta data for links, and register them in the link registry. The links will not show up in the summary, util they have been classified as broken. The flags in this command is optional, and will default to true.
 
 ```wp broken-link-detector find-links --meta=true --content=true```
 
-## Classify Links 
+### Classify Links 
 This command will asses and classify each found link to check if the link is valid or not. This is a resource intensive action, therefore a limit can be applied to classify a subset of links. 
 
 ```wp broken-link-detector classify-links --limit=[NUMBER]```
