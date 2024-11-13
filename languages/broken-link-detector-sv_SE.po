@@ -1,70 +1,432 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Broken Link Detector\n"
-"POT-Creation-Date: 2019-02-26 10:40+0100\n"
-"PO-Revision-Date: 2019-02-26 10:42+0100\n"
+"POT-Creation-Date: 2024-11-13 10:53+0100\n"
+"PO-Revision-Date: 2024-11-13 11:03+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: sv_SE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.12\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.5\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-WPHeader: broken-link-detector.php\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
 "esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
 "_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
+"X-Poedit-SearchPathExcluded-1: dist\n"
+"X-Poedit-SearchPathExcluded-2: vendor\n"
+"X-Poedit-SearchPathExcluded-3: node_modules\n"
 
-#: source/php/App.php:55
-msgid "Rescan broken links"
-msgstr ""
+#: source/fields/php/context-detection.php:6
+msgid "Context Detect"
+msgstr "Identifiering av användarkontext"
 
-#: source/php/App.php:56
+#: source/fields/php/context-detection.php:10
+msgid "Enable detection of user context"
+msgstr "Identifiera användarens kontext i nätverket"
+
+#: source/fields/php/context-detection.php:14
 msgid ""
-"The rescan will be executed for this post only. The scan will execute "
-"direcly after the save is completed and may take a few minutes to complete."
+"The user detection functionality will disable links that are internal only. "
+"It also adds a tipbox to them explaining why the link is unreachable."
 msgstr ""
-"Scanningen efter brutna länkar kommer bara att genomföras på det här "
-"inläget. Genomsökningen körs direk efter att inlägget sparas, men kan ta "
-"ett par minuter innan det presenteras i panelen. "
+"Den här funktionen identifierar om användaren har tillgång till interna "
+"system i nätverket genom att efterfråga en resurs. Länkar som inte är "
+"tillgängliga om denna resurs är otillgänglig, kommer markeras som icke "
+"klickbara."
 
-#: source/php/App.php:103 templates/list-table.php:2
-msgid "Broken links"
+#: source/fields/php/context-detection.php:22
+msgid "Detects user context by fetching a internal resource."
+msgstr ""
+"Identifierar användarens kontext i nätverket genom att försöka hämta en "
+"intern resurs."
+
+#: source/fields/php/context-detection.php:24
+msgid "Enabled"
+msgstr "Aktiverad"
+
+#: source/fields/php/context-detection.php:25
+msgid "Disabled"
+msgstr "Avaktiverad"
+
+#: source/fields/php/context-detection.php:30
+msgid "Internal Context Detection Resource"
+msgstr "Resurs som ska hämtas"
+
+#: source/fields/php/context-detection.php:34
+msgid ""
+"The internal context checker require you to publish a image on a server "
+"without public access. The image should be as small as possible, if your "
+"site is running on https, this resource must also be served with https."
+msgstr ""
+"För att identifiera användarens kontext, krävs det att du publicerar en "
+"bild på en webbadress som bara kan nås från det interna nätverket. Resursen "
+"måste vara tillgänglig via http eller https (om din webbplats använder ssl-"
+"certifikat)."
+
+#: source/fields/php/context-detection.php:51
+msgid "https://internal.resource.admin-network.local/image-1x1.jpg"
+msgstr ""
+
+#: source/fields/php/context-detection.php:55
+msgid "Tooltip Text"
+msgstr "Text på tooltip"
+
+#: source/fields/php/context-detection.php:59
+msgid "The text that displays in the tooltip, whenever a link is unavabile."
+msgstr "Den text som ska visas när en länk inte är tillgänglig."
+
+#: source/fields/php/context-detection.php:77 source/php/Config/Config.php:340
+msgid "Link unavabile"
+msgstr "Otillgänglig"
+
+#: source/fields/php/local-domains.php:6
+msgid "Local Domain Settings"
+msgstr "Inställningar för lokala domäner"
+
+#: source/fields/php/local-domains.php:10
+msgid "Local domains"
+msgstr "Lokala domäner"
+
+#: source/fields/php/local-domains.php:14
+msgid "Add domains in this list, that should not be checked."
+msgstr ""
+"Lägg till domäner som ska hanteras som interna resurser. Dom här länkarna "
+"kommer inte att dyka upp i summeringen för brutna länkar, och kommer "
+"markeras som otillgängliga om du har aktiverat funktionen för att "
+"identifiera användarens kontext."
+
+#: source/fields/php/local-domains.php:28
+msgid "Lägg till rad"
+msgstr "Lägg till rad"
+
+#: source/fields/php/local-domains.php:33
+msgid "Domain"
+msgstr "Domän"
+
+#: source/fields/php/local-domains.php:37
+msgid "eg. https://domain.com or https://subdomain.domain.com"
+msgstr "t.ex https://domain.com eller https://subdoman.domain.com"
+
+#: source/php/Admin/Settings/SettingsPage.php:58
+#: source/php/Admin/Settings/SettingsPage.php:60
+msgid "Broken Links Settings"
+msgstr "Inställningar för brutna länkar"
+
+#: source/php/Admin/Settings/SettingsPage.php:68
+msgid "Update"
+msgstr "Uppdatera"
+
+#: source/php/Admin/Settings/SettingsPage.php:69
+msgid "Settings updated"
+msgstr "Inställningarna uppdaterades"
+
+#: source/php/Admin/Summary/OptionsPage.php:32
+#: source/php/Admin/Summary/OptionsPage.php:33
+#: source/php/Admin/Summary/OptionsPage.php:43
+msgid "Broken Links Report"
+msgstr "Rapport av brutna länkar"
+
+#: source/php/Admin/Summary/OptionsPage.php:44
+msgid "Here is a summary of broken links found in your content."
+msgstr "Här är en summering av länkar som har identifierats som brutna."
+
+#: source/php/Admin/Summary/Table.php:14
+msgid "Broken Link"
 msgstr "Brutna länkar"
 
-#: source/php/ListTable.php:85
+#: source/php/Admin/Summary/Table.php:15
+msgid "Broken Links"
+msgstr "Brutna länkar"
+
+#: source/php/Admin/Summary/Table.php:70
 msgid "Post"
 msgstr "Inlägg"
 
-#: source/php/ListTable.php:86
-msgid "Web adress"
-msgstr "Webbadress"
+#: source/php/Admin/Summary/Table.php:71
+msgid "URL"
+msgstr "URL"
 
-#: source/php/ListTable.php:87
-msgid "Last probed"
-msgstr "Senast testad"
+#: source/php/Admin/Summary/Table.php:72
+msgid "HTTP Code"
+msgstr "HTTP Kod"
+
+#: source/php/Admin/Summary/Table.php:73
+msgid "Last Checked"
+msgstr "Senast kontrollerad"
+
+#: source/php/Admin/Summary/Table.php:96
+msgid "View Post"
+msgstr "Visa inlägg"
+
+#: source/php/Admin/Summary/Table.php:99
+msgid "N/A"
+msgstr "Ej tillämpligt"
+
+#: source/php/Admin/Summary/Table.php:116
+msgid "All HTTP Codes"
+msgstr "Alla HTTP Koder"
+
+#: source/php/Admin/Summary/Table.php:122
+msgid "Filter"
+msgstr "Filter"
 
 #. Plugin Name of the plugin/theme
 msgid "Broken Link Detector"
 msgstr "Brutna länkar (Broken Link Detector)"
-
-#. Plugin URI of the plugin/theme
-msgid "(#plugin_url#)"
-msgstr ""
 
 #. Description of the plugin/theme
 msgid "Detects and fixes (if possible) broken links in post_content"
 msgstr "Testar och åtgärdar brutna länkar i innehållsfältet"
 
 #. Author of the plugin/theme
-msgid "Kristoffer Svanmark"
+msgid "Sebastian Thulin"
 msgstr ""
 
-#. Author URI of the plugin/theme
-msgid "(#plugin_author_url#)"
-msgstr ""
+#, fuzzy
+#~| msgid "Web adress"
+#~ msgid "Web Address"
+#~ msgstr "Webbadress"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgctxt "post type general name"
+#~ msgid "Posts"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Last probed"
+#~ msgid "Last Used"
+#~ msgstr "Senast testad"
+
+#, fuzzy
+#~| msgid "Web adress"
+#~ msgid "WordPress"
+#~ msgstr "Webbadress"
+
+#, fuzzy
+#~| msgid "Web adress"
+#~ msgid "Web server"
+#~ msgstr "Webbadress"
+
+#, fuzzy
+#~| msgid "Last probed"
+#~ msgid "Last page"
+#~ msgstr "Senast testad"
+
+#, fuzzy
+#~| msgid "Last probed"
+#~ msgid "Last Updated"
+#~ msgstr "Senast testad"
+
+#, fuzzy
+#~| msgid "Last probed"
+#~ msgid "Last Updated:"
+#~ msgstr "Senast testad"
+
+#, fuzzy
+#~| msgid "Last probed"
+#~ msgid "Last Modified"
+#~ msgstr "Senast testad"
+
+#, fuzzy
+#~| msgid "Broken links"
+#~ msgid "Broken Hill"
+#~ msgstr "Brutna länkar"
+
+#, fuzzy, php-format
+#~| msgid "Post"
+#~ msgid "%s Post"
+#~ msgid_plural "%s Posts"
+#~ msgstr[0] "Inlägg"
+#~ msgstr[1] "Inlägg"
+
+#, fuzzy
+#~| msgid "Web adress"
+#~ msgid "Image Address"
+#~ msgstr "Webbadress"
+
+#, fuzzy
+#~| msgid "Last probed"
+#~ msgid "last page"
+#~ msgstr "Senast testad"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "Post name"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Broken links"
+#~ msgid "Broken Themes"
+#~ msgstr "Brutna länkar"
+
+#, fuzzy
+#~| msgid "Last probed"
+#~ msgid "Last Name"
+#~ msgstr "Senast testad"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "Posts"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "All Posts"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "Edit Post"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "New Post"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "Post Link"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "Post ID"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "Post Type"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Last probed"
+#~ msgid "Last Page"
+#~ msgstr "Senast testad"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgctxt "Used before publish date."
+#~ msgid "Posted on"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Broken links"
+#~ msgid "More links"
+#~ msgstr "Brutna länkar"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "Posted by"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "Posted in"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "Next Post"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Web adress"
+#~ msgid "Web Design"
+#~ msgstr "Webbadress"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "Post date"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgctxt ""
+#~ "Prefix before the author name. The post atuhor name is displayed in a "
+#~ "separate block on the next line."
+#~ msgid "Posted by"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgctxt "Verb to explain the publication status of a post"
+#~ msgid "Posted"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Last probed"
+#~ msgid "Latest posts"
+#~ msgstr "Senast testad"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgctxt "block bindings source"
+#~ msgid "Post Meta"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgctxt "Block pattern category"
+#~ msgid "Posts"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "Poster"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Broken links"
+#~ msgid "Remove link"
+#~ msgstr "Brutna länkar"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgctxt "post type singular name"
+#~ msgid "Post"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgctxt "navigation link block title"
+#~ msgid "Post Link"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Last probed"
+#~ msgid "Last updated"
+#~ msgstr "Senast testad"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "Last Post"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgctxt "add new from admin bar"
+#~ msgid "Post"
+#~ msgstr "Inlägg"
+
+#, fuzzy
+#~| msgid "Post"
+#~ msgid "Post ID."
+#~ msgstr "Inlägg"
+
+#~ msgid ""
+#~ "The rescan will be executed for this post only. The scan will execute "
+#~ "direcly after the save is completed and may take a few minutes to "
+#~ "complete."
+#~ msgstr ""
+#~ "Scanningen efter brutna länkar kommer bara att genomföras på det här "
+#~ "inläget. Genomsökningen körs direk efter att inlägget sparas, men kan ta "
+#~ "ett par minuter innan det presenteras i panelen. "
