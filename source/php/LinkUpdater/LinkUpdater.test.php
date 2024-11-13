@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use WpService\Implementations\FakeWpService;
 use BrokenLinkDetector\Config\Config;
 use BrokenLinkDetector\Database\Database;
-
+use AcfService\Implementations\FakeAcfService;
 
 class LinkUpdaterTest extends TestCase
 {
@@ -22,8 +22,11 @@ class LinkUpdaterTest extends TestCase
         'getPermalink' => $input,
         'getOption' => 'option'
       ]);
+      $acfService = new FakeAcfService([]);
+
       $config = new Config(
           $wpService,
+          $acfService,
           'filter-prefix',
           'plugin-path',
           'plugin-url'
@@ -61,8 +64,11 @@ class LinkUpdaterTest extends TestCase
       }
     ]);
 
+    $acfService = new FakeAcfService([]);
+
     $config = new Config(
         $wpService,
+        $acfService,
         'filter-prefix',
         'plugin-path',
         'plugin-url'

@@ -171,6 +171,7 @@ class Classify implements ClassifyInterface {
     if(in_array($this->getHostName($url), $doNotClassifyDomains)) {
       return false;
     }
+    return true;
   }
 
   /**

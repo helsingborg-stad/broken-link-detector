@@ -4,6 +4,7 @@ namespace BrokenLinkDetector\BrokenLinkRegistry\ClassifyLink;
 
 use PHPUnit\Framework\TestCase;
 use WpService\Implementations\FakeWpService;
+use AcfService\Implementations\FakeAcfService;
 use BrokenLinkDetector\Config\Config;
 use BrokenLinkDetector\BrokenLinkRegistry\Link\Link;
 use BrokenLinkDetector\Config\ConfigInterface;
@@ -43,7 +44,13 @@ class ClassifyTest extends TestCase
         }
       ]);
 
-      $config = new Config($wpService, 'filterPrefix', 'pluginPath', 'pluginUrl');
+      $acfService = new FakeAcfService([
+        'get_field' => [
+          'broken_links_local_domains' => ['https://example.com'],
+        ]
+      ]);
+
+      $config = new Config($wpService, $acfService, 'filterPrefix', 'pluginPath', 'pluginUrl');
 
       $link = Link::createLink(
         $input,
