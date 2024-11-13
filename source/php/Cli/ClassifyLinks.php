@@ -59,10 +59,9 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
 
                 if ($linkObject->httpCode !== null) {
                     $this->registry->update($linkObject);
+                    $this->addToSummary($linkObject->isInternal, $linkObject->isBroken, $linkObject->httpCode, $linkObject->url);
                 }
-
-                $this->addToSummary($linkObject->isInternal, $linkObject->isBroken, $linkObject->httpCode, $linkObject->url);
-
+                
                 $progress->tick();
             }
 
