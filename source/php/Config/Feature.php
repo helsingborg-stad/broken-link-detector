@@ -29,6 +29,7 @@ class Feature implements FeatureInterface {
 
     //Frontend context detection
     'context_detection' => 1,
+    'frontend_styles' => 1,
   ];
 
   private function __construct(private string $feature) {

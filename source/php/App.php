@@ -206,5 +206,17 @@ class App
             );
             $contextDetectionAsset->addHooks();
         }
+
+        /**
+         * General frontend styles
+         */
+        if (Feature::factory('frontend_styles')->isEnabled(1)) {
+            $contextDetectionAsset = new \BrokenLinkDetector\Asset\FrontendStyles(
+                $wpService,
+                $config
+            );
+            $contextDetectionAsset->addHooks();
+        }
+
     }
 }

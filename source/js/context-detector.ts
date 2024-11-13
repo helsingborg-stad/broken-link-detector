@@ -83,6 +83,7 @@ class ClientTypeChecker {
             const elements = document.querySelectorAll(`a[href*="${domain}"]`);
             console.log(elements);
             elements.forEach(element => {
+                element.classList.add('broken-link-detector-link-is-unavabile');
                 element.setAttribute("data-tooltip", this.config.tooltip);
                 element.addEventListener("click", (event) => {
                     event.preventDefault();
