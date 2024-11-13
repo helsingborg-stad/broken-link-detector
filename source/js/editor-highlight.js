@@ -1,4 +1,4 @@
-(function waitForTinyMCE() {
+(function waitForTinyMCE(retries = 100) { // Set maximum retries here
   if (typeof tinymce !== 'undefined') {
     function applyBrokenLinkHighlight(editor) {
       let styles = '';
@@ -11,11 +11,12 @@
 
     window.onload = function() {
       tinymce.editors.forEach(function(editor) {
-          applyBrokenLinkHighlight(editor);
+        applyBrokenLinkHighlight(editor);
       });
     };
-
+  } else if (retries > 0) {
+    setTimeout(() => waitForTinyMCE(retries - 1), 350); // Retry with decreased counter
   } else {
-    setTimeout(waitForTinyMCE, 350); // Retry every 50 milliseconds
+    console.warn("TinyMCE failed to load within the specified retries.");
   }
 })();
