@@ -82,19 +82,6 @@ class Config implements ConfigInterface
   }
 
   /**
-   * Get template path. 
-   * 
-   * @return string
-   */
-  public function getPluginTemplatePath(): string
-  {
-    return $this->wpService->applyFilters(
-      $this->createFilterKey(__FUNCTION__), 
-      $this->getPluginPath() . 'templates'
-    );
-  }
-
-  /**
    * Get location of fields
    * 
    * @return string

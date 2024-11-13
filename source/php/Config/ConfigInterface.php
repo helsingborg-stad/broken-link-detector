@@ -20,7 +20,6 @@ interface ConfigInterface
     public function getTableName(): string;
     public function getPluginUrl(): string;
     public function getPluginPath(): string;
-    public function getPluginTemplatePath(): string;
     public function getPluginFieldsPath(): string;
     public function getTextDomain(): string;
     public function linkUpdaterBannedPostTypes(): array;

@@ -52,14 +52,6 @@ Filter the plugin path.
 **Default Value:**  
 The value provided during object construction for `pluginPath`.
 
-### `BrokenLinkDetector/Config/getPluginTemplatePath`
-
-**Description:**  
-Filter the template path for the plugin.
-
-**Default Value:**  
-The plugin path appended with `templates`.
-
 ### `BrokenLinkDetector/Config/getPluginFieldsPath`
 
 **Description:**  
