@@ -49,17 +49,23 @@ class CommandRunner
     /**
      * Register each command with WP-CLI.
      */
-    public function registerWithWPCLI(): void
+    public function registerWithWPCLI(): bool
     {
+        if (!defined('WP_CLI') || (defined('WP_CLI') && !WP_CLI )) {
+            return false;
+        }
+
         foreach ($this->commands as $commandName => $command) {
-          WP_CLI::add_command("{$this->config->getCommandNamespace()} {$commandName}", function ($options, $arguments) use ($command) {
-            $handler = $command->getCommandHandler();
-            $handler($arguments, $options);
-        }, [
-            'shortdesc' => $command->getCommandDescription(),
-            'synopsis' => $this->generateSynopsis($command)
-        ]);
-      }
+            WP_CLI::add_command("{$this->config->getCommandNamespace()} {$commandName}", function ($options, $arguments) use ($command) {
+                $handler = $command->getCommandHandler();
+                $handler($arguments, $options);
+            }, [
+                'shortdesc' => $command->getCommandDescription(),
+                'synopsis' => $this->generateSynopsis($command)
+            ]);
+        }
+
+        return true; 
     }
 
     /**
