@@ -29,6 +29,7 @@ use BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostMeta;
 /* Cli commands */ 
 use BrokenLinkDetector\Cli\CommandRunner;
 use BrokenLinkDetector\Cli\FindLinks;
+use BrokenLinkDetector\Cli\ClassifyLinks;
 
 class App
 {
@@ -137,6 +138,12 @@ class App
             $internalLinkUpdater->addHooks();
         }
 
+        /**
+         * Register link registry maintner
+         * This will delete links in the registry connected to posts.
+         * It will also add links to the registry when a post is saved as new unclassified links. 
+         * A reclasification of the links will need to be done to update the status of the links.
+        */
         if (Feature::factory('maintain_link_registry')->isEnabled(1)) {
             $findLinksOnSavePost = new \BrokenLinkDetector\Hooks\MaintainLinkRegistryOnSavePost(
                 $wpService,
