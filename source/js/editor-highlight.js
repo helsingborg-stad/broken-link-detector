@@ -16,6 +16,6 @@
     };
 
   } else {
-    setTimeout(waitForTinyMCE, 50); // Retry every 50 milliseconds
+    setTimeout(waitForTinyMCE, 350); // Retry every 50 milliseconds
   }
 })();
