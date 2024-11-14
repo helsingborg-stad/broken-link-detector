@@ -205,7 +205,7 @@ class Config implements ConfigInterface
   {
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
-      5
+      60 * 12
     );
   }
 

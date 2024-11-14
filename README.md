@@ -34,7 +34,7 @@ This command will scan your sites content and meta data for links, and register 
 ```wp broken-link-detector find-links --meta=true --content=true```
 
 ### Classify Links 
-This command will asses and classify each found link to check if the link is valid or not. This is a resource intensive action, therefore a limit can be applied to classify a subset of links. 
+This command will asses and classify each found link to check if the link is valid or not. This is a resource intensive action, therefore a limit can be applied to classify a subset of links. This function utilizes the confuration value in recheckInterval, to prevent calls to frequent of external services. 
 
 ```wp broken-link-detector classify-links --limit=[NUMBER]```
 
@@ -163,7 +163,7 @@ Filter the timeout for the request.
 Filter the interval for rechecking broken links in minutes.
 
 **Default Value:**  
-`5`
+`720`
 
 ### `BrokenLinkDetector/Config/getDomainsThatShouldNotBeChecked`
 
