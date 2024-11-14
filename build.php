@@ -61,7 +61,13 @@ $removables = [
     './source/js/',
     'LICENSE',
     'babel.config.js',
-    'yarn.lock'
+    'yarn.lock',
+    'phpcs.xml',
+    'phpunit.default.xml',
+    'phpunit.e2e.xml',
+    'tsconfig.json',
+    'GitVersion.yml',
+    './tests/'
 ];
 
 $dirName = basename(dirname(__FILE__));
