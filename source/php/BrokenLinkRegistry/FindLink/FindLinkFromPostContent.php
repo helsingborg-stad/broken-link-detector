@@ -105,7 +105,7 @@ class FindLinkFromPostContent implements FindLinkInterface
         WHERE
             post_content RLIKE "href=\\"https?:\\/\\/"
             AND post_type NOT IN (' . $placeholdersTypes . ')
-            AND post_status NOT IN (' . $placeholdersStatuses . ')';
+            AND post_status IN (' . $placeholdersStatuses . ')';
 
     // If a postId is provided, add the condition to the query
     if ($postId !== null) {
