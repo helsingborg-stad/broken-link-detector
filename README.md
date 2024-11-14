@@ -15,13 +15,16 @@ This page presents a summary of all links that was found to be broken in the las
 ## Settings > Broken links settings
 This page gives an administrator the ability to configure the plugin. A whitelist of domains is provided, and the ability to enable context detection feature. 
 
+# Cron actions
+This plugin does not utilize the built on WordPress cron functionality. We instead recommend to setup the cli actions in the native unix crons. 
+
 # Cli documentation
 Broken link detector does not rely on scheduled actions due to its resource intensive nature. Instead a set of cli actions is provided to maintain the link registry.
 
 ## Cli commands
 All broken links cli commands are placed under  **broken-link-detector** prefix. To get a up to date index of all options please use the following command: 
 
-```wp broken-link-detector --info``
+```wp broken-link-detector --info```
 
 ### Install, Uninstall & Reinstall
 This command allows you to install, reinstall or uninstall the database table required for broken link registry. 
