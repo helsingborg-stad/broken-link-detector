@@ -104,7 +104,7 @@ class Classify implements ClassifyInterface {
   {
       static $dnsCache = [];
 
-      if (!$this->config->checkIfDnsRespondsBeforeProbingUrl()) {
+      if (!$this->config->checkIfDnsRespondsBeforeProbingUrl() || !function_exists('dns_get_record')) {
         return true;
       }
 
