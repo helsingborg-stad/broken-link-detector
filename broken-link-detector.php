@@ -2,41 +2,90 @@
 
 /**
  * Plugin Name:       Broken Link Detector
- * Plugin URI:        (#plugin_url#)
  * Description:       Detects and fixes (if possible) broken links in post_content
  * Version: 3.0.6
- * Author:            Kristoffer Svanmark
- * Author URI:        (#plugin_author_url#)
+ * Author:            Sebastian Thulin
  * License:           MIT
  * License URI:       https://opensource.org/licenses/MIT
  * Text Domain:       broken-link-detector
  * Domain Path:       /languages
  */
 
- // Protect agains direct file access
+use AcfService\Implementations\NativeAcfService;
+use WpService\Implementations\NativeWpService;
+use BrokenLinkDetector\Database\Database;
+use BrokenLinkDetector\Config\Config;
+use BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry;
+use BrokenLinkDetector\Cli\CommandRunner;
+
+/* Assets */ 
+use WpService\FileSystem\BaseFileSystem;
+use WpService\FileSystemResolvers\ManifestFilePathResolver;
+use WpService\FileSystemResolvers\UrlFilePathResolver;
+use WpService\Implementations\FilePathResolvingWpService;
+use WpService\Implementations\WpServiceLazyDecorator;
+use WpService\Implementations\WpServiceWithTextDomain;
+
+/**
+ * If this file is called directly, abort.
+ */
 if (! defined('WPINC')) {
     die;
 }
 
-define('BROKENLINKDETECTOR_PATH', plugin_dir_path(__FILE__));
-define('BROKENLINKDETECTOR_URL', plugins_url('', __FILE__));
-define('BROKENLINKDETECTOR_TEMPLATE_PATH', BROKENLINKDETECTOR_PATH . 'templates/');
+/**
+ * Autoload plugin classes, if dependencies are installed.
+ */
+try {
+    require_once __DIR__ . '/vendor/autoload.php';
+} catch (Exception $e) {
+    throw new Exception($e->getMessage());
+}
 
-load_plugin_textdomain('broken-link-detector', false, plugin_basename(dirname(__FILE__)) . '/languages');
+/**
+ * Bootstrap the plugin
+ */
+$wpService                = new NativeWpService();
+$manifestFileWpService    = new WpServiceLazyDecorator();
+$urlFilePathResolver      = new UrlFilePathResolver($manifestFileWpService);
+$baseFileSystem           = new BaseFileSystem();
 
-require_once __DIR__ . '/source/php/Vendor/admin-notice-helper.php';
-require_once BROKENLINKDETECTOR_PATH . 'source/php/Vendor/Psr4ClassLoader.php';
-require_once BROKENLINKDETECTOR_PATH . 'Public.php';
-require_once BROKENLINKDETECTOR_PATH . 'vendor/autoload.php';
+$acfService = new NativeAcfService();
 
-// Instantiate and register the autoloader
-$loader = new BrokenLinkDetector\Vendor\Psr4ClassLoader();
-$loader->addPrefix('BrokenLinkDetector', BROKENLINKDETECTOR_PATH);
-$loader->addPrefix('BrokenLinkDetector', BROKENLINKDETECTOR_PATH . 'source/php/');
-$loader->register();
+$config     = new Config(
+    $wpService, 
+    $acfService,
+    'BrokenLinkDetector/Config',
+    $wpService->pluginDirPath(__FILE__),
+    $wpService->pluginsUrl('', __FILE__)
+);
 
-// Start application
-$brokenLinkDetectorApp = new BrokenLinkDetector\App();
+$manifestFilePathResolver = new ManifestFilePathResolver(
+    $config->getPluginPath() . "dist/manifest.json", 
+    $baseFileSystem, 
+    $manifestFileWpService, 
+    $urlFilePathResolver
+);
 
-register_activation_hook(__FILE__, '\BrokenLinkDetector\App::install');
-register_deactivation_hook(__FILE__, '\BrokenLinkDetector\App::uninstall');
+$wpService = new FilePathResolvingWpService(
+    new NativeWpService(), 
+    $manifestFilePathResolver
+);
+
+$manifestFileWpService->setInner(new WpServiceWithTextDomain($wpService, $config->getTextDomain()));
+
+$database   = new Database($config, $wpService);
+$registry   = new ManageRegistry($database, $config);
+$cliRunner  = new CommandRunner($wpService, $config);
+
+/**
+ * Run the plugin
+ */
+$brokenLinkDetectorApp = new BrokenLinkDetector\App(
+    $manifestFileWpService,
+    $acfService,
+    $database,
+    $registry,
+    $config,
+    $cliRunner
+);

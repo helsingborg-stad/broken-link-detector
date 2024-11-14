@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "target": "es6",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "lib": [
+      "ES2021",
+      "DOM",
+      "DOM.Iterable",
+    ],
+    "types": ["@types/tinymce"]
+  },
+  "include": [
+    "source/js/*.ts",
+    "source/js/*.js"
+  ]
+}

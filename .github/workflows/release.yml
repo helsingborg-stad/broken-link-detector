@@ -18,7 +18,7 @@ jobs:
     - name: Create Release and bump version files
       uses: helsingborg-stad/release-wp-plugin-action@1.0.2
       with:
-        php-version: 8.2
+        php-version: 8.3
         node-version: 20.6.0
   build-assets:
     needs: ['release']
@@ -45,7 +45,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 20.6.0
+          node-version: 20
       - name: Inject access token in .npmrc
         run: | 
           echo "registry=https://npm.pkg.github.com/helsingborg-stad" >> ~/.npmrc
@@ -83,7 +83,7 @@ jobs:
         if: ${{ hashFiles('composer.json') != '' }}
         with:
           tools: composer
-          php-version: '7.4'
+          php-version: '8.3'
       
       - name: Build PHP
         if: ${{ hashFiles('composer.json') != '' }}

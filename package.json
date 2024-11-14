@@ -20,13 +20,28 @@
         "type": "git",
         "url": "https://github.com/helsingborg-stad/broken-link-detector.git"
     },
-    "author": "Kristoffer Svanmark",
+    "authors": [
+        {
+            "name": "Sebastian Thulin",
+            "email": "sebastian.thulin@helsingborg.se"
+        },
+        {
+            "name": "Niclas Norin",
+            "email": "niclas.norin@helsingborg.se"
+        },
+        {
+            "name": "Thor Brink",
+            "email": "thor.brink@helsingborg.se"
+        }
+    ],
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/helsingborg-stad/broken-link-detector/issues"
     },
     "homepage": "https://github.com/helsingborg-stad/broken-link-detector",
     "devDependencies": {
+        "@types/node": "^22.7.9",
+        "@types/tinymce": "^4.6.9",
         "autoprefixer": "^10.4.2",
         "browserslist": "^4.23.3",
         "clean-webpack-plugin": "^4.0.0",
@@ -38,6 +53,8 @@
         "postcss-loader": "^6.2.1",
         "sass": "^1.49.7",
         "sass-loader": "^12.4.0",
+        "ts-loader": "^9.5.1",
+        "typescript": "^5.6.3",
         "webpack": "^5.68.0",
         "webpack-bundle-analyzer": "^4.5.0",
         "webpack-cli": "^4.9.2",
