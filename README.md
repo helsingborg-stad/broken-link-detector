@@ -1,4 +1,4 @@
-# Broken Link Detector
+# Broken Link Detector 4
 The **Broken Link Detector** plugin identifies and, where possible, fixes broken links in both content and metadata. Key features include:
 
 - Probing both internal and external URLs stored in content and metadata to verify their validity.
