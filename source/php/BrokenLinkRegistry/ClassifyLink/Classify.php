@@ -102,12 +102,13 @@ class Classify implements ClassifyInterface {
    */
   private function tryGetDnsRecord(): bool
   {
-      static $dnsCache = [];
+    static $dnsCache = [];
 
-      if (!$this->config->checkIfDnsRespondsBeforeProbingUrl() || !function_exists('dns_get_record')) {
-        return true;
-      }
+    if (!$this->config->checkIfDnsRespondsBeforeProbingUrl() || !function_exists('dns_get_record')) {
+      return true;
+    }
 
+    try {
       $domain = $this->getUrlDomain();
 
       if (isset($dnsCache[$domain])) {
@@ -115,6 +116,10 @@ class Classify implements ClassifyInterface {
       }
 
       return $dnsCache[$domain] = (bool) dns_get_record($domain, DNS_A) || (bool) dns_get_record($domain, DNS_CNAME);
+
+    } catch(\Exception $e) {
+      return true;
+    }
   }
 
   /**
