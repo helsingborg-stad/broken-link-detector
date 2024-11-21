@@ -61,7 +61,7 @@ class ManageRegistry implements ManageRegistryInterface
   {
       $httpCode   = $link->classification?->getHttpCode() ?? null;
 
-      $x = $this->db->getInstance()->update(
+      $this->db->getInstance()->update(
         $this->db->getInstance()->prefix . $this->config->getTableName(),
           array(
               'http_code'  => $httpCode,
