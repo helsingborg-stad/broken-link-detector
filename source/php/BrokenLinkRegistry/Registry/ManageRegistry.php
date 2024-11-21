@@ -146,7 +146,7 @@ class ManageRegistry implements ManageRegistryInterface
   public function remove(int $postId): void
   {
     $this->db->getInstance()->delete(
-      $this->config->getTableName(),
+      $this->db->getInstance()->prefix . $this->config->getTableName(),
       array('post_id' => $postId),
       array('%d')
     );
