@@ -50,7 +50,6 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
             $this->createPermalink($postId, $data['post_name']), 
             $this->createPermalink($postId, $post['post_name'])
           );
-          $data['linkUpdated'] = true;
         }
       }
       return $data;
