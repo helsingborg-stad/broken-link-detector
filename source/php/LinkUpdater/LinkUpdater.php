@@ -7,6 +7,7 @@ use WpService\WpService;
 use BrokenLinkDetector\Config\Config;
 use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\HooksRegistrar\Hookable;
+use WP_Post;
 
 class LinkUpdater implements LinkUpdaterInterface, Hookable
 {
@@ -20,7 +21,7 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
      */
     public function addHooks(): void
     {
-      $this->wpService->addFilter('wp_insert_post_data', array($this, 'updateLinks'), 10, 2);
+      $this->wpService->addAction('wp_after_insert_post', array($this, 'updateLinks'), 10, 3);
     }
 
     /**
@@ -29,30 +30,22 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
      * @param array $post
      * @return bool
      */
-    public function updateLinks(array $data, array $post): array
+    public function updateLinks(int|WP_Post $post, bool $isUpdate, null|WP_Post $postBefore): void
     {
-      if(is_null($post)) {
-        return $data;
+      if(!$isUpdate) {
+        return;
       }
 
-      foreach(['post_type', 'post_name'] as $keys) {
-        if(!isset($data[$keys]) || !isset($post[$keys])) {
-          return $data;
-        }
+      if(!is_a($post, 'WP_Post') && is_numeric($post)) {
+        $post = $this->wpService->getPost($post);
       }
 
-      if($this->linkHasChanged($data, $post) && $this->shouldReplaceForPosttype($data['post_type'])) {
-       
-        $postId = $post['ID'] ?? null;
-
-        if(is_numeric($postId)) {
-          $this->replaceLinks(
-            $this->createPermalink($postId, $data['post_name']), 
-            $this->createPermalink($postId, $post['post_name'])
-          );
-        }
+      if($this->linkHasChanged($post, $postBefore) && $this->shouldReplaceForPosttype($this->wpService->getPostType($post))) {
+        $this->replaceLinks(
+          $this->createPermalink($post->ID, $postBefore->post_name), 
+          $this->createPermalink($post->ID, $post->post_name)
+        );
       }
-      return $data;
     }
 
     /**
@@ -100,13 +93,13 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
 
     /**
      * Check if the link has changed
-     * @param array $data   The newly submitted data
-     * @param array $post   The stored post data
+     * @param WP_Post $post   The newly submitted data
+     * @param WP_Post $postBefore   The stored post data
      * @return bool
      */
-    public function linkHasChanged(array $data, array $post): bool
+    public function linkHasChanged(WP_Post $post, WP_Post $postBefore): bool
     {
-      return $data['post_name'] !== $post['post_name'];
+      return $post->post_name !== $postBefore->post_name;
     }
 
     /**
