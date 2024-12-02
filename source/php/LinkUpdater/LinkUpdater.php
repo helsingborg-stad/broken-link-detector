@@ -49,19 +49,47 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
    */
   public function updateLinks(int $postId, WP_Post $postBefore, WP_Post $postAfter): void
   {
-    if ($this->storedPermalink === null) {
-      return;
-    }
-
     $previousPermalink  = $this->storedPermalink;
     $currentPermalink   = $this->wpService->getPermalink($postId);
 
-    if ($previousPermalink != $currentPermalink && $this->shouldReplaceForPosttype($postAfter->post_type)) {
-      //Ensure that the home url is not replaced
-      if($this->wpService->homeUrl() !== $previousPermalink) {
-        $this->replaceLinks($previousPermalink, $currentPermalink);
-      }
+    if (!$this->isValidReplaceRequest($previousPermalink, $currentPermalink)) {
+      return;
     }
+
+    if ($this->shouldReplaceForPosttype($postAfter->post_type)) {
+      $this->replaceLinks($previousPermalink, $currentPermalink);
+    }
+  }
+
+  /**
+   * Validate the replace request
+   * @param string $oldLink
+   * @param string $newLink
+   * @return bool
+   */
+  private function isValidReplaceRequest(string $oldLink, string $newLink): bool
+  {
+    //Ensure that the old link is not the same as the new link
+    if ($oldLink === $newLink) {
+      return false; 
+    }
+
+    //Ensure that the old link is not empty
+    if (empty($oldLink)) {
+      return false;
+    }
+
+    //Ensure that the new link is not empty
+    if (empty($newLink)) {
+      return false;
+    }
+
+    //Ensure that the old link is not a home url
+    if ($this->wpService->homeUrl() === $oldLink) {
+      return false;
+    }
+
+    return true;
   }
 
   /**
