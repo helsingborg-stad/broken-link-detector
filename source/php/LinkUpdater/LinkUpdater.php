@@ -1,5 +1,4 @@
-<?php 
-
+<?php
 
 namespace BrokenLinkDetector\LinkUpdater;
 
@@ -7,115 +6,150 @@ use WpService\WpService;
 use BrokenLinkDetector\Config\Config;
 use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\HooksRegistrar\Hookable;
+use WP_Post;
 
 class LinkUpdater implements LinkUpdaterInterface, Hookable
 {
-    public function __construct(private WpService $wpService, private Config $config, private Database $database)
-    {
+  private ?string $storedPermalink = null;
+
+  public function __construct(private WpService $wpService, private Config $config, private Database $database)
+  {
+  }
+
+  /**
+   * Add hooks for the link updater
+   * @return void
+   */
+  public function addHooks(): void
+  {
+    //Fetches the previous permalink before the post is updated
+    $this->wpService->addAction('pre_post_update', [$this, 'beforeUpdateLinks'], 10, 2);
+
+    //Updates the links in the post content if the post name has changed
+    $this->wpService->addAction('post_updated', [$this, 'updateLinks'], 10, 3);
+  }
+
+  /**
+   * Before the post is updated, store the post data
+   * @param int $postId
+   * @param array $post
+   * @return void
+   */
+  public function beforeUpdateLinks(int $postId, array $post): void
+  {
+    $this->storedPermalink = $this->wpService->getPermalink($postId);
+  }
+
+  /**
+   * Update the links in the post content if the post name has changed
+   * @param int $id
+   * @param WP_Post $postBefore
+   * @param WP_Post $postAfter
+   * @return void
+   */
+  public function updateLinks(int $postId, WP_Post $postBefore, WP_Post $postAfter): void
+  {
+    $previousPermalink  = $this->storedPermalink;
+    $currentPermalink   = $this->wpService->getPermalink($postId);
+
+    if (!$this->isValidReplaceRequest($previousPermalink, $currentPermalink)) {
+      return;
     }
 
-    /**
-     * Add hooks for the link updater
-     * @return void
-     */
-    public function addHooks(): void
-    {
-      $this->wpService->addFilter('wp_insert_post_data', array($this, 'updateLinks'), 10, 2);
+    if ($this->shouldReplaceForPosttype($postAfter->post_type)) {
+      $this->replaceLinks($previousPermalink, $currentPermalink);
+    }
+  }
+
+  /**
+   * Validate the replace request
+   * @param string $oldLink
+   * @param string $newLink
+   * @return bool
+   */
+  private function isValidReplaceRequest(string $oldLink, string $newLink): bool
+  {
+    //Ensure that the old link is not the same as the new link
+    if ($oldLink === $newLink) {
+      return false; 
     }
 
-    /**
-     * Update the links in the post content if the post name has changed
-     * @param array $data
-     * @param array $post
-     * @return bool
-     */
-    public function updateLinks(array $data, array $post): array
-    {
-      if(is_null($post)) {
-        return $data;
-      }
-
-      foreach(['post_type', 'post_name'] as $keys) {
-        if(!isset($data[$keys]) || !isset($post[$keys])) {
-          return $data;
-        }
-      }
-
-      if($this->linkHasChanged($data, $post) && $this->shouldReplaceForPosttype($data['post_type'])) {
-       
-        $postId = $post['ID'] ?? null;
-
-        if(is_numeric($postId)) {
-          $this->replaceLinks(
-            $this->createPermalink($postId, $data['post_name']), 
-            $this->createPermalink($postId, $post['post_name'])
-          );
-        }
-      }
-      return $data;
+    //Ensure that the old link is not empty
+    if (empty($oldLink)) {
+      return false;
     }
 
-    /**
-     * Replace the old link with the new link in posts that contains the link
-     * @param string $newLink
-     * @param string $oldLink
-     * @return int
-     */
-    private function replaceLinks(string $newLink, string $oldLink): int
-    {
+    //Ensure that the new link is not empty
+    if (empty($newLink)) {
+      return false;
+    }
 
+    //Ensure that the old link is not a home url
+    if ($this->wpService->homeUrl() === $oldLink) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Replace the old link with the new link in the post content
+   * @param string $oldLink
+   * @param string $newLink
+   * @return int
+   */
+  private function replaceLinks(string $oldLink, string $newLink): int
+  {
       $db = $this->database->getInstance();
 
-      $db->query(
-        $db->prepare(
-            "UPDATE $db->posts
-                SET post_content = REPLACE(post_content, %s, %s)
-                WHERE post_content LIKE %s",
-            $oldLink,
-            $newLink,
-            '%' . $db->esc_like($oldLink) . '%'
-        )
+      //Get the post ids that contain the old link
+      $postIds = $db->get_col(
+          $db->prepare(
+              "SELECT ID
+                  FROM $db->posts
+                  WHERE post_content LIKE %s",
+              '%' . $db->esc_like($oldLink) . '%'
+          )
       );
 
+      //Update the post content
+      $db->query(
+          $db->prepare(
+              "UPDATE $db->posts
+                  SET post_content = REPLACE(post_content, %s, %s)
+                  WHERE post_content LIKE %s",
+              $oldLink,
+              $newLink,
+              '%' . $db->esc_like($oldLink) . '%'
+          )
+      );
+
+      //Clear the object cache for the post ids
+      $this->clearObjectCache($postIds);
+
+      //Return the number of rows affected
       return $db->rows_affected;
+  }
+
+  /**
+   * Clear the object cache for the post ids
+   * 
+   * @param array $postIds
+   */
+  private function clearObjectCache(array $postIds): void
+  {
+    foreach ($postIds as $postId) {
+      $this->wpService->cleanPostCache($postId);
     }
+  }
 
-    /**
-     * Create a permalink from the post id and post name
-     * @param int $postId
-     * @param string $postName
-     * @return string
-     */
-    public function createPermalink(int $postId, string $postName): string
-    {
-        $permalink =  preg_replace('/[^\/]+\/?$/',
-          $postName, 
-          $this->wpService->getPermalink($postId)
-        );
-
-        $permalink = rtrim($permalink, '/');
-
-        return $permalink; 
-    }
-
-    /**
-     * Check if the link has changed
-     * @param array $data   The newly submitted data
-     * @param array $post   The stored post data
-     * @return bool
-     */
-    public function linkHasChanged(array $data, array $post): bool
-    {
-      return $data['post_name'] !== $post['post_name'];
-    }
-
-    /**
-     * Check if the link should be replaced for the post type
-     * @param string $postType
-     * @return bool
-     */
-    private function shouldReplaceForPosttype(string $postType): bool
-    {
-      return !in_array($postType, $this->config->linkUpdaterBannedPostTypes());
-    }
+  /**
+   * Check if the post type should be replaced
+   * @param string $postType
+   * @return bool
+   */
+  private function shouldReplaceForPosttype(string $postType): bool
+  {
+    return !in_array($postType, $this->config->linkUpdaterBannedPostTypes());
+  }
 }

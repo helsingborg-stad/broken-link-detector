@@ -18,7 +18,7 @@ class Feature implements FeatureInterface {
     'admin_highlight_links' => 1,
 
     //On save autofixer
-    'fix_internal_links' => false,
+    'fix_internal_links' => 1,
     'maintain_link_registry' => 1,
 
     //CLI Features
