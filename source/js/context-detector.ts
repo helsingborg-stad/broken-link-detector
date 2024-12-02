@@ -62,26 +62,22 @@ class ClientTypeChecker {
 
     // Mark as internal client
     private setInternalClient(): void {
-        console.log('Internal client');
+        document.dispatchEvent(new CustomEvent('brokenLinkContextDetectionInternal'));
         document.body.classList.add(this.config.successClass);
     }
 
     // Mark as external client
     private setExternalClient(): void {
+        // Execute custom event
+        document.dispatchEvent(new CustomEvent('brokenLinkContextDetectionExternal'));
         document.body.classList.add(this.config.failedClass);
         this.applyDomainRestrictions();
-    }
-
-    // Log messages only if DevTools is open
-    private log(message: string): void {
-        console.log(message);
     }
 
     // Apply domain restrictions to domains in the domain list
     private applyDomainRestrictions(): void {
         this.config.domains.forEach(domain => {
             const elements = document.querySelectorAll(`a[href*="${domain}"]`);
-            console.log(elements);
             elements.forEach(element => {
                 element.classList.add('broken-link-detector-link-is-unavabile');
                 element.setAttribute("data-tooltip", this.config.tooltip);
