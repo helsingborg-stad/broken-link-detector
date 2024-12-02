@@ -101,6 +101,18 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
   private function replaceLinks(string $oldLink, string $newLink): int
   {
       $db = $this->database->getInstance();
+
+      //Get the post ids that contain the old link
+      $postIds = $db->get_col(
+          $db->prepare(
+              "SELECT ID
+                  FROM $db->posts
+                  WHERE post_content LIKE %s",
+              '%' . $db->esc_like($oldLink) . '%'
+          )
+      );
+
+      //Update the post content
       $db->query(
           $db->prepare(
               "UPDATE $db->posts
@@ -111,7 +123,24 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
               '%' . $db->esc_like($oldLink) . '%'
           )
       );
+
+      //Clear the object cache for the post ids
+      $this->clearObjectCache($postIds);
+
+      //Return the number of rows affected
       return $db->rows_affected;
+  }
+
+  /**
+   * Clear the object cache for the post ids
+   * 
+   * @param array $postIds
+   */
+  private function clearObjectCache(array $postIds): void
+  {
+    foreach ($postIds as $postId) {
+      $this->wpService->cleanPostCache($postId);
+    }
   }
 
   /**
