@@ -357,6 +357,73 @@ class Config implements ConfigInterface
   }
 
   /**
+   * Get the template directory.
+   * 
+   * @return string
+   */
+  public function getTemplateDirectory(): string
+  {
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__), 
+      $this->getPluginPath() . 'source/views'
+    );
+  }
+
+  /**
+   * Get the active status for the modal.
+   * 
+   * @return bool
+   */
+  public function getIsModalActive(): bool
+  {
+    $isActive = $this->acfService->getField(
+      'broken_links_modal_active',
+      'option'
+    ) ?: false;
+
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__),
+      $isActive ?: false
+    );
+  }
+
+  /**
+   * Get the title for the modal.
+   * 
+   * @return string
+   */
+  public function getModalTitle(): string
+  {
+    $title = $this->acfService->getField(
+      'broken_links_modal_title',
+      'option'
+    ) ?: false;
+
+    return $this->wpService->applyFilters(
+        $this->createFilterKey(__FUNCTION__),
+        $title ?: ''
+    );
+  }
+
+  /**
+   * Get the content for the modal.
+   * 
+   * @return string
+   */
+  public function getModalContent(): string
+  {
+    $content = $this->acfService->getField(
+      'broken_links_modal_content',
+      'option'
+    ) ?: false;
+
+    return $this->wpService->applyFilters(
+        $this->createFilterKey(__FUNCTION__),
+        $content ?: ''
+    );
+  }
+
+  /**
    * Create a prefix for image conversion filter.
    *
    * @return string
