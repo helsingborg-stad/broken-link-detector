@@ -23,7 +23,7 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
   public function addHooks(): void
   {
     //Fetches the previous permalink before the post is updated
-    $this->wpService->addFilter('pre_post_update', [$this, 'beforeUpdateLinks'], 10, 2);
+    $this->wpService->addAction('pre_post_update', [$this, 'beforeUpdateLinks'], 10, 2);
 
     //Updates the links in the post content if the post name has changed
     $this->wpService->addAction('post_updated', [$this, 'updateLinks'], 10, 3);
