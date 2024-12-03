@@ -323,6 +323,26 @@ class Config implements ConfigInterface
   }
 
   /**
+   * Get the active status for the tooltip.
+   * 
+   * @return bool
+   */
+  public function getContextCheckIsToolTipActive(): bool
+  {
+    $notifyByValues = $this->acfService->getField(
+      'broken_links_context_notify_by',
+      'option'
+    ) ?: [];
+
+    $isActive = in_array('tooltip', $notifyByValues);
+
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__),
+      $isActive ?? true
+    );
+  }
+
+  /**
    * Get the tooltip text for the context detection disabled link.
    * 
    * @return string
@@ -340,6 +360,69 @@ class Config implements ConfigInterface
         'Link unavabile',
         'broken-link-detector'
       )
+    );
+  }
+
+  /**
+   * Get the active status for the modal.
+   * 
+   * @return bool
+   */
+  public function getContextCheckIsModalActive(): bool
+  {
+    $notifyByValues = $this->acfService->getField(
+      'broken_links_context_notify_by',
+      'option'
+    ) ?: [];
+
+    $isActive = in_array('modal', $notifyByValues);
+
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__),
+      $isActive ?? true
+    );
+  }
+
+  /**
+   * Get the title for the modal.
+   * 
+   * @return string
+   */
+  public function getContextCheckModalTitle(): string
+  {
+    $title = $this->acfService->getField(
+      'broken_links_modal_title',
+      'option'
+    ) ?: $this->wpService->__('Content unavabile', 'broken-link-detector');
+
+    return $this->wpService->applyFilters(
+        $this->createFilterKey(__FUNCTION__),
+        $title
+    );
+  }
+
+  /**
+   * Get the content for the modal.
+   * 
+   * @return string
+   */
+  public function getContextCheckModalContent(): string
+  {
+    $content = $this->acfService->getField(
+      'broken_links_modal_content',
+      'option'
+    ) ?: $this->wpService->__('
+      This link cannot be accessed on your current network. The system you are trying to reach is only available through a secure, authorized connection. 
+
+      To access it, you need to either be connected to the network in a specific location, such as an office, or use a secure connection method, like a VPN. 
+
+      Please ensure you are connected to the correct network to proceed.
+      ', 'broken-link-detector'
+    );
+
+    return $this->wpService->applyFilters(
+      $this->createFilterKey(__FUNCTION__),
+      $this->wpService->wpautop($content)
     );
   }
 
@@ -366,60 +449,6 @@ class Config implements ConfigInterface
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
       $this->getPluginPath() . 'source/views'
-    );
-  }
-
-  /**
-   * Get the active status for the modal.
-   * 
-   * @return bool
-   */
-  public function getIsModalActive(): bool
-  {
-    $isActive = $this->acfService->getField(
-      'broken_links_modal_active',
-      'option'
-    ) ?: true;
-
-    return $this->wpService->applyFilters(
-      $this->createFilterKey(__FUNCTION__),
-      $isActive ?: true
-    );
-  }
-
-  /**
-   * Get the title for the modal.
-   * 
-   * @return string
-   */
-  public function getModalTitle(): string
-  {
-    $title = $this->acfService->getField(
-      'broken_links_modal_title',
-      'option'
-    ) ?: false;
-
-    return $this->wpService->applyFilters(
-        $this->createFilterKey(__FUNCTION__),
-        $title ?: ''
-    );
-  }
-
-  /**
-   * Get the content for the modal.
-   * 
-   * @return string
-   */
-  public function getModalContent(): string
-  {
-    $content = $this->acfService->getField(
-      'broken_links_modal_content',
-      'option'
-    ) ?: false;
-
-    return $this->wpService->applyFilters(
-        $this->createFilterKey(__FUNCTION__),
-        $content ?: ''
     );
   }
 

@@ -79,13 +79,48 @@ class ClientTypeChecker {
         this.config.domains.forEach(domain => {
             const elements = document.querySelectorAll(`a[href*="${domain}"]`);
             elements.forEach(element => {
-                element.classList.add('broken-link-detector-link-is-unavabile');
-                element.setAttribute("data-tooltip", this.config.tooltip);
-                element.addEventListener("click", (event) => {
-                    event.preventDefault();
-                });
+                this.addUnavailableClass(element);
+                this.preventDefaultOnClick(element);
+    
+                if (this.config.isToolTipActive) {
+                    this.addTooltip(element);
+                }
+                
+                if (this.config.isModalActive) {
+                    this.addModalAttributes(element);
+                }
             });
         });
+    
+        this.reindexModals();
+    }
+    
+    private addUnavailableClass(element: Element): void {
+        element.classList.add('broken-link-detector-link-is-unavailable');
+    }
+    
+    private preventDefaultOnClick(element: Element): void {
+        element.addEventListener("click", (event) => {
+            event.preventDefault();
+        });
+    }
+    
+    private addTooltip(element: Element): void {
+        element.setAttribute("data-tooltip", this.config.tooltip);
+    }
+    
+    private addModalAttributes(element: Element): void {
+        element.setAttribute("data-open", "modal-broken-link");
+        element.addEventListener("click", () => {
+            const modalButton = document.getElementById("modal-broken-link-button");
+            if (modalButton) {
+                modalButton.setAttribute("href", element.getAttribute("href") || "#linknotfound");
+            }
+        });
+    }
+    
+    private reindexModals(): void {
+        document.dispatchEvent(new CustomEvent('reindexModals'));
     }
 }
 
@@ -98,6 +133,8 @@ interface brokenLinkContextDetectionData {
     tooltip: string;
     successClass: string;
     failedClass: string;
+    isToolTipActive: boolean;
+    isModalActive: boolean;
 }
 
 declare global {

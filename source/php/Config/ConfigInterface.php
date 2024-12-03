@@ -49,7 +49,8 @@ interface ConfigInterface
 
     /* Modal */
     public function getTemplateDirectory(): string;
-    public function getIsModalActive(): bool;
-    public function getModalTitle(): string;
-    public function getModalContent(): string;
+    public function getContextCheckIsModalActive(): bool;
+    public function getContextCheckIsToolTipActive(): bool;
+    public function getContextCheckModalTitle(): string;
+    public function getContextCheckModalContent(): string;
 }

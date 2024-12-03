@@ -221,7 +221,7 @@ class App
             $contextDetectionAsset->addHooks();
 
             // Add modal, if enabled
-            if($config->getIsModalActive()) {
+            if($config->getContextCheckIsModalActive()) {
                 $modal = new \BrokenLinkDetector\Modal(
                     $wpService,
                     $config,
