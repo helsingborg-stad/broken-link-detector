@@ -19,7 +19,7 @@ interface ConfigInterface
     public function getDatabaseVersion(): string;
     public function getTableName(): string;
     public function getPluginUrl(): string;
-    public function getPluginPath(): string;
+    public function getPluginPath(bool $relative): string;
     public function getPluginFieldsPath(): string;
     public function getTextDomain(): string;
     public function linkUpdaterBannedPostTypes(): array;

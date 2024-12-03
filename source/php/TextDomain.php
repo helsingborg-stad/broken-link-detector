@@ -23,7 +23,7 @@ class TextDomain implements TextDomainInterface, Hookable
         $this->wpService->loadPluginTextDomain(
             $this->config->gettextDomain(), 
             false, 
-            $this->config->getPluginPath() . 'languages/'
+            $this->config->getPluginPath(true) . 'languages/'
         );
     }
 }

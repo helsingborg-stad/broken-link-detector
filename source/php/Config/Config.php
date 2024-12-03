@@ -73,12 +73,18 @@ class Config implements ConfigInterface
    * 
    * @return string
    */
-  public function getPluginPath(): string
+  public function getPluginPath($relative = false): string
   {
-    return $this->wpService->applyFilters(
+    $pluginPath = $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
       $this->pluginPath
     );
+
+    if($relative === true) {
+      return str_replace(WP_PLUGIN_DIR, '', $pluginPath);
+    }
+
+    return $pluginPath;
   }
 
   /**
