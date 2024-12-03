@@ -46,4 +46,11 @@ interface ConfigInterface
     public function getContextCheckSuccessClass(): string;
     public function getContextCheckFailedClass(): string;
     public function getContextCheckTooltipText(): string;
+
+    /* Modal */
+    public function getTemplateDirectory(): string;
+    public function getContextCheckIsModalActive(): bool;
+    public function getContextCheckIsToolTipActive(): bool;
+    public function getContextCheckModalTitle(): string;
+    public function getContextCheckModalContent(): string;
 }

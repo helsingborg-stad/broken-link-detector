@@ -31,6 +31,9 @@ use BrokenLinkDetector\Cli\CommandRunner;
 use BrokenLinkDetector\Cli\FindLinks;
 use BrokenLinkDetector\Cli\ClassifyLinks;
 
+/* Vendors */ 
+use ComponentLibrary\Init;
+
 class App
 {
     public static $dbTable = 'broken_links_detector';
@@ -216,6 +219,18 @@ class App
                 $config
             );
             $contextDetectionAsset->addHooks();
+
+            // Add modal, if enabled
+            if($config->getContextCheckIsModalActive()) {
+                $modal = new \BrokenLinkDetector\Modal(
+                    $wpService,
+                    $config,
+                    new \ComponentLibrary\Init(
+                        [$config->getTemplateDirectory()]
+                    )
+                );
+                $modal->addHooks();
+            }
         }
 
     }

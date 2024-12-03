@@ -33,9 +33,11 @@ class ContextDetection extends AssetRegistry implements AssetInterface
       'checkUrl' => $this->config->getContextCheckUrl(),
       'checkTimeout' => $this->config->getContextCheckTimeout(),
       'domains' => $this->config->getContextCheckDomainsToDisable(),
-      'tooltip' => $this->config->getContextCheckTooltipText(),
       'successClass' => $this->config->getContextCheckSuccessClass(),
       'failedClass' => $this->config->getContextCheckFailedClass(),
+      'isToolTipActive' => $this->config->getContextCheckIsToolTipActive(),
+      'tooltip' => $this->config->getContextCheckTooltipText(),
+      'isModalActive' => $this->config->getContextCheckIsModalActive(),
     ];
   }
 }

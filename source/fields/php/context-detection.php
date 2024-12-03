@@ -1,7 +1,9 @@
 <?php 
 
-if (function_exists('acf_add_local_field_group')) {
-    acf_add_local_field_group(array(
+
+if (function_exists('acf_add_local_field_group')) {
+
+    acf_add_local_field_group(array(
     'key' => 'group_6718e9e8554ca',
     'title' => __('Context Detect', 'api-event-manager'),
     'fields' => array(
@@ -51,12 +53,12 @@
             'placeholder' => __('https://internal.resource.admin-network.local/image-1x1.jpg', 'api-event-manager'),
         ),
         2 => array(
-            'key' => 'field_6733096f5d072',
-            'label' => __('Tooltip Text', 'api-event-manager'),
-            'name' => 'broken_links_context_tooltip',
+            'key' => 'field_674ed2cff358e',
+            'label' => __('Inform user by the following methods', 'api-event-manager'),
+            'name' => 'broken_links_context_notify_by',
             'aria-label' => '',
-            'type' => 'text',
-            'instructions' => __('The text that displays in the tooltip, whenever a link is unavabile.', 'api-event-manager'),
+            'type' => 'checkbox',
+            'instructions' => '',
             'required' => 0,
             'conditional_logic' => array(
                 0 => array(
@@ -72,11 +74,103 @@
                 'class' => '',
                 'id' => '',
             ),
+            'choices' => array(
+                'tooltip' => __('Tooltip', 'api-event-manager'),
+                'modal' => __('Modal', 'api-event-manager'),
+            ),
+            'default_value' => array(
+            ),
+            'return_format' => 'value',
+            'allow_custom' => 0,
+            'layout' => 'horizontal',
+            'toggle' => 0,
+            'save_custom' => 0,
+            'custom_choice_button_text' => 'Lägg till nytt val',
+        ),
+        3 => array(
+            'key' => 'field_6733096f5d072',
+            'label' => __('Tooltip Text', 'api-event-manager'),
+            'name' => 'broken_links_context_tooltip',
+            'aria-label' => '',
+            'type' => 'text',
+            'instructions' => __('The text that displays in the tooltip, whenever a link is unavailable.', 'api-event-manager'),
+            'required' => 0,
+            'conditional_logic' => array(
+                0 => array(
+                    0 => array(
+                        'field' => 'field_674ed2cff358e',
+                        'operator' => '==',
+                        'value' => 'tooltip',
+                    ),
+                ),
+            ),
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => '',
+            ),
             'default_value' => '',
             'maxlength' => '',
-            'placeholder' => __('Link unavabile', 'api-event-manager'),
+            'placeholder' => __('Link unavailable', 'api-event-manager'),
             'prepend' => '',
             'append' => '',
+        ),
+        4 => array(
+            'key' => 'field_674ed3fcf358f',
+            'label' => __('Modal Title', 'api-event-manager'),
+            'name' => 'broken_links_context_modal_title',
+            'aria-label' => '',
+            'type' => 'text',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => array(
+                0 => array(
+                    0 => array(
+                        'field' => 'field_674ed2cff358e',
+                        'operator' => '==',
+                        'value' => 'modal',
+                    ),
+                ),
+            ),
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => '',
+            ),
+            'default_value' => '',
+            'maxlength' => '',
+            'placeholder' => '',
+            'prepend' => '',
+            'append' => '',
+        ),
+        5 => array(
+            'key' => 'field_674ed42ef3590',
+            'label' => __('Modal Content', 'api-event-manager'),
+            'name' => 'broken_links_context_modal_content',
+            'aria-label' => '',
+            'type' => 'textarea',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => array(
+                0 => array(
+                    0 => array(
+                        'field' => 'field_674ed2cff358e',
+                        'operator' => '==',
+                        'value' => 'modal',
+                    ),
+                ),
+            ),
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => '',
+            ),
+            'default_value' => '',
+            'acfe_textarea_code' => 0,
+            'maxlength' => '',
+            'rows' => '',
+            'placeholder' => '',
+            'new_lines' => '',
         ),
     ),
     'location' => array(
@@ -105,4 +199,5 @@
     'acfe_meta' => '',
     'acfe_note' => '',
 ));
-}
+
+}

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Broken Link Detector\n"
-"POT-Creation-Date: 2024-11-13 10:53+0100\n"
-"PO-Revision-Date: 2024-11-13 11:03+0100\n"
+"POT-Creation-Date: 2024-12-03 12:37+0100\n"
+"PO-Revision-Date: 2024-12-03 12:38+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: sv_SE\n"
@@ -15,23 +15,23 @@ msgstr ""
 "X-Poedit-WPHeader: broken-link-detector.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
-"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 "X-Poedit-SearchPathExcluded-1: dist\n"
 "X-Poedit-SearchPathExcluded-2: vendor\n"
 "X-Poedit-SearchPathExcluded-3: node_modules\n"
 
-#: source/fields/php/context-detection.php:6
+#: source/fields/php/context-detection.php:8
 msgid "Context Detect"
 msgstr "Identifiering av användarkontext"
 
-#: source/fields/php/context-detection.php:10
+#: source/fields/php/context-detection.php:12
 msgid "Enable detection of user context"
 msgstr "Identifiera användarens kontext i nätverket"
 
-#: source/fields/php/context-detection.php:14
+#: source/fields/php/context-detection.php:16
 msgid ""
 "The user detection functionality will disable links that are internal only. "
 "It also adds a tipbox to them explaining why the link is unreachable."
@@ -41,50 +41,70 @@ msgstr ""
 "tillgängliga om denna resurs är otillgänglig, kommer markeras som icke "
 "klickbara."
 
-#: source/fields/php/context-detection.php:22
+#: source/fields/php/context-detection.php:24
 msgid "Detects user context by fetching a internal resource."
 msgstr ""
 "Identifierar användarens kontext i nätverket genom att försöka hämta en "
 "intern resurs."
 
-#: source/fields/php/context-detection.php:24
+#: source/fields/php/context-detection.php:26
 msgid "Enabled"
 msgstr "Aktiverad"
 
-#: source/fields/php/context-detection.php:25
+#: source/fields/php/context-detection.php:27
 msgid "Disabled"
 msgstr "Avaktiverad"
 
-#: source/fields/php/context-detection.php:30
+#: source/fields/php/context-detection.php:32
 msgid "Internal Context Detection Resource"
 msgstr "Resurs som ska hämtas"
 
-#: source/fields/php/context-detection.php:34
+#: source/fields/php/context-detection.php:36
 msgid ""
 "The internal context checker require you to publish a image on a server "
 "without public access. The image should be as small as possible, if your "
 "site is running on https, this resource must also be served with https."
 msgstr ""
-"För att identifiera användarens kontext, krävs det att du publicerar en "
-"bild på en webbadress som bara kan nås från det interna nätverket. Resursen "
-"måste vara tillgänglig via http eller https (om din webbplats använder ssl-"
+"För att identifiera användarens kontext, krävs det att du publicerar en bild "
+"på en webbadress som bara kan nås från det interna nätverket. Resursen måste "
+"vara tillgänglig via http eller https (om din webbplats använder ssl-"
 "certifikat)."
 
-#: source/fields/php/context-detection.php:51
+#: source/fields/php/context-detection.php:53
 msgid "https://internal.resource.admin-network.local/image-1x1.jpg"
 msgstr ""
 
-#: source/fields/php/context-detection.php:55
+#: source/fields/php/context-detection.php:57
+msgid "Inform user by the following methods"
+msgstr "Informera användaren genom"
+
+#: source/fields/php/context-detection.php:78
+msgid "Tooltip"
+msgstr "Text på tooltip"
+
+#: source/fields/php/context-detection.php:79
+msgid "Modal"
+msgstr "Modalfönster"
+
+#: source/fields/php/context-detection.php:92
 msgid "Tooltip Text"
 msgstr "Text på tooltip"
 
-#: source/fields/php/context-detection.php:59
-msgid "The text that displays in the tooltip, whenever a link is unavabile."
+#: source/fields/php/context-detection.php:96
+msgid "The text that displays in the tooltip, whenever a link is unavailable."
 msgstr "Den text som ska visas när en länk inte är tillgänglig."
 
-#: source/fields/php/context-detection.php:77 source/php/Config/Config.php:340
-msgid "Link unavabile"
+#: source/fields/php/context-detection.php:114 source/php/Config/Config.php:360
+msgid "Link unavailable"
 msgstr "Otillgänglig"
+
+#: source/fields/php/context-detection.php:120
+msgid "Modal Title"
+msgstr "Titel i modalfönster"
+
+#: source/fields/php/context-detection.php:148
+msgid "Modal Content"
+msgstr "Innehåll i modalfönster"
 
 #: source/fields/php/local-domains.php:6
 msgid "Local Domain Settings"
@@ -176,6 +196,43 @@ msgstr "Alla HTTP Koder"
 #: source/php/Admin/Summary/Table.php:122
 msgid "Filter"
 msgstr "Filter"
+
+#: source/php/Config/Config.php:396
+msgid "Content unavailable"
+msgstr "Länk otillgänglig"
+
+#: source/php/Config/Config.php:414
+msgid ""
+"\n"
+"      This link cannot be accessed on your current network. The system you "
+"are trying to reach is only available through a secure, authorized "
+"connection. \n"
+"\n"
+"      To access it, you need to either be connected to the network in a "
+"specific location, such as an office, or use a secure connection method, "
+"like a VPN. \n"
+"\n"
+"      Please ensure you are connected to the correct network to proceed.\n"
+"      "
+msgstr ""
+"\n"
+"      Den här länken kan inte nås på ditt nuvarande nätverk. Systemet du "
+"försöker nå är endast tillgängligt genom en säker, auktoriserad anslutning.\n"
+"\n"
+"      För att få åtkomst behöver du antingen vara ansluten till nätverket på "
+"en specifik plats, som ett kontor, eller använda en säker anslutningsmetod, "
+"som en VPN.\n"
+"\n"
+"      Vänligen säkerställ att du är ansluten till rätt nätverk för att "
+"fortsätta. "
+
+#: source/php/Modal.php:28
+msgid "Open Anyway"
+msgstr "Fortsätt ändå"
+
+#: source/php/Modal.php:29
+msgid "Close"
+msgstr "Stäng"
 
 #. Plugin Name of the plugin/theme
 msgid "Broken Link Detector"
