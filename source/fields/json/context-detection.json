@@ -87,7 +87,7 @@
             "name": "broken_links_context_tooltip",
             "aria-label": "",
             "type": "text",
-            "instructions": "The text that displays in the tooltip, whenever a link is unavabile.",
+            "instructions": "The text that displays in the tooltip, whenever a link is unavailable.",
             "required": 0,
             "conditional_logic": [
                 [
@@ -105,7 +105,7 @@
             },
             "default_value": "",
             "maxlength": "",
-            "placeholder": "Link unavabile",
+            "placeholder": "Link unavailable",
             "prepend": "",
             "append": ""
         },
@@ -193,4 +193,4 @@
     "acfe_meta": "",
     "acfe_note": ""
 }]
-
+

@@ -1,7 +1,9 @@
 <?php 
 
-if (function_exists('acf_add_local_field_group')) {
-    acf_add_local_field_group(array(
+
+if (function_exists('acf_add_local_field_group')) {
+
+    acf_add_local_field_group(array(
     'key' => 'group_6718e9e8554ca',
     'title' => __('Context Detect', 'api-event-manager'),
     'fields' => array(
@@ -91,7 +93,7 @@
             'name' => 'broken_links_context_tooltip',
             'aria-label' => '',
             'type' => 'text',
-            'instructions' => __('The text that displays in the tooltip, whenever a link is unavabile.', 'api-event-manager'),
+            'instructions' => __('The text that displays in the tooltip, whenever a link is unavailable.', 'api-event-manager'),
             'required' => 0,
             'conditional_logic' => array(
                 0 => array(
@@ -109,7 +111,7 @@
             ),
             'default_value' => '',
             'maxlength' => '',
-            'placeholder' => __('Link unavabile', 'api-event-manager'),
+            'placeholder' => __('Link unavailable', 'api-event-manager'),
             'prepend' => '',
             'append' => '',
         ),
@@ -197,4 +199,5 @@
     'acfe_meta' => '',
     'acfe_note' => '',
 ));
-}
+
+}

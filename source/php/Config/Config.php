@@ -318,7 +318,7 @@ class Config implements ConfigInterface
   public function getContextCheckFailedClass() : string {
     return $this->wpService->applyFilters(
         $this->createFilterKey(__FUNCTION__),
-        'context-check-unavabile'
+        'context-check-unavailable'
     );
   }
 
@@ -357,7 +357,7 @@ class Config implements ConfigInterface
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__), 
       $dbLabel ?: $this->wpService->__(
-        'Link unavabile',
+        'Link unavailable',
         'broken-link-detector'
       )
     );
@@ -393,7 +393,7 @@ class Config implements ConfigInterface
     $title = $this->acfService->getField(
       'broken_links_context_modal_title',
       'option'
-    ) ?: $this->wpService->__('Content unavabile', 'broken-link-detector');
+    ) ?: $this->wpService->__('Content unavailable', 'broken-link-detector');
 
     return $this->wpService->applyFilters(
         $this->createFilterKey(__FUNCTION__),
