@@ -391,7 +391,7 @@ class Config implements ConfigInterface
   public function getContextCheckModalTitle(): string
   {
     $title = $this->acfService->getField(
-      'broken_links_modal_title',
+      'broken_links_context_modal_title',
       'option'
     ) ?: $this->wpService->__('Content unavabile', 'broken-link-detector');
 
@@ -409,7 +409,7 @@ class Config implements ConfigInterface
   public function getContextCheckModalContent(): string
   {
     $content = $this->acfService->getField(
-      'broken_links_modal_content',
+      'broken_links_context_modal_content',
       'option'
     ) ?: $this->wpService->__('
       This link cannot be accessed on your current network. The system you are trying to reach is only available through a secure, authorized connection. 
