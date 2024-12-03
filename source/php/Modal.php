@@ -22,8 +22,8 @@ class Modal implements Hookable {
   public function renderView(): string
   {
     $data = [
-      'title' => 'Title',
-      'content' => 'Content',
+      'title' => $this->config->getModalTitle(),
+      'content' => $this->config->getModalContent(),
       'ctaLink' => '{{BLD_CTA_LINK}}',
       'ctaLabel' => $this->wpService->__("Open Anyway", 'broken-link-detector'),
       'close' => $this->wpService->__("Close", 'broken-link-detector'),

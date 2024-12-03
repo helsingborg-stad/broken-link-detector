@@ -379,11 +379,11 @@ class Config implements ConfigInterface
     $isActive = $this->acfService->getField(
       'broken_links_modal_active',
       'option'
-    ) ?: false;
+    ) ?: true;
 
     return $this->wpService->applyFilters(
       $this->createFilterKey(__FUNCTION__),
-      $isActive ?: false
+      $isActive ?: true
     );
   }
 
