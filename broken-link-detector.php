@@ -3,7 +3,7 @@
 /**
  * Plugin Name:       Broken Link Detector
  * Description:       Detects and fixes (if possible) broken links in post_content
- * Version: 4.2.1
+ * Version: 4.2.2
  * Author:            Sebastian Thulin
  * License:           MIT
  * License URI:       https://opensource.org/licenses/MIT
