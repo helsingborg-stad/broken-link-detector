@@ -54,8 +54,7 @@
         "helsingborg-stad/acf-export-manager": ">=1.0.0",
         "symfony/polyfill-intl-idn": "1.31.0",
         "helsingborg-stad/wpservice": "^2.0",
-        "helsingborg-stad/acfservice": "^0.8.1",
-        "helsingborg-stad/component-library": "^4"
+        "helsingborg-stad/acfservice": "^0.8.1"
     },
     "require-dev": {
         "codedungeon/phpunit-result-printer": "^0.32.0",
@@ -71,6 +70,9 @@
         "phpunit/phpunit": "^9.6",
         "yoast/phpunit-polyfills": "^3.0",
         "wp-cli/wp-cli": "^2.11"
+    },
+    "suggest": {
+        "helsingborg-stad/component-library": "Required for modal feature."
     },
     "config": {
         "allow-plugins": {
