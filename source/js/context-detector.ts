@@ -11,8 +11,23 @@ class ClientTypeChecker {
 
     // Initialize the client type check
     private initializeCheck(): void {
-        this.setTimer();
-        this.loadImage();
+        const storedResult = sessionStorage.getItem('brokenLinkClientType');
+
+        if (storedResult) {
+            this.applyStoredResult(storedResult);
+        } else {
+            this.setTimer();
+            this.loadImage();
+        }
+    }
+
+    // Apply a stored result
+    private applyStoredResult(result: string): void {
+        if (result === 'internal') {
+            this.setInternalClient();
+        } else if (result === 'external') {
+            this.setExternalClient();
+        }
     }
 
     // Set a timeout for image loading
@@ -64,6 +79,7 @@ class ClientTypeChecker {
     private setInternalClient(): void {
         document.dispatchEvent(new CustomEvent('brokenLinkContextDetectionInternal'));
         document.body.classList.add(this.config.successClass);
+        sessionStorage.setItem('brokenLinkClientType', 'internal');
     }
 
     // Mark as external client
@@ -72,6 +88,7 @@ class ClientTypeChecker {
         document.dispatchEvent(new CustomEvent('brokenLinkContextDetectionExternal'));
         document.body.classList.add(this.config.failedClass);
         this.applyDomainRestrictions();
+        sessionStorage.setItem('brokenLinkClientType', 'external');
     }
 
     // Apply domain restrictions to domains in the domain list
@@ -94,21 +111,21 @@ class ClientTypeChecker {
     
         this.reindexModals();
     }
-    
+
     private addUnavailableClass(element: Element): void {
         element.classList.add('broken-link-detector-link-is-unavailable');
     }
-    
+
     private preventDefaultOnClick(element: Element): void {
         element.addEventListener("click", (event) => {
             event.preventDefault();
         });
     }
-    
+
     private addTooltip(element: Element): void {
         element.setAttribute("data-tooltip", this.config.tooltip);
     }
-    
+
     private addModalAttributes(element: Element): void {
         element.setAttribute("data-open", "modal-broken-link");
         element.addEventListener("click", () => {
