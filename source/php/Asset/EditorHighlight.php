@@ -6,6 +6,11 @@ use BrokenLinkDetector\Asset\AssetRegistry;
 
 class EditorHighlight extends AssetRegistry implements AssetInterface
 {
+  public function shouldEnqueue(): bool
+  {
+    return true;
+  }
+
   public function getHook(): string
   {
     return 'mce_external_plugins';
