@@ -6,6 +6,11 @@ use BrokenLinkDetector\Asset\AssetRegistry;
 
 class ContextDetection extends AssetRegistry implements AssetInterface
 {
+  public function shouldEnqueue(): bool
+  {
+    return $this->config->isContextCheckEnabled();
+  }
+
   public function getHook(): string
   {
     return 'wp_enqueue_scripts';

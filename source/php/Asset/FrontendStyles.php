@@ -6,6 +6,11 @@ use BrokenLinkDetector\Asset\AssetRegistry;
 
 class FrontendStyles extends AssetRegistry implements AssetInterface
 {
+  public function shouldEnqueue(): bool
+  {
+    return true;
+  }
+
   public function getHook(): string
   {
     return 'wp_enqueue_scripts';

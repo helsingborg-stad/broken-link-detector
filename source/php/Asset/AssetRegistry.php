@@ -104,6 +104,10 @@ abstract class AssetRegistry implements Hookable, AssetInterface
 
     public function enqueue(): void
     {
+        if($this->isEnabled() === false) {
+            return;
+        }
+
         $filename = $this->getFilename();
 
         if ($this->getType($filename) === 'css') {
