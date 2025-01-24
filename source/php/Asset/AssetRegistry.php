@@ -104,7 +104,7 @@ abstract class AssetRegistry implements Hookable, AssetInterface
 
     public function enqueue(): void
     {
-        if($this->isEnabled() === false) {
+        if($this->shouldEnqueue() === false) {
             return;
         }
 
