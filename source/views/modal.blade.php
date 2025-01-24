@@ -1,7 +1,7 @@
 <!-- Broken Links Information Modal -->
 @modal(
   [
-    'closeButtonText' => 'Close',
+    'closeButtonText' => $close,
     'heading' => $title,
     'id' => 'modal-broken-link',
     'size' => 'sm',
