@@ -202,7 +202,7 @@ class App
         /**
          * Context detection frontend 
          */
-        if (Feature::factory('context_detection')->isEnabled(1) && $config->isContextCheckEnabled()) {
+        if (Feature::factory('context_detection')->isEnabled(1)) {
             $contextDetectionAsset = new \BrokenLinkDetector\Asset\ContextDetection(
                 $wpService,
                 $config
