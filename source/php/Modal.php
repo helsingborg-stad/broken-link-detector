@@ -19,8 +19,12 @@ class Modal implements Hookable {
   /**
    * Render the modal view
    */
-  public function renderView(): string
+  public function renderView(): bool
   {
+    if($this->config->getContextCheckIsModalActive() === false) {
+      return false;
+    }
+
     $data = [
       'title' => $this->config->getContextCheckModalTitle(),
       'content' => $this->config->getContextCheckModalContent(),
@@ -33,6 +37,7 @@ class Modal implements Hookable {
 
     try {
         echo $blade->makeView('modal', $data, [], [])->render();
+        return true;
     } catch (Throwable $e) {
         $blade->errorHandler($e)->print();
     }
