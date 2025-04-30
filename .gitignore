@@ -10,9 +10,6 @@ wp-content/
 # ignore vendor
 vendor/
 
-# ignore composer lock file
-composer.lock
-
 # ignore .env file
 .env
 
