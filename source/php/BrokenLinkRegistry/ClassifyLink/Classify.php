@@ -88,11 +88,40 @@ class Classify implements ClassifyInterface {
    */
   private function tryGetHttpCodeByPostStatus(): ?int
   {
-    $post = $this->wpService->urlToPostId($this->url);
-    if($post && $this->wpService->getPostStatus($post) == 'publish') {
-      return $this->httpCode = 200;
+    $postId = $this->wpService->urlToPostId($this->url);
+    if (!$postId) {
+      return null;
     }
-    return null;
+
+    $postStatus = $this->wpService->getPostStatus($postId);
+    $postType = $this->wpService->getPostType($postId);
+
+    // Check if post type is allowed (not banned)
+    $bannedPostTypes = $this->config->linkDetectBannedPostTypes();
+    if (in_array($postType, $bannedPostTypes)) {
+      return $this->httpCode = 404; // Post type not allowed
+    }
+
+    // Check if post status is allowed
+    $allowedPostStatuses = $this->config->linkDetectAllowedPostStatuses();
+    if (in_array($postStatus, $allowedPostStatuses)) {
+      // Return appropriate HTTP code based on post status
+      switch ($postStatus) {
+        case 'publish':
+          return $this->httpCode = 200;
+        case 'private':
+          // Private posts may be accessible depending on user permissions
+          return $this->httpCode = 200;
+        case 'password':
+          // Password-protected posts are accessible but require authentication
+          return $this->httpCode = 200;
+        default:
+          return $this->httpCode = 200;
+      }
+    }
+
+    // Post status not allowed or post not found
+    return $this->httpCode = 404;
   }
 
   /**
