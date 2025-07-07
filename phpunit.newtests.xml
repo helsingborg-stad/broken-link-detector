@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+         bootstrap="tests/bootstrap.simple.php"
+         backupGlobals="false"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true">
+
+  <testsuites>
+    <testsuite name="new-tests">
+      <file>source/php/Config/Config.test.php</file>
+      <file>source/php/Database/Database.test.php</file>
+      <file>source/php/Cli/CommandRunner.test.php</file>
+      <file>source/php/Admin/Summary/OptionsPage.test.php</file>
+      <file>source/php/Admin/Summary/Table.test.php</file>
+      <file>source/php/Admin/Settings/SettingsPage.test.php</file>
+    </testsuite>
+  </testsuites>
+
+  <php>
+    <ini name="error_reporting" value="E_ALL" />
+  </php>
+</phpunit>
