@@ -145,6 +145,14 @@ if (!class_exists('wpdb')) {
         public function get_charset_collate() {
             return 'DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
         }
+        
+        public function get_col($query) {
+            return [];
+        }
+        
+        public function prepare($query, ...$args) {
+            return $query;
+        }
     }
     $GLOBALS['wpdb'] = new wpdb();
 }

@@ -16,6 +16,8 @@
       <file>source/php/Admin/Summary/OptionsPage.test.php</file>
       <file>source/php/Admin/Summary/Table.test.php</file>
       <file>source/php/Admin/Settings/SettingsPage.test.php</file>
+      <file>source/php/BrokenLinkRegistry/Registry/ManageRegistry.test.php</file>
+      <file>source/php/TextDomain.test.php</file>
     </testsuite>
   </testsuites>
 

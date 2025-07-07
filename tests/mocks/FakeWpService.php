@@ -7,11 +7,12 @@ use WpService\Contracts\AddManagementPage;
 use WpService\Contracts\ApplyFilters;
 use WpService\Contracts\__;
 use WpService\Contracts\GetOption;
+use WpService\Contracts\LoadPluginTextDomain;
 
 /**
  * Mock FakeWpService for testing purposes
  */
-class FakeWpService implements AddAction, AddManagementPage, ApplyFilters, __, GetOption
+class FakeWpService implements AddAction, AddManagementPage, ApplyFilters, __, GetOption, LoadPluginTextDomain
 {
     private array $methods;
 
@@ -64,5 +65,10 @@ class FakeWpService implements AddAction, AddManagementPage, ApplyFilters, __, G
     public function wpautop($text)
     {
         return $this->__call('wpautop', [$text]);
+    }
+
+    public function loadPluginTextdomain($domain, $deprecated, $plugin_rel_path)
+    {
+        return $this->__call('loadPluginTextdomain', [$domain, $deprecated, $plugin_rel_path]);
     }
 }

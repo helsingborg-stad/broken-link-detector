@@ -18,6 +18,10 @@ interface __ {
     public function __($text, $domain = 'default');
 }
 
+interface LoadPluginTextDomain {
+    public function loadPluginTextdomain($domain, $deprecated, $plugin_rel_path);
+}
+
 interface GetOption {
     public function getOption($key, $default = null);
 }
