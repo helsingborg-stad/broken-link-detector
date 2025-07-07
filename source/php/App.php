@@ -135,8 +135,7 @@ class App
             $internalLinkUpdater = new \BrokenLinkDetector\LinkUpdater\LinkUpdater(
                 $wpService,
                 $config,
-                $db,
-                $registry
+                $db
             );
             $internalLinkUpdater->addHooks();
         }

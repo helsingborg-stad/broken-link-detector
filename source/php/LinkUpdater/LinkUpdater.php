@@ -102,25 +102,45 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
   {
       $db = $this->database->getInstance();
 
-      //Get the post ids that contain the old link
+      // Get allowed post statuses and banned post types from config
+      $allowedPostStatuses = $this->config->linkDetectAllowedPostStatuses();
+      $bannedPostTypes = $this->config->linkUpdaterBannedPostTypes();
+
+      // Prepare placeholders for post statuses and post types
+      $statusPlaceholders = implode(',', array_fill(0, count($allowedPostStatuses), '%s'));
+      $typePlaceholders = implode(',', array_fill(0, count($bannedPostTypes), '%s'));
+
+      // Build the query with post status and post type filters
+      $queryParams = ['%' . $db->esc_like($oldLink) . '%'];
+      $queryParams = array_merge($queryParams, $allowedPostStatuses);
+      $queryParams = array_merge($queryParams, $bannedPostTypes);
+
+      //Get the post ids that contain the old link with proper filtering
       $postIds = $db->get_col(
           $db->prepare(
               "SELECT ID
                   FROM $db->posts
-                  WHERE post_content LIKE %s",
-              '%' . $db->esc_like($oldLink) . '%'
+                  WHERE post_content LIKE %s
+                  AND post_status IN ($statusPlaceholders)
+                  AND post_type NOT IN ($typePlaceholders)",
+              $queryParams
           )
       );
 
-      //Update the post content
+      //Update the post content with the same filtering
+      $updateParams = [$oldLink, $newLink];
+      $updateParams = array_merge($updateParams, ['%' . $db->esc_like($oldLink) . '%']);
+      $updateParams = array_merge($updateParams, $allowedPostStatuses);
+      $updateParams = array_merge($updateParams, $bannedPostTypes);
+
       $db->query(
           $db->prepare(
               "UPDATE $db->posts
                   SET post_content = REPLACE(post_content, %s, %s)
-                  WHERE post_content LIKE %s",
-              $oldLink,
-              $newLink,
-              '%' . $db->esc_like($oldLink) . '%'
+                  WHERE post_content LIKE %s
+                  AND post_status IN ($statusPlaceholders)
+                  AND post_type NOT IN ($typePlaceholders)",
+              $updateParams
           )
       );
 
