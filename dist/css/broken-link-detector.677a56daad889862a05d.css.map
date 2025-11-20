@@ -1,0 +1,1 @@
+{"version":3,"file":"css/broken-link-detector.677a56daad889862a05d.css","mappings":"AAAA,0CACI","sources":["webpack://@helsingborg-stad/broken-link-detector/./source/sass/broken-link-detector.scss"],"sourcesContent":[".broken-link-detector-link-is-unavailable {\n    cursor: not-allowed !important;\n}\n"],"names":[],"ignoreList":[],"sourceRoot":""}
