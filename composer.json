@@ -81,6 +81,5 @@
             "wikimedia/composer-merge-plugin": true,
             "johnpbloch/wordpress-core-installer": true
         }
-    },
-    "version": "4.2.13"
+    }
 }
