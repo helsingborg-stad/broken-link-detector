@@ -36,10 +36,8 @@ if (! defined('WPINC')) {
 /**
  * Autoload plugin classes, if dependencies are installed.
  */
-try {
-    require_once __DIR__ . '/vendor/autoload.php';
-} catch (Exception $e) {
-    throw new Exception($e->getMessage());
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require __DIR__ . '/vendor/autoload.php';
 }
 
 /**
