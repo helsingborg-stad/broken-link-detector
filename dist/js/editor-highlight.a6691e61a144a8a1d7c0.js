@@ -1,0 +1,2 @@
+!function e(n=100){"undefined"!=typeof tinymce?window.onload=function(){tinymce.editors.forEach(function(e){!function(e){let n="";brokenLinkEditorHighlightData.links.forEach(function(e){n+=`a[data-mce-href*="${e}"] {text-decoration: underline wavy #f00 !important; cursor: not-allowed; pointer-events: none;}`});const t=e.dom.create("style",{id:"broken-link-styles"},n);e.getDoc().head.appendChild(t)}(e)})}:n>0?setTimeout(()=>e(n-1),350):console.warn("TinyMCE failed to load within the specified retries.")}();
+//# sourceMappingURL=editor-highlight.a6691e61a144a8a1d7c0.js.map
