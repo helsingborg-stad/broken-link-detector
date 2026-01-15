@@ -1,24 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BrokenLinkDetector\Admin\Summary;
 
-use AcfService\AcfService;
+use BrokenLinkDetector\Admin\Summary\Table;
 use BrokenLinkDetector\Config\Config;
 use BrokenLinkDetector\Database\Database;
 use BrokenLinkDetector\HooksRegistrar\Hookable;
-use WpService\Contracts\AddManagementPage;
-use WpService\Contracts\AddAction;
 use WpService\Contracts\__;
-use WpService\WpService;
-use WP_List_Table;
-use BrokenLinkDetector\Admin\Summary\Table;
+use WpService\Contracts\AddAction;
+use WpService\Contracts\AddManagementPage;
 
 class OptionsPage implements Hookable
 {
-    public function __construct(private AddManagementPage&AddAction&__ $wpService, private Database $db, private Config $config)
-    {
-        
-    }
+    public function __construct(
+        private AddManagementPage&AddAction&__ $wpService,
+        private Database $db,
+        private Config $config,
+    ) {}
 
     public function addHooks(): void
     {
@@ -33,7 +33,7 @@ class OptionsPage implements Hookable
             $this->wpService->__('Broken Links Report', 'broken-link-detector'),
             'edit_pages',
             'broken-links-report',
-            [$this, 'renderSummaryPage']
+            [$this, 'renderSummaryPage'],
         );
     }
 
@@ -42,7 +42,7 @@ class OptionsPage implements Hookable
         echo '<div class="wrap">';
         echo '<h1 class="wp-heading-inline">' . esc_html__('Broken Links Report', 'broken-link-detector') . '</h1>';
         echo '<p class="description">' . esc_html__('Here is a summary of broken links found in your content.', 'broken-link-detector') . '</p>';
-        
+
         echo '<hr class="wp-header-end">';
         echo '<form method="get">';
         echo '<input type="hidden" name="page" value="broken-links-report">';
@@ -51,7 +51,7 @@ class OptionsPage implements Hookable
         $table = new Table($this->wpService, $this->db, $this->config);
         $table->prepare_items();
         $table->display();
-        
+
         echo '</form>';
         echo '</div>';
     }

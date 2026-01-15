@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BrokenLinkDetector\BrokenLinkRegistry\FindLink;
 
 use BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkInterface;
@@ -12,8 +14,11 @@ class FindLinkFromPostMeta implements FindLinkInterface
 {
     private $linkList = null;
 
-    public function __construct(private $wpService, private Config $config, private Database $db)
-    {
+    public function __construct(
+        private $wpService,
+        private Config $config,
+        private Database $db,
+    ) {
         if (is_null($this->linkList)) {
             $this->linkList = new LinkList();
         }
@@ -55,8 +60,8 @@ class FindLinkFromPostMeta implements FindLinkInterface
                             null,
                             $metaItem->post_id,
                             $this->wpService,
-                            $this->config
-                        )
+                            $this->config,
+                        ),
                     );
                 }
             }
@@ -90,10 +95,10 @@ class FindLinkFromPostMeta implements FindLinkInterface
 
         // Get configuration
         $bannedPostTypesArray = $this->config->linkDetectBannedPostTypes();
-        $allowedPostStatuses  = $this->config->linkDetectAllowedPostStatuses();
+        $allowedPostStatuses = $this->config->linkDetectAllowedPostStatuses();
 
         // Prepare placeholders for each banned post type and allowed status
-        $placeholdersTypes    = implode(',', array_fill(0, count($bannedPostTypesArray), '%s'));
+        $placeholdersTypes = implode(',', array_fill(0, count($bannedPostTypesArray), '%s'));
         $placeholdersStatuses = implode(',', array_fill(0, count($allowedPostStatuses), '%s'));
 
         // Start building the base SQL query
@@ -118,8 +123,6 @@ class FindLinkFromPostMeta implements FindLinkInterface
         }
 
         // Prepare the SQL statement
-        $query = $db->prepare($query, $queryParams);
-
-        return $query;
+        return $db->prepare($query, $queryParams);
     }
 }

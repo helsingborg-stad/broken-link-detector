@@ -1,75 +1,74 @@
-[{
-    "key": "group_6718e7ca78c94",
-    "title": "Local Domain Settings",
-    "fields": [
-        {
-            "key": "field_6718e7d0b54f7",
-            "label": "Local domains",
-            "name": "broken_links_local_domains",
-            "aria-label": "",
-            "type": "repeater",
-            "instructions": "Add domains in this list, that should not be checked.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "acfe_repeater_stylised_button": 1,
-            "layout": "table",
-            "pagination": 0,
-            "min": 0,
-            "max": 0,
-            "collapsed": "",
-            "button_label": "L\u00e4gg till rad",
-            "rows_per_page": 20,
-            "sub_fields": [
-                {
-                    "key": "field_6718e860b54f9",
-                    "label": "Domain",
-                    "name": "domain",
-                    "aria-label": "",
-                    "type": "url",
-                    "instructions": "eg. https:\/\/domain.com or https:\/\/subdomain.domain.com",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "placeholder": "",
-                    "parent_repeater": "field_6718e7d0b54f7"
-                }
-            ]
-        }
-    ],
-    "location": [
-        [
-            {
-                "param": "options_page",
-                "operator": "==",
-                "value": "broken-links-settings"
-            }
-        ]
-    ],
-    "menu_order": 0,
-    "position": "normal",
-    "style": "default",
-    "label_placement": "left",
-    "instruction_placement": "label",
-    "hide_on_screen": "",
-    "active": true,
-    "description": "",
-    "show_in_rest": 0,
-    "acfe_display_title": "",
-    "acfe_autosync": [
-        "json"
-    ],
-    "acfe_form": 0,
-    "acfe_meta": "",
-    "acfe_note": ""
-}]
-
+[
+	{
+		"key": "group_6718e7ca78c94",
+		"title": "Local Domain Settings",
+		"fields": [
+			{
+				"key": "field_6718e7d0b54f7",
+				"label": "Local domains",
+				"name": "broken_links_local_domains",
+				"aria-label": "",
+				"type": "repeater",
+				"instructions": "Add domains in this list, that should not be checked.",
+				"required": 0,
+				"conditional_logic": 0,
+				"wrapper": {
+					"width": "",
+					"class": "",
+					"id": ""
+				},
+				"acfe_repeater_stylised_button": 1,
+				"layout": "table",
+				"pagination": 0,
+				"min": 0,
+				"max": 0,
+				"collapsed": "",
+				"button_label": "L\u00e4gg till rad",
+				"rows_per_page": 20,
+				"sub_fields": [
+					{
+						"key": "field_6718e860b54f9",
+						"label": "Domain",
+						"name": "domain",
+						"aria-label": "",
+						"type": "url",
+						"instructions": "eg. https:\/\/domain.com or https:\/\/subdomain.domain.com",
+						"required": 0,
+						"conditional_logic": 0,
+						"wrapper": {
+							"width": "",
+							"class": "",
+							"id": ""
+						},
+						"default_value": "",
+						"placeholder": "",
+						"parent_repeater": "field_6718e7d0b54f7"
+					}
+				]
+			}
+		],
+		"location": [
+			[
+				{
+					"param": "options_page",
+					"operator": "==",
+					"value": "broken-links-settings"
+				}
+			]
+		],
+		"menu_order": 0,
+		"position": "normal",
+		"style": "default",
+		"label_placement": "left",
+		"instruction_placement": "label",
+		"hide_on_screen": "",
+		"active": true,
+		"description": "",
+		"show_in_rest": 0,
+		"acfe_display_title": "",
+		"acfe_autosync": ["json"],
+		"acfe_form": 0,
+		"acfe_meta": "",
+		"acfe_note": ""
+	}
+]

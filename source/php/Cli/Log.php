@@ -1,12 +1,13 @@
-<?php 
+<?php
+
+declare(strict_types=1);
 
 namespace BrokenLinkDetector\Cli;
 
 use WP_CLI;
-use WP_ENV;
 
-class Log {
-
+class Log
+{
     private static function isCli(): bool
     {
         return defined('WP_CLI') && WP_CLI;
@@ -63,7 +64,6 @@ class Log {
 
     public static function info(string $message): void
     {
-        self::log($message); 
+        self::log($message);
     }
-
 }

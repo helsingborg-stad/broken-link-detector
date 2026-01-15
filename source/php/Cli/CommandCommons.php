@@ -1,22 +1,20 @@
-<?php 
+<?php
 
-namespace BrokenLinkDetector\Cli; 
+declare(strict_types=1);
 
-use WP_CLI;
-use Log;
+namespace BrokenLinkDetector\Cli;
 
 abstract class CommandCommons
 {
-
-  public function getCommandHelp(): string
+    public function getCommandHelp(): string
     {
         $usage = "Usage: {$this->getCommandName()}";
-        
+
         // Add arguments to usage section
         foreach ($this->getCommandArguments() as $arg => $desc) {
             $usage .= " [--{$arg}=<{$arg}>]";
         }
-        
+
         $usage .= "\n\nOptions:\n";
 
         // Add arguments with descriptions to options section
@@ -37,5 +35,4 @@ abstract class CommandCommons
     abstract public function getCommandOptions(): array;
 
     abstract public function getCommandArguments(): array;
-
 }

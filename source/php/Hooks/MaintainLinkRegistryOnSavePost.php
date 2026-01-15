@@ -1,23 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BrokenLinkDetector\Hooks;
 
 use BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry;
 use BrokenLinkDetector\Config\Config;
 use BrokenLinkDetector\Database\Database;
-use WpService\WpService;
 use BrokenLinkDetector\HooksRegistrar\Hookable;
+use WpService\WpService;
 
 class MaintainLinkRegistryOnSavePost implements Hookable
 {
-    public function __construct(private WpService $wpService, private Config $config, private Database $db, private ManageRegistry $registry)
-    {
-    }
+    public function __construct(
+        private WpService $wpService,
+        private Config $config,
+        private Database $db,
+        private ManageRegistry $registry,
+    ) {}
 
     public function addHooks(): void
     {
-      $this->wpService->addAction('save_post', [$this, 'clearLinksOnSavePost'], 10, 3);
-      $this->wpService->addAction('save_post', [$this, 'findLinksOnSavePost'], 20, 3);
+        $this->wpService->addAction('save_post', [$this, 'clearLinksOnSavePost'], 10, 3);
+        $this->wpService->addAction('save_post', [$this, 'findLinksOnSavePost'], 20, 3);
     }
 
     /**
@@ -30,12 +35,12 @@ class MaintainLinkRegistryOnSavePost implements Hookable
      */
     public function clearLinksOnSavePost(int $postId, \WP_Post $post, bool $update): void
     {
-      // Do not run on autosave or revisions
-      if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-        return;
-      }
+        // Do not run on autosave or revisions
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
 
-      $this->registry->remove($postId);
+        $this->registry->remove($postId);
     }
 
     /**
@@ -65,15 +70,15 @@ class MaintainLinkRegistryOnSavePost implements Hookable
      */
     private function findLinksInContent(int $postId): void
     {
-      $findLinkFromPostContent = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostContent(
-          $this->wpService,
-          $this->config,
-          $this->db
-      );
-      $foundLinks = $findLinkFromPostContent->findLinks($postId);
-      if($foundLinks->getLinkCount() !== 0) {
-        $this->registry->add($foundLinks);
-      }
+        $findLinkFromPostContent = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostContent(
+            $this->wpService,
+            $this->config,
+            $this->db,
+        );
+        $foundLinks = $findLinkFromPostContent->findLinks($postId);
+        if ($foundLinks->getLinkCount() !== 0) {
+            $this->registry->add($foundLinks);
+        }
     }
 
     /**
@@ -86,11 +91,11 @@ class MaintainLinkRegistryOnSavePost implements Hookable
         $findLinkFromPostMeta = new \BrokenLinkDetector\BrokenLinkRegistry\FindLink\FindLinkFromPostMeta(
             $this->wpService,
             $this->config,
-            $this->db
+            $this->db,
         );
         $foundLinks = $findLinkFromPostMeta->findLinks($postId);
-        if($foundLinks->getLinkCount() !== 0) {
-          $this->registry->add($foundLinks);
+        if ($foundLinks->getLinkCount() !== 0) {
+            $this->registry->add($foundLinks);
         }
     }
 }

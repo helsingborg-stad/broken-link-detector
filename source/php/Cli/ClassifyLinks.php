@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BrokenLinkDetector\Cli;
 
+use BrokenLinkDetector\BrokenLinkRegistry\Link\Link;
 use BrokenLinkDetector\BrokenLinkRegistry\Registry\ManageRegistry;
 use BrokenLinkDetector\Config\Config;
 use BrokenLinkDetector\Database\Database;
-use BrokenLinkDetector\Installer;
 use WpService\WpService;
-use BrokenLinkDetector\BrokenLinkRegistry\Link\Link;
-
 
 class ClassifyLinks extends CommandCommons implements CommandInterface
 {
@@ -16,9 +16,12 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
     private $brokenExternalLinks = 0;
     private $brokenLinksSummary = []; // Store broken links data for summary table
 
-    public function __construct(private WpService $wpService, private Config $config, private Database $database, private ManageRegistry $registry)
-    {
-    }
+    public function __construct(
+        private WpService $wpService,
+        private Config $config,
+        private Database $database,
+        private ManageRegistry $registry,
+    ) {}
 
     public function getCommandName(): string
     {
@@ -45,13 +48,13 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
     public function getCommandHandler(): callable
     {
         return function (array $arguments, array $options) {
-            $limit = isset($arguments['limit']) ? ((int) $arguments['limit']) : null;
+            $limit = isset($arguments['limit']) ? (int) $arguments['limit'] : null;
             $unclassifiedLinks = $this->registry->getLinksThatNeedsClassification($limit);
             $totalNumberOfLinksToClassify = count($unclassifiedLinks);
 
             Log::info("Starting link classification of {$totalNumberOfLinksToClassify} links...");
 
-            $progress = \WP_CLI\Utils\make_progress_bar("Working: ", $totalNumberOfLinksToClassify);
+            $progress = \WP_CLI\Utils\make_progress_bar('Working: ', $totalNumberOfLinksToClassify);
 
             foreach ($unclassifiedLinks as $link) {
                 $linkObject = Link::createLink($link->url, null, $link->id, $this->wpService, $this->config);
@@ -61,7 +64,7 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
                     $this->registry->update($linkObject);
                     $this->addToSummary($linkObject->isInternal, $linkObject->isBroken, $linkObject->httpCode, $linkObject->url);
                 }
-                
+
                 $progress->tick();
             }
 
@@ -78,20 +81,21 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
 
     /**
      * Add a link to the summary table if it's broken
-     * 
+     *
      * @param bool $isInternal
      * @param bool $isBroken
      * @param int|null $httpCode
      * @param string $url
-     * 
+     *
      * @return void
      */
-    private function addToSummary(bool $isInternal, bool $isBroken, ?int $httpCode, string $url): void {
+    private function addToSummary(bool $isInternal, bool $isBroken, ?int $httpCode, string $url): void
+    {
         if ($isBroken) {
             $this->brokenLinksSummary[] = [
                 'url' => $url,
                 'httpCode' => $httpCode,
-                'internal' => ($isInternal ? 'Internal' : 'External')
+                'internal' => $isInternal ? 'Internal' : 'External',
             ];
         }
 
@@ -104,10 +108,11 @@ class ClassifyLinks extends CommandCommons implements CommandInterface
 
     /**
      * Output the summary table of broken links
-     * 
+     *
      * @return void
      */
-    private function getSummary(): void {
+    private function getSummary(): void
+    {
         \WP_CLI\Utils\format_items('table', $this->brokenLinksSummary, ['url', 'httpCode', 'internal']);
     }
 }

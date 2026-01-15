@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BrokenLinkDetector\Database;
 
 use BrokenLinkDetector\Config\ConfigInterface;
@@ -8,27 +10,27 @@ use WpService\Contracts\GetOption;
 
 class Database implements DatabaseInterface
 {
-
-    public function __construct(private ConfigInterface $config, private GetOption $wpService)
-    {
-    }
+    public function __construct(
+        private ConfigInterface $config,
+        private GetOption $wpService,
+    ) {}
 
     /**
      * Get the current version of the database.
-     * 
+     *
      * @return string|null
      */
     public function getCurrentVersion(): ?string
     {
         return $this->wpService->getOption(
-          $this->config->getDatabaseVersionKey(),
-          null
+            $this->config->getDatabaseVersionKey(),
+            null,
         );
     }
 
     /**
-     * The database table that broken link checker registeres broken stuff in. 
-     * 
+     * The database table that broken link checker registeres broken stuff in.
+     *
      * @return string
      */
     public function getTableName(): string
@@ -38,7 +40,7 @@ class Database implements DatabaseInterface
 
     /**
      * Get the charset collation for the database.
-     * 
+     *
      * @return stringxx
      */
     public function getCharsetCollation(): string
@@ -51,11 +53,11 @@ class Database implements DatabaseInterface
      */
     public static function getInstance(): wpdb
     {
-      static $db; 
-      if ($db === null) {
-        global $wpdb;
-        $db = $wpdb;
-      }
-      return $db;
+        static $db;
+        if ($db === null) {
+            global $wpdb;
+            $db = $wpdb;
+        }
+        return $db;
     }
 }
