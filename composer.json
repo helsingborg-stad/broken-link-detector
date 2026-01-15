@@ -67,7 +67,7 @@
         "johnpbloch/wordpress-core": "dev-master",
         "yoast/phpunit-polyfills": "^3.0",
         "wp-cli/wp-cli": "^2.11",
-        "phpunit/phpunit": "^11.5",
+        "phpunit/phpunit": "^9.6",
         "carthage-software/mago": "^1.0.0-rc.3"
     },
     "suggest": {
