@@ -7,11 +7,12 @@ namespace BrokenLinkDetector\Config;
 use AcfService\Contracts\GetField;
 use WpService\Contracts\__;
 use WpService\Contracts\ApplyFilters;
+use WpService\Contracts\Wpautop;
 
 class Config implements ConfigInterface
 {
     public function __construct(
-        private ApplyFilters&__ $wpService,
+        private Wpautop&ApplyFilters&__ $wpService,
         private GetField $acfService,
         private string $filterPrefix,
         private string $pluginPath,

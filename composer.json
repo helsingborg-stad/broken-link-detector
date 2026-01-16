@@ -14,22 +14,6 @@
         "fix": "vendor/bin/mago lint --format-after-fix --fix",
         "format": "vendor/bin/mago fmt"
     },
-    "extra": {
-        "hooks": {
-            "commit-msg": [
-                "./bin/commit-msg.sh $1"
-            ]
-        },
-        "merge-plugin": {
-            "include": [
-                "composer.local.json"
-            ],
-            "ignore-duplicates": false,
-            "merge-dev": true,
-            "merge-extra": true,
-            "merge-scripts": true
-        }
-    },
     "authors": [
         {
             "name": "Sebastian Thulin",
@@ -60,10 +44,8 @@
     "require-dev": {
         "codedungeon/phpunit-result-printer": "^0.32.0",
         "phpcompatibility/phpcompatibility-wp": "*",
-        "brainmaestro/composer-git-hooks": "^2.8",
         "composer/installers": "~1.0",
         "php-mock/php-mock-mockery": "^1.4",
-        "wikimedia/composer-merge-plugin": "^2.1",
         "johnpbloch/wordpress-core": "dev-master",
         "yoast/phpunit-polyfills": "^3.0",
         "wp-cli/wp-cli": "^2.11",

@@ -47,7 +47,7 @@ class Feature implements FeatureInterface
         if (is_null($version)) {
             return (bool) self::FEATURES[$this->feature];
         }
-        return version_compare($version, self::FEATURES[$this->feature], 'eq');
+        return version_compare((string) $version, (string) self::FEATURES[$this->feature], 'eq');
     }
 
     public function getVersion(): int|false
