@@ -1,18 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BrokenLinkDetector\Fields\AcfExportManager;
 
 use BrokenLinkDetector\HooksRegistrar\Hookable;
 use WpService\Contracts\AddAction;
-use RegisterFieldConfigurationInterface;
 
 class RegisterFieldConfiguration implements Hookable
 {
-    public function __construct(private AddAction $wpService, private string $fieldConfigurationDirectory)
-    {
-      if (empty($this->fieldConfigurationDirectory)) {
-        throw new \InvalidArgumentException('Field configuration directory is required');
-      }
+    public function __construct(
+        private AddAction $wpService,
+        private string $fieldConfigurationDirectory,
+    ) {
+        if (empty($this->fieldConfigurationDirectory)) {
+            throw new \InvalidArgumentException('Field configuration directory is required');
+        }
     }
 
     public function addHooks(): void

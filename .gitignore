@@ -21,6 +21,7 @@ vendor/
 
 # ignore dist files
 /dist/*
+assets/
 
 # ignore jekyll build directory
 /_site
@@ -56,6 +57,10 @@ Thumbs.db
 *.rar
 *.tar
 *.zip
+
+# ignore tests 
+.phpunit.result.cache
+.coverage
 
 # -------------------------
 # BEGIN Whitelisted Files

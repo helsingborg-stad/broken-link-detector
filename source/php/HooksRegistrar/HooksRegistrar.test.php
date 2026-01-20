@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BrokenLinkDetector\HooksRegistrar;
 
 use BrokenLinkDetector\HooksRegistrar\Hookable;
@@ -12,7 +14,7 @@ class HooksRegistrarTest extends TestCase
      */
     public function testRegisterCallsAddHooksOnProvidedObject()
     {
-        $hookable       = $this->getHookableClass();
+        $hookable = $this->getHookableClass();
         $hooksRegistrar = new \BrokenLinkDetector\HooksRegistrar\HooksRegistrar();
 
         ob_start();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BrokenLinkDetector;
 
 use BrokenLinkDetector\Config\ConfigInterface;
@@ -9,9 +11,10 @@ use WpService\Contracts\LoadPluginTextDomain;
 
 class TextDomain implements TextDomainInterface, Hookable
 {
-    public function __construct(private AddAction&LoadPluginTextDomain $wpService, private ConfigInterface $config)
-    {
-    }
+    public function __construct(
+        private AddAction&LoadPluginTextDomain $wpService,
+        private ConfigInterface $config,
+    ) {}
 
     public function addHooks(): void
     {
@@ -21,9 +24,9 @@ class TextDomain implements TextDomainInterface, Hookable
     public function loadTextDomain(): void
     {
         $this->wpService->loadPluginTextDomain(
-            $this->config->gettextDomain(), 
-            false, 
-            $this->config->getPluginPath(true) . 'languages/'
+            $this->config->gettextDomain(),
+            false,
+            $this->config->getPluginPath(true) . 'languages/',
         );
     }
 }

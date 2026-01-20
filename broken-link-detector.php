@@ -59,7 +59,7 @@ $config     = new Config(
 );
 
 $manifestFilePathResolver = new ManifestFilePathResolver(
-    $config->getPluginPath() . "dist/manifest.json", 
+    $config->getPluginPath() . "assets/dist/manifest.json", 
     $baseFileSystem, 
     $manifestFileWpService, 
     $urlFilePathResolver

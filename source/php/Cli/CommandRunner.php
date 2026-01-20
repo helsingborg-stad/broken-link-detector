@@ -1,4 +1,6 @@
-<?php 
+<?php
+
+declare(strict_types=1);
 
 namespace BrokenLinkDetector\Cli;
 
@@ -13,7 +15,10 @@ class CommandRunner
     /**
      * CommandRunner constructor.
      */
-    public function __construct(private WpService $wpService, private Config $config){}
+    public function __construct(
+        private WpService $wpService,
+        private Config $config,
+    ) {}
 
     /**
      * Add a command to the command runner.
@@ -38,7 +43,7 @@ class CommandRunner
     public function runCommand(string $commandName, array $arguments, array $options): void
     {
         if (!isset($this->commands[$commandName])) {
-            throw new \Exception("Command not found");
+            throw new \Exception('Command not found');
         }
 
         $command = $this->commands[$commandName];
@@ -51,21 +56,25 @@ class CommandRunner
      */
     public function registerWithWPCLI(): bool
     {
-        if (!defined('WP_CLI') || (defined('WP_CLI') && !WP_CLI )) {
+        if (!defined('WP_CLI') || defined('WP_CLI') && !WP_CLI) {
             return false;
         }
 
         foreach ($this->commands as $commandName => $command) {
-            WP_CLI::add_command("{$this->config->getCommandNamespace()} {$commandName}", function ($options, $arguments) use ($command) {
-                $handler = $command->getCommandHandler();
-                $handler($arguments, $options);
-            }, [
-                'shortdesc' => $command->getCommandDescription(),
-                'synopsis' => $this->generateSynopsis($command)
-            ]);
+            WP_CLI::add_command(
+                "{$this->config->getCommandNamespace()} {$commandName}",
+                static function ($options, $arguments) use ($command) {
+                    $handler = $command->getCommandHandler();
+                    $handler($arguments, $options);
+                },
+                [
+                    'shortdesc' => $command->getCommandDescription(),
+                    'synopsis' => $this->generateSynopsis($command),
+                ],
+            );
         }
 
-        return true; 
+        return true;
     }
 
     /**

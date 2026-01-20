@@ -1,4 +1,6 @@
-<?php 
+<?php
+
+declare(strict_types=1);
 
 namespace BrokenLinkDetector\BrokenLinkRegistry\LinkList;
 
@@ -10,19 +12,19 @@ class LinkList implements LinkListInterface
 
     /**
      * Add a link to the list.
-     * 
+     *
      * @param Link $link
-     * 
+     *
      * @return void
      */
     public function addLink(Link $link): void
     {
-      $this->links[] = $link;
+        $this->links[] = $link;
     }
 
     /**
      * Classify all links in the list.
-     * 
+     *
      * @return bool True if all links were classified, false if no links avabile to classify.
      */
     public function classifyLinks(): bool
@@ -38,7 +40,7 @@ class LinkList implements LinkListInterface
 
     /**
      * Get all links in the list.
-     * 
+     *
      * @return array
      */
     public function getLinks(): array
@@ -48,12 +50,11 @@ class LinkList implements LinkListInterface
 
     /**
      * Get the number of links in the list.
-     * 
+     *
      * @return int
      */
     public function getLinkCount(): int
     {
         return count($this->links);
     }
-
 }
