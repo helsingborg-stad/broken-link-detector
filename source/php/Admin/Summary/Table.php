@@ -104,7 +104,7 @@ class Table extends \WP_List_Table
         }
 
         if ($column_name === 'http_code') {
-            return $this->wpService->getStatusHeaderDesc($item->$column_name) . ' (' . $item->$column_name . ')';
+            return $this->wpService->getStatusHeaderDesc((int) $item->$column_name) . ' (' . $item->$column_name . ')';
         }
 
         return $item->$column_name ?? '';
