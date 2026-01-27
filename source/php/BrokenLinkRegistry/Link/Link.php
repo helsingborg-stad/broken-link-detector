@@ -62,7 +62,7 @@ class Link implements LinkInterface
      *
      * @return Link
      */
-    public static function createLink(string $url, ?int $httpCode, int $postId, WpService $wpService, Config $config): Link
+    public static function createLink(string $url, ?int $httpCode, null|string|int $postId, WpService $wpService, Config $config): Link
     {
         self::$wpService = $wpService;
         self::$config = $config;
