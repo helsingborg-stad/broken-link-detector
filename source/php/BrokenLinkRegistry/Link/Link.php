@@ -64,6 +64,9 @@ class Link implements LinkInterface
      */
     public static function createLink(string $url, ?int $httpCode, null|string|int $postId, WpService $wpService, Config $config): Link
     {
+        if (is_string($postId)) {
+            $postId = (int)$postId;
+        }
         self::$wpService = $wpService;
         self::$config = $config;
         return new Link($url, $httpCode, $postId);
