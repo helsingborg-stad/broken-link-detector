@@ -131,6 +131,14 @@ class LinkUpdater implements LinkUpdaterInterface, Hookable
             ),
         );
 
+        //If no posts are found, return early
+        if (empty($postIds)) {
+            return 0;
+        }
+
+        //Convert fetched post ids to integers
+        $postIds = array_map('intval', $postIds);
+
         //Update the post content with the same filtering
         $updateParams = [$oldLink, $newLink];
         $updateParams = array_merge($updateParams, ['%' . $db->esc_like($oldLink) . '%']);
